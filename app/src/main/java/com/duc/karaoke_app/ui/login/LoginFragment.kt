@@ -82,7 +82,8 @@ class LoginFragment : Fragment() {
 
         loginViewModel.user.observe(viewLifecycleOwner) { user ->
             if (user != null) {
-                findNavController().navigate(R.id.action_login_Fragment_to_homeFragment)
+                val intent = Intent(requireActivity(), MainActivity::class.java)
+                startActivity(intent)
             } else {
                 null
             }
