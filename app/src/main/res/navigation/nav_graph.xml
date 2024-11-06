@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/login_Fragment">
+
+    <fragment
+        android:id="@+id/login_Fragment"
+        android:name="com.duc.karaoke_app.ui.login.LoginFragment"
+        tools:layout="@layout/fragment_login_"
+        android:label="Login_Fragment">
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_login_Fragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_login_Fragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.duc.karaoke_app.ui.login.SignUpFragment"
+        tools:layout="@layout/fragment_sign_up"
+        android:label="Sign Up">
+        <action
+            android:id="@+id/action_signUpFragment_to_loginFragment"
+            app:destination="@id/login_Fragment" />
+    </fragment>
+
+    <fragment
+    android:id="@+id/registerFragment"
+        android:name="com.duc.karaoke_app.ui.login.RegisterFragment"
+        tools:layout="@layout/fragment_register"
+        android:label="Register"/>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.duc.karaoke_app.ui.login.HomeFragment"
+        tools:layout="@layout/fragment_home"
+        android:label="Home"/>
+
+
+</navigation>
