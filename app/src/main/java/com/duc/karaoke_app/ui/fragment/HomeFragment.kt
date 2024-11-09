@@ -1,16 +1,11 @@
-package com.duc.karaoke_app.ui.login
+package com.duc.karaoke_app.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupWithNavController
-import com.duc.karaoke_app.R
+import androidx.fragment.app.Fragment
 import com.duc.karaoke_app.databinding.FragmentHomeBinding
-
 
 class HomeFragment : Fragment() {
 
@@ -27,7 +22,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        homeBinding= FragmentHomeBinding.inflate(inflater,container,false)
+        homeBinding= FragmentHomeBinding.inflate(inflater, container, false)
         return homeBinding!!.root
     }
 

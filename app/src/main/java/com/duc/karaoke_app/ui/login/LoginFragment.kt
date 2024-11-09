@@ -1,6 +1,5 @@
 package com.duc.karaoke_app.ui.login
 
-import android.app.Activity
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import androidx.fragment.app.Fragment
@@ -15,9 +14,10 @@ import com.duc.karaoke_app.MainActivity
 import com.duc.karaoke_app.databinding.FragmentLoginBinding
 
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.LoginRepository
+import com.duc.karaoke_app.data.viewmodel.LoginRepository
+import com.duc.karaoke_app.data.viewmodel.LoginViewModel
+import com.duc.karaoke_app.data.viewmodel.LoginViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException

@@ -1,12 +1,10 @@
-package com.duc.karaoke_app.ui.login
+package com.duc.karaoke_app.data.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
-import com.duc.karaoke_app.data.LoginRepository
+import com.google.firebase.auth.FirebaseAuth
 
-import com.duc.karaoke_app.R
 import com.google.firebase.auth.FirebaseUser
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
@@ -19,4 +17,5 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
             _user.value= firebaseUser
         }
     }
+
 }

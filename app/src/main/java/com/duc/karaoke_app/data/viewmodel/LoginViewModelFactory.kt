@@ -1,8 +1,7 @@
-package com.duc.karaoke_app.ui.login
+package com.duc.karaoke_app.data.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.duc.karaoke_app.data.LoginRepository
 
 /**
  * ViewModel provider factory to instantiate LoginViewModel.

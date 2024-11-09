@@ -1,6 +1,5 @@
-package com.duc.karaoke_app.data
+package com.duc.karaoke_app.data.viewmodel
 
-import com.duc.karaoke_app.data.model.LoggedInUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
