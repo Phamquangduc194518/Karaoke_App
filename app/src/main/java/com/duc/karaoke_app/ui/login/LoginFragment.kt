@@ -14,6 +14,7 @@ import com.duc.karaoke_app.MainActivity
 import com.duc.karaoke_app.databinding.FragmentLoginBinding
 
 import com.duc.karaoke_app.R
+import com.duc.karaoke_app.data.GoogleSignInHelper
 import com.duc.karaoke_app.data.viewmodel.LoginRepository
 import com.duc.karaoke_app.data.viewmodel.LoginViewModel
 import com.duc.karaoke_app.data.viewmodel.LoginViewModelFactory
@@ -35,11 +36,8 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions)
+        GoogleSignInHelper.initialize(requireActivity())
+        googleSignInClient= GoogleSignInHelper.googleSignInInstance(requireActivity())
         val repository = LoginRepository()
         val viewModelFactory = LoginViewModelFactory(repository)
         loginViewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]

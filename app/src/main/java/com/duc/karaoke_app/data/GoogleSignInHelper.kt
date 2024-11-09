@@ -2,6 +2,7 @@ package com.duc.karaoke_app.data
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import com.duc.karaoke_app.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -10,18 +11,29 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 object GoogleSignInHelper {
     @SuppressLint("StaticFieldLeak")
-    private var googleSignInClient: GoogleSignInClient?=null
+    private lateinit var googleSignInClient: GoogleSignInClient
 
-    fun initialize(context: Context){
+    fun initialize(context: Context): GoogleSignInOptions{
         val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(context.getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-        googleSignInClient= GoogleSignIn.getClient(context, googleSignInOptions)
+        return googleSignInOptions
+    }
+
+    fun googleSignInInstance(context: Context):GoogleSignInClient{
+        initialize(context)
+        googleSignInClient= GoogleSignIn.getClient(context, initialize(context))
+        return googleSignInClient
     }
 
     fun getClient(): GoogleSignInClient {
         return googleSignInClient ?: throw IllegalStateException("GoogleSignInHelper not initialized")
+    }
+
+    fun signInWithGoogle(): Intent? {
+        val signInIntent = googleSignInClient?.signInIntent
+        return signInIntent
     }
 
     fun signOut(context:Context){
