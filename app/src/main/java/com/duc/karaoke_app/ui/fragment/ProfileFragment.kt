@@ -6,13 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.duc.karaoke_app.LoginActivity
-import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.GoogleSignInHelper
-import com.duc.karaoke_app.data.viewmodel.LoginRepository
-import com.duc.karaoke_app.data.viewmodel.LoginViewModel
-import com.duc.karaoke_app.data.viewmodel.LoginViewModelFactory
+import com.duc.karaoke_app.utils.GoogleSignInHelper
 import com.duc.karaoke_app.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {

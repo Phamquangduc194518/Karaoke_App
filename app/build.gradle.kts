@@ -56,9 +56,17 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation (libs.androidx.navigation.fragment.ktx)
     implementation (libs.androidx.navigation.ui.ktx)
-    implementation(libs.firebase.bom)
+    implementation(platform(libs.firebase.bom))
     implementation (libs.firebase.auth)
     implementation (libs.gms.play.services.auth)
+    implementation (libs.firebase.storage)
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.androidx.lifecycle.livedata.ktx.v251)
+    implementation (libs.glide)
+    implementation (libs.core)
+
+
 
 
 

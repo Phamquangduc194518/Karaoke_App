@@ -14,18 +14,17 @@ import com.duc.karaoke_app.MainActivity
 import com.duc.karaoke_app.databinding.FragmentLoginBinding
 
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.GoogleSignInHelper
-import com.duc.karaoke_app.data.viewmodel.LoginRepository
-import com.duc.karaoke_app.data.viewmodel.LoginViewModel
-import com.duc.karaoke_app.data.viewmodel.LoginViewModelFactory
+import com.duc.karaoke_app.utils.GoogleSignInHelper
+import com.duc.karaoke_app.data.viewmodel.KaraokeRepository
+import com.duc.karaoke_app.data.viewmodel.KaraokeViewModel
+import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 
 class LoginFragment : Fragment() {
 
-    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var viewModel: KaraokeViewModel
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -38,9 +37,9 @@ class LoginFragment : Fragment() {
     ): View? {
         GoogleSignInHelper.initialize(requireActivity())
         googleSignInClient= GoogleSignInHelper.googleSignInInstance(requireActivity())
-        val repository = LoginRepository()
-        val viewModelFactory = LoginViewModelFactory(repository)
-        loginViewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
+        val repository = KaraokeRepository()
+        val viewModelFactory = ViewModelFactory(repository)
+        viewModel = ViewModelProvider(this, viewModelFactory)[KaraokeViewModel::class.java]
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -54,7 +53,7 @@ class LoginFragment : Fragment() {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 try {
                     val account = task.getResult(ApiException::class.java)
-                    account.let { loginViewModel.signInWithGoogle(it.idToken!!) }
+                    account.let { viewModel.signInWithGoogle(it.idToken!!) }
                 } catch (e: ApiException) {
                     Log.w("Google SignIn", "Google sign in failed", e)
                 }
@@ -78,7 +77,7 @@ class LoginFragment : Fragment() {
             signInWithGoogle()
         }
 
-        loginViewModel.user.observe(viewLifecycleOwner) { user ->
+        viewModel.user.observe(viewLifecycleOwner) { user ->
             if (user != null) {
                 val intent = Intent(requireActivity(), MainActivity::class.java)
                 startActivity(intent)

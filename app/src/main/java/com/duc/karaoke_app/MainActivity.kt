@@ -4,30 +4,66 @@ import android.os.Bundle
 
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.duc.karaoke_app.data.GoogleSignInHelper
+import com.duc.karaoke_app.utils.GoogleSignInHelper
 import com.duc.karaoke_app.databinding.ActivityMainBinding
+import com.duc.karaoke_app.ui.fragment.DuetFragment
+import com.duc.karaoke_app.ui.fragment.FavouriteFragment
+import com.duc.karaoke_app.ui.fragment.HomeFragment
+import com.duc.karaoke_app.ui.fragment.LiveFragment
+import com.duc.karaoke_app.ui.fragment.ProfileFragment
+import com.duc.karaoke_app.ui.fragment.VideoPlayerFragment
+import com.duc.karaoke_app.utils.FragmentBase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainbinding: ActivityMainBinding
     private lateinit var bottomNavigation: BottomNavigationView
-    private lateinit var navController: NavController
+    private lateinit var baseFragment: FragmentBase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         mainbinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainbinding.root)
-
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_bottom_fragment) as NavHostFragment
-        navController= navHostFragment.navController
         bottomNavigation= mainbinding.bottomNavigation
-        bottomNavigation.setupWithNavController(navController)
         GoogleSignInHelper.initialize(this)
+        baseFragment= FragmentBase()
+        mainbinding.bottomNavigation.setOnItemSelectedListener{ item->
+            when(item.itemId){
+                R.id.navigation_home->{
+                    loadFragment(HomeFragment())
+                    true
+                }
+                R.id.navigation_favourite->{
+                    loadFragment(FavouriteFragment())
+                    true
+                }
+                R.id.navigation_live->{
+                    loadFragment(LiveFragment())
+                    true
+                }
+                R.id.navigation_duet->{
+                    loadFragment(DuetFragment())
+                    true
+                }
+                R.id.navigation_profile->{
+                    loadFragment(ProfileFragment())
+                    true
+                }
+
+                else -> {false}
+            }
+        }
     }
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+    }
+
 }

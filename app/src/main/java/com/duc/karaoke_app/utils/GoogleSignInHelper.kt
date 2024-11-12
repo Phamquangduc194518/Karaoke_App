@@ -1,4 +1,4 @@
-package com.duc.karaoke_app.data
+package com.duc.karaoke_app.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,7 +23,7 @@ object GoogleSignInHelper {
 
     fun googleSignInInstance(context: Context):GoogleSignInClient{
         initialize(context)
-        googleSignInClient= GoogleSignIn.getClient(context, initialize(context))
+        googleSignInClient = GoogleSignIn.getClient(context, initialize(context))
         return googleSignInClient
     }
 
