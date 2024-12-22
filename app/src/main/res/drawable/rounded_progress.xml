@@ -1,0 +1,20 @@
+<!-- rounded_progress.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background Layer (Empty Progress) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#E0E0E0" /> <!-- Màu nền chưa hoàn thành -->
+            <corners android:radius="10dp" /> <!-- Bo góc toàn bộ thanh -->
+        </shape>
+    </item>
+
+    <!-- Progress Layer (Completed Progress) -->
+    <item android:id="@android:id/progress">
+        <inset android:insetLeft="0dp" android:insetRight="0dp">
+            <shape android:shape="rectangle">
+<!--                <solid android:color="" /> &lt;!&ndash; Màu xanh cho phần hoàn thành &ndash;&gt;-->
+                <corners android:radius="10dp" /> <!-- Bo góc cho phần hoàn thành -->
+            </shape>
+        </inset>
+    </item>
+</layer-list>

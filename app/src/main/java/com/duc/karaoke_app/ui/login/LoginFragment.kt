@@ -1,5 +1,6 @@
 package com.duc.karaoke_app.ui.login
 
+
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import androidx.fragment.app.Fragment
@@ -8,84 +9,73 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
+import com.duc.karaoke_app.R
 import androidx.navigation.fragment.findNavController
 import com.duc.karaoke_app.MainActivity
-import com.duc.karaoke_app.databinding.FragmentLoginBinding
-
-import com.duc.karaoke_app.R
-import com.duc.karaoke_app.utils.GoogleSignInHelper
-import com.duc.karaoke_app.data.viewmodel.KaraokeRepository
-import com.duc.karaoke_app.data.viewmodel.KaraokeViewModel
+import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.common.api.ApiException
+import com.duc.karaoke_app.databinding.FragmentLoginBinding
+import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
 
 class LoginFragment : Fragment() {
 
-    private lateinit var viewModel: KaraokeViewModel
-    private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
-    private lateinit var googleSignInClient: GoogleSignInClient
-
+    private lateinit var viewmodelLogin: ViewModelLogin
+    private var _binding: FragmentLoginBinding?=null
+    val binding get()=_binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        GoogleSignInHelper.initialize(requireActivity())
-        googleSignInClient= GoogleSignInHelper.googleSignInInstance(requireActivity())
-        val repository = KaraokeRepository()
-        val viewModelFactory = ViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory)[KaraokeViewModel::class.java]
+        val application = requireActivity().application
+        val repository = Repository()
+        val viewModelFactory = ViewModelFactory(repository,application)
+        viewmodelLogin = ViewModelProvider(this, viewModelFactory)[ViewModelLogin::class.java]
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        binding.viewModelLogin= viewmodelLogin
+        binding.lifecycleOwner=viewLifecycleOwner
         return binding.root
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sigInLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    val account = task.getResult(ApiException::class.java)
-                    account.let { viewModel.signInWithGoogle(it.idToken!!) }
-                } catch (e: ApiException) {
-                    Log.w("Google SignIn", "Google sign in failed", e)
+        viewmodelLogin.navigateToRegister.observe(viewLifecycleOwner){ navigate->
+            if(navigate){
+                Log.d("LoginFragment", "Navigating to RegisterFragment")
+                findNavController().navigate(R.id.action_login_Fragment_to_registerFragment)
+                viewmodelLogin.resetNavigation()
+            }
+        }
+        viewmodelLogin.navigateToResetPassword.observe(viewLifecycleOwner){ navigate->
+            if(navigate){
+                findNavController().navigate(R.id.action_login_Fragment_to_resetPasswordInfo)
+                viewmodelLogin.resetNavigation()
+            }
+        }
+
+        viewmodelLogin.loginSuccess.observe(viewLifecycleOwner){ navigate->
+            navigate?.let {
+                if (it) {
+                    val intent = Intent(requireActivity(), MainActivity::class.java)
+                    startActivity(intent)
+                    requireActivity().finish()
+                    viewmodelLogin.resetNavigation()
                 }
-
-            }
-
-        fun signInWithGoogle() {
-            val signInIntent = googleSignInClient.signInIntent
-            sigInLauncher.launch(signInIntent)
-        }
-
-        binding.tvSigUp.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
-        }
-
-        binding.tvForgotPassword.setOnClickListener {
-            findNavController().navigate(R.id.action_login_Fragment_to_registerFragment)
-        }
-
-        binding.btnSihnInWithGoogle.setOnClickListener {
-            signInWithGoogle()
-        }
-
-        viewModel.user.observe(viewLifecycleOwner) { user ->
-            if (user != null) {
-                val intent = Intent(requireActivity(), MainActivity::class.java)
-                startActivity(intent)
-            } else {
-                null
             }
         }
+        viewmodelLogin.toastMessage.observe(viewLifecycleOwner){message->
+            message.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
 
-
+        }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModelSplashScreen"
+            type="com.duc.karaoke_app.data.viewmodel.ViewModelSplashScreen" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Hình ảnh -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:contentDescription="Illustration of a person with a laptop"
+                android:src="@drawable/splashscreen_logo" />
+
+            <!-- Tiêu đề chính -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:text="Discover Your\nDream music here"
+                android:textColor="#004AAD"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Phụ đề -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:text="Explore all the existing music genres and opportunities based on your\passion and favorite instruments"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <!-- Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <!-- Login Button -->
+                <Button
+                    android:id="@+id/btn_login_splashScreen"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_button_splashscreen"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="sans-serif"
+                    android:onClick="@{()->viewModelSplashScreen.onSplashScreenClick()}"
+                    android:text="Start"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

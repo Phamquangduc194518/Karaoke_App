@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
 }
 
 
@@ -65,6 +66,13 @@ dependencies {
     implementation (libs.androidx.lifecycle.livedata.ktx.v251)
     implementation (libs.glide)
     implementation (libs.core)
+    //thư viện liveStream
+    implementation("com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:2.0.0")
+    implementation("com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtmp:2.0.0")
+    implementation (libs.exoplayer)
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation (libs.material)
+
 
 
 

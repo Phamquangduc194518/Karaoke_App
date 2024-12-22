@@ -14,16 +14,15 @@ import com.duc.karaoke_app.ui.fragment.DuetFragment
 import com.duc.karaoke_app.ui.fragment.FavouriteFragment
 import com.duc.karaoke_app.ui.fragment.HomeFragment
 import com.duc.karaoke_app.ui.fragment.LiveFragment
+import com.duc.karaoke_app.ui.fragment.LiveStreamFragment
 import com.duc.karaoke_app.ui.fragment.ProfileFragment
 import com.duc.karaoke_app.ui.fragment.VideoPlayerFragment
-import com.duc.karaoke_app.utils.FragmentBase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mainbinding: ActivityMainBinding
     private lateinit var bottomNavigation: BottomNavigationView
-    private lateinit var baseFragment: FragmentBase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(mainbinding.root)
         bottomNavigation= mainbinding.bottomNavigation
         GoogleSignInHelper.initialize(this)
-        baseFragment= FragmentBase()
+        loadFragment(HomeFragment())
         mainbinding.bottomNavigation.setOnItemSelectedListener{ item->
             when(item.itemId){
                 R.id.navigation_home->{
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_live->{
-                    loadFragment(LiveFragment())
+                    loadFragment(LiveStreamFragment())
                     true
                 }
                 R.id.navigation_duet->{

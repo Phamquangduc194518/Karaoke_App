@@ -25,7 +25,6 @@ class VideoPlayerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         videPlayFragmentBinding= FragmentVideoPlayerBinding.inflate(layoutInflater)
-        youtubePlayView = videPlayFragmentBinding.youtubePlayerView
         lifecycle.addObserver(youtubePlayView)
         val videoId = arguments?.getString("videoId")
         videoId?.let{
@@ -36,6 +35,11 @@ class VideoPlayerFragment : Fragment() {
             })
         }
         return videPlayFragmentBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        youtubePlayView = videPlayFragmentBinding.youtubePlayerView
     }
 
     override fun onDestroyView() {

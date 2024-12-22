@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+    <variable
+        name="ViewModelEditProfile"
+        type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Back Arrow -->
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="16dp"
+                android:contentDescription="Back Button"
+                android:src="@drawable/baseline_arrow_back" />
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Edit Profile"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Profile Picture -->
+            <FrameLayout
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/custom_background_avatar"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/anh_dai_dien"
+                    app:civ_circle_background_color="#80FFFFFF" />
+
+                <ImageView
+                    android:id="@+id/camera_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:padding="4dp"
+                    android:src="@drawable/camera"
+                    app:tint="@color/white" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/change_photo_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Thay đổi ảnh"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Input Fields -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="5dp"
+                android:text="Name"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/custom_edittext_edit_profile"
+                android:hint="Melissa Peters"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:text="@={ViewModelEditProfile.username}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
+                android:text="Phone"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/custom_edittext_edit_profile"
+                android:hint="+84"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:text="@={ViewModelEditProfile.phone}"
+                android:paddingStart="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
+                android:text="Password"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/custom_edittext_edit_profile"
+                android:hint="**********"
+                android:inputType="textPassword"
+                android:text="@={ViewModelEditProfile.password}"
+                android:maxLines="1"
+                android:paddingStart="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
+                android:text="Date of Birth"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/spinner_dob"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/custom_edittext_edit_profile"
+                android:paddingStart="10dp"
+                android:text="@={ViewModelEditProfile.dateOfBirth}"
+                android:textColor="@color/black"
+                android:gravity="center_vertical"
+                android:onClick="@{()->ViewModelEditProfile.onDateOfBirthClick(context)}"
+                android:drawableEnd="@drawable/baseline_arrow_down"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
+                android:text="Gender"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinner_gender"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/custom_edittext_edit_profile"
+                selectedValue="@={ViewModelEditProfile.gender}"
+                android:paddingStart="10dp" />
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btn_save_changes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/custom_button_splashscreen"
+                android:text="Save changes"
+                android:onClick="@{()->ViewModelEditProfile.onClickUpdateProfile()}"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </ScrollView>
+</layout>
