@@ -10,9 +10,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.RegisterRequest
+import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
 import com.duc.karaoke_app.data.model.UserResponse
+import com.google.firebase.auth.R
 import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -49,6 +51,18 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
     private val _userProfile = MutableLiveData<UserResponse>()
     val userProfile: LiveData<UserResponse>
         get()=_userProfile
+
+    private val _userProfileStar = MutableLiveData<List<User>>()
+    val userProfileStar: LiveData<List<User>>
+        get()=_userProfileStar
+
+    private val _songs = MutableLiveData<List<Songs>>()
+    val songs: LiveData<List<Songs>>
+        get()= _songs
+
+    private val _images = MutableLiveData<List<Int>>()
+    val images: LiveData<List<Int>> get() = _images
+
 
     var email = MutableLiveData("")
     var password = MutableLiveData("")
@@ -248,15 +262,11 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
         }
     }
 
-    fun UserProfile(){
+    fun userProfile(){
         viewModelScope.launch {
             val token = getTokenToPreferences().toString().trim()
-            Log.e("Token hiện tại", token)
             try{
                 val response = repository.getProfile("Bearer $token")
-                Log.e("Response Code", response.code().toString())
-                Log.e("Response Body", response.body()?.toString() ?: "Response null")
-                Log.e("Response Error Body", response.errorBody()?.string() ?: "Error Body null")
                 if(response.isSuccessful){
                     _userProfile.value= response.body()
                     Log.e("UserProfile","Thông tin:${token}")
@@ -269,6 +279,45 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
             }
         }
     }
+
+    fun getSongList(){
+        viewModelScope.launch {
+            val token = getTokenToPreferences().toString().trim()
+            try{
+                val response = repository.getSongList("Bearer $token")
+                Log.e("Danh sách nhạc",response.isSuccessful.toString())
+                if(response.isSuccessful){
+                    _songs.value= response.body()
+                    Log.e("Danh sách nhạc","{${response.body().toString()}}")
+                }
+            }catch (e:Exception){
+                _toastMessage.value = "Lỗi kết nối: ${e.message}"
+            }
+        }
+    }
+
+    fun loadImageSlide(){
+        _images.value= repository.getItemSlide()
+    }
+
+    fun getProfileStar(){
+        viewModelScope.launch {
+            val token = getTokenToPreferences().toString().trim()
+            try{
+                val response = repository.getProfileStar("Bearer $token")
+                if(response.isSuccessful){
+                    _userProfileStar.value=response.body()
+                    Log.e("UserProfileStar","Thông tin:${token}")
+                    Log.e("UserProfileStar","Thông tin:${response.body()}")
+                }else{
+                    _toastMessage.value = "Lỗi: ${response.code()} - ${response.message()}"
+                }
+            }catch(e: Exception){
+                _toastMessage.value = "Lỗi kết nối: ${e.message}"
+            }
+        }
+    }
+
 
 
 }

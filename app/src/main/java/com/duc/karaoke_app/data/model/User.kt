@@ -7,6 +7,8 @@ data class User(
     val username: String,
     val email: String,
     val password: String,
+    @SerializedName("avatar_url")
+    val avatarUrl: String?=null,
     val phone: String?=null,
     val date_of_birth: String?=null,
     val gender: String?=null

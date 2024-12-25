@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_margin="8dp">
+
+    <!-- Ảnh bài hát và nút Play -->
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp">
+
+        <!-- Ảnh bài hát -->
+        <ImageView
+            android:id="@+id/img_TopSongCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_background"
+            android:clipToOutline="true" />
+
+        <!-- Nút Play -->
+        <ImageView
+            android:id="@+id/ivPlayButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:src="@drawable/play"
+            android:contentDescription="Play Button" />
+    </FrameLayout>
+
+    <!-- Tên bài hát -->
+    <TextView
+        android:id="@+id/tv_TopSongTitle"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:gravity="center"
+        android:text="Tên bài hát"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"/>
+</LinearLayout>

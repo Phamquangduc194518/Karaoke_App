@@ -5,18 +5,13 @@ import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.duc.karaoke_app.utils.GoogleSignInHelper
 import com.duc.karaoke_app.databinding.ActivityMainBinding
 import com.duc.karaoke_app.ui.fragment.DuetFragment
-import com.duc.karaoke_app.ui.fragment.FavouriteFragment
+import com.duc.karaoke_app.ui.fragment.SingleSingerFragment
 import com.duc.karaoke_app.ui.fragment.HomeFragment
-import com.duc.karaoke_app.ui.fragment.LiveFragment
 import com.duc.karaoke_app.ui.fragment.LiveStreamFragment
 import com.duc.karaoke_app.ui.fragment.ProfileFragment
-import com.duc.karaoke_app.ui.fragment.VideoPlayerFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -38,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_favourite->{
-                    loadFragment(FavouriteFragment())
+                    loadFragment(SingleSingerFragment())
                     true
                 }
                 R.id.navigation_live->{

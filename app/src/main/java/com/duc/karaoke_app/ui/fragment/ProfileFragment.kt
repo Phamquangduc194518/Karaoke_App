@@ -41,7 +41,7 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.UserProfile()
+        viewModel.userProfile()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

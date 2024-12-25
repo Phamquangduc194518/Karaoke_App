@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center_vertical">
+
+    <!-- Ảnh bìa playlist -->
+    <ImageView
+        android:id="@+id/ivCoverImage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Playlist Cover" />
+
+    <!-- Nội dung playlist -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <!-- Tên Playlist -->
+        <TextView
+            android:id="@+id/tvPlaylistTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:textColor="#000"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Tên Playlist" />
+
+        <!-- Mô tả playlist -->
+        <TextView
+            android:id="@+id/tvPlaylistSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textColor="#666"
+            android:gravity="top"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Mô tả Playlist" />
+    </LinearLayout>
+
+    <!-- Biểu tượng yêu thích -->
+    <ImageView
+        android:id="@+id/ivFavoriteIcon"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/heart"
+        app:tint="#666"
+        android:contentDescription="Favorite Icon" />
+</LinearLayout>

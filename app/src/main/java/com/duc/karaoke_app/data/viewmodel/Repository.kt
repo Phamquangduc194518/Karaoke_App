@@ -1,8 +1,10 @@
 package com.duc.karaoke_app.data.viewmodel
 
+import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.ApiResponse
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.RegisterRequest
+import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
 import com.duc.karaoke_app.data.model.UserResponse
@@ -61,6 +63,38 @@ class Repository() {
         return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.getProfile(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getSongList(token: String): Response<List<Songs>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getSongList(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    fun getItemSlide(): List<Int>{
+        val listSlide = listOf(
+            R.drawable.mau_poster_ca_nhac,
+            R.drawable.mau_poster_ca_nhac_2,
+            R.drawable.mau_poster_ca_nhac_3,
+            R.drawable.mau_poster_ca_nhac_4,
+            R.drawable.mau_poster_ca_nhac_5,
+            R.drawable.mau_poster_ca_nhac_6,
+        )
+        return listSlide
+    }
+
+    suspend fun getProfileStar(token: String): Response<List<User>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getProfileStar(token)
             } catch (e: Exception) {
                 throw e
             }
