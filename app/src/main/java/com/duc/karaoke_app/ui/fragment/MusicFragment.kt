@@ -13,43 +13,58 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import android.Manifest
 import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.media.AudioFormat
+import android.media.AudioRecord
 import android.os.Build
 import android.provider.MediaStore
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.databinding.FragmentMusicBinding
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import java.io.File
-
 
 class MusicFragment : Fragment() {
 
     private lateinit var musicBinding: FragmentMusicBinding
-    private val viewModel: MusicPlayerViewModel by activityViewModels{
+    private val viewModel: MusicPlayerViewModel by activityViewModels {
         ViewModelFactory(Repository(), requireActivity().application)
     }
-    private var mediaRecorder: MediaRecorder? = null
-    private var isRecording = false
-    private lateinit var audioFile: File
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         musicBinding = FragmentMusicBinding.inflate(layoutInflater)
-        musicBinding.viewModelMusic= viewModel
-        musicBinding.lifecycleOwner= viewLifecycleOwner
+        musicBinding.viewModelMusic = viewModel
+        musicBinding.lifecycleOwner = viewLifecycleOwner
         return musicBinding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val seekBar = musicBinding.seekBar
+        val tvCurrentTime = musicBinding.tvCurrentTime
+        val tvDuration = musicBinding.tvDuration
+
+        viewModel.duration.observe(viewLifecycleOwner) { duration ->
+            seekBar.max = duration.toInt()
+            tvDuration.text = formatTime(duration)
+        }
+
+        viewModel.currentPosition.observe(viewLifecycleOwner) { currentPosition ->
+            seekBar.progress = currentPosition.toInt()
+            tvCurrentTime.text = formatTime(currentPosition)
+        }
 
         viewModel.song.observe(viewLifecycleOwner) { song ->
             if (song != null) {
@@ -60,128 +75,42 @@ class MusicFragment : Fragment() {
         }
 
         musicBinding.playPauseButton.setOnClickListener {
-            val songUrl = "https://drive.google.com/uc?export=download&id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk" // Replace with actual URL
-            viewModel.playSong(songUrl)
-        }
-        musicBinding.tvRecording.setOnClickListener{
-
-            if (checkPermissions()) {
-                startRecording()
+            if (viewModel.isPlaying.value == true) {
+                viewModel.pauseSong()
             } else {
-                Toast.makeText(requireContext(), "Permissions are not granted", Toast.LENGTH_SHORT).show()
+                val songUrl =
+                    "https://drive.google.com/uc?export=download&id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk" // Replace with actual URL
+                viewModel.playSong(songUrl)
             }
         }
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 101) {
-            val allGranted = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
-            if (allGranted) {
-                Toast.makeText(requireContext(), "Permissions granted", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Permissions denied. Please grant permissions to proceed.", Toast.LENGTH_SHORT).show()
+        viewModel.navigateBack.observe(viewLifecycleOwner) { shouldNavigateBack ->
+            if (shouldNavigateBack == true) {
+                requireActivity().finish()
             }
         }
-    }
 
-    private fun checkPermissions(): Boolean {
-        val permissions = arrayOf(
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-
-        val notGranted = permissions.any {
-            ContextCompat.checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED
-        }
-
-        if (notGranted) {
-            ActivityCompat.requestPermissions(requireActivity(), permissions, 101)
-        }
-
-        return !notGranted
-    }
-
-    private val requestPermissionsLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            permissions.entries.forEach {
-                if (!it.value) {
-                    requireActivity().finish() // Đóng ứng dụng nếu quyền bị từ chối
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    tvCurrentTime.text = formatTime(progress.toLong())
                 }
             }
-        }
 
-    private fun startRecording() {
-        try {
-            // Khởi tạo file ghi âm
-            audioFile = File(
-                requireContext().getExternalFilesDir(null),
-                "recorded_audio_${System.currentTimeMillis()}.mp4"
-            )
-
-            val audioSource = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                MediaRecorder.AudioSource.REMOTE_SUBMIX
-            } else {
-                MediaRecorder.AudioSource.MIC
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                viewModel.setSeekbarTracking(true)
             }
 
-            // Cấu hình MediaRecorder
-            mediaRecorder = MediaRecorder().apply {
-                setAudioSource(audioSource)
-                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                setOutputFile(audioFile.absolutePath)
-                prepare()
-                start()
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                viewModel.setSeekbarTracking(false)
+                viewModel.seekTo(seekBar.progress.toLong())
             }
+        })
 
-            isRecording = true
-            Toast.makeText(requireContext(), "Recording started", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(requireContext(), "Failed to start recording: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
     }
-    private fun stopRecording() {
-        try {
-            mediaRecorder?.apply {
-                stop()
-                release()
-            }
-            mediaRecorder = null
-            isRecording = false
-
-            Toast.makeText(requireActivity(), "Recording saved: ${audioFile.absolutePath}", Toast.LENGTH_SHORT).show()
-
-            // Lưu file vào thư viện ảnh
-            saveToLibrary(audioFile)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    private fun formatTime(milliseconds: Long): String {
+        val minutes = (milliseconds / 1000) / 60
+        val seconds = (milliseconds / 1000) % 60
+        return String.format("%02d:%02d", minutes, seconds)
     }
-
-    private fun saveToLibrary(file: File) {
-        val values = ContentValues().apply {
-            put(MediaStore.Audio.Media.DISPLAY_NAME, file.name)
-            put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp4")
-            put(MediaStore.Audio.Media.RELATIVE_PATH, "Music/")
-        }
-
-        val uri = requireContext().contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
-        uri?.let {
-            requireContext().contentResolver.openOutputStream(it)?.use { outputStream ->
-                file.inputStream().copyTo(outputStream)
-            }
-            Toast.makeText(requireActivity(), "Saved to Music Library", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-
-
-
 }

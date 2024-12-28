@@ -166,7 +166,7 @@
 
             <!-- Progress bar -->
             <SeekBar
-                android:id="@+id/progress_bar"
+                android:id="@+id/seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:progress="10"
@@ -182,7 +182,7 @@
                 android:weightSum="2">
 
                 <TextView
-                    android:id="@+id/current_time"
+                    android:id="@+id/tvCurrentTime"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -192,7 +192,7 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/total_duration"
+                    android:id="@+id/tvDuration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
