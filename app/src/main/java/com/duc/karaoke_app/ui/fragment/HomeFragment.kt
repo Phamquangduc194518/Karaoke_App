@@ -1,5 +1,6 @@
 package com.duc.karaoke_app.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,13 +8,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
+import com.duc.karaoke_app.MusicPlayerActivity
+import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
 import com.duc.karaoke_app.databinding.FragmentHomeBinding
+import com.duc.karaoke_app.ui.adapter.AlbumAdapter
 import com.duc.karaoke_app.ui.adapter.FamousPersonAdapter
 import com.duc.karaoke_app.ui.adapter.PlayListAdapter
 import com.duc.karaoke_app.ui.adapter.SlideAdapter
@@ -23,7 +30,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewModel: ViewModelLogin
     private lateinit var homeBinding: FragmentHomeBinding
-    val apiKey = "AIzaSyD7L2AC6LciuwBHR9qWt3QQI4qf1gH3Plg"
+//    val apiKey = "AIzaSyD7L2AC6LciuwBHR9qWt3QQI4qf1gH3Plg"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -48,53 +55,33 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeBinding.recyclerViewPlayList.layoutManager = LinearLayoutManager(requireContext())
-        homeBinding.recyclerViewTopSong.layoutManager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.HORIZONTAL,// Hướng hiển thị ngang
-            false) // Không đảo ngược thứ tự
-        homeBinding.recyclerFamousPerson.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        viewModel.getSongList()
-        viewModel.songs.observe(viewLifecycleOwner) { songList ->
-            if (songList != null) {
-                val adapter = PlayListAdapter(songList)
-                homeBinding.recyclerViewPlayList.adapter = adapter
-                val adapterTopSong = TopSongAdapter(songList)
-                homeBinding.recyclerViewTopSong.adapter = adapterTopSong
-            }
+        viewModel.images.observe(viewLifecycleOwner){
+            setupAutoSlide(homeBinding.vp2Slide)
         }
 
-        viewModel.images.observe(viewLifecycleOwner) { imageList ->
-            if (imageList != null) {
-                val adapter = SlideAdapter(imageList)
-                homeBinding.vp2Slide.adapter = adapter
-                setupAutoSlide(adapter)
+        viewModel.selectedSong.observe(viewLifecycleOwner){song->
+            song.let {
+                Log.e("HomeFragment", "Selected song: ${song}")
+                val intent = Intent(requireActivity(), MusicPlayerActivity::class.java).apply {
+                    putExtra("song_data", song)
+                }
+                startActivity(intent)
+
             }
         }
-        viewModel.loadImageSlide()
-
-        viewModel.userProfileStar.observe(viewLifecycleOwner){userProfileStarList->
-            Log.e("Đã chạy recyclerView",userProfileStarList.toString())
-            if(userProfileStarList != null){
-                val adapterFamousPerson = FamousPersonAdapter(userProfileStarList)
-                homeBinding.recyclerFamousPerson.adapter = adapterFamousPerson
-            }
-        }
-        viewModel.getProfileStar()
-
-
-
-
-
 
     }
 
-    private fun setupAutoSlide(adapter: SlideAdapter) {
+    private fun setupAutoSlide(viewPager: ViewPager2) {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
-                val currentItem = homeBinding.vp2Slide.currentItem
-                val nextItem = if (currentItem == adapter.itemCount - 1) 0 else currentItem + 1
-                homeBinding.vp2Slide.setCurrentItem(nextItem, true)
+                val itemCount = viewPager.adapter?.itemCount ?: 0
+                if (itemCount > 0) {
+                    val currentItem = viewPager.currentItem
+                    val nextItem = (currentItem + 1) % itemCount
+                    viewPager.setCurrentItem(nextItem, true)
+                }
                 handler.postDelayed(this, 3000) // Chuyển slide sau 3 giây
             }
         }

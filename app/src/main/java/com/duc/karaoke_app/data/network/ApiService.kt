@@ -1,5 +1,6 @@
 package com.duc.karaoke_app.data.network
 
+import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.ApiResponse
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.RegisterRequest
@@ -62,6 +63,9 @@ interface ApiService {
     @GET("/api/admin/getAllAccount")
     suspend fun getProfileStar(@Header("Authorization") token: String): Response<List<User>>
 
+    @GET("/api/song/getAllAlbum")
+    suspend fun getAllAlbum(): Response<List<Albums>>
+
 
     companion object RetrofitInstance{
         // Tạo Retrofit cho API YouTube
@@ -75,7 +79,7 @@ interface ApiService {
         }
 
         // Tạo Retrofit cho API Localhost (đăng ký tài khoản)
-        private const val BASE_URL_LOGIN="http://192.168.188.100:3000/"
+        private const val BASE_URL_LOGIN="http://192.168.1.9:3000/"
         val loginApi: ApiService by lazy{
             Retrofit.Builder()
                 .baseUrl(BASE_URL_LOGIN)

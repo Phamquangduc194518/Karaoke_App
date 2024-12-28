@@ -8,13 +8,19 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
 import com.duc.karaoke_app.data.model.UserResponse
-import com.google.firebase.auth.R
+import com.duc.karaoke_app.ui.adapter.AlbumAdapter
+import com.duc.karaoke_app.ui.adapter.FamousPersonAdapter
+import com.duc.karaoke_app.ui.adapter.PlayListAdapter
+import com.duc.karaoke_app.ui.adapter.SlideAdapter
+import com.duc.karaoke_app.ui.adapter.TopSongAdapter
 import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -63,6 +69,29 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
     private val _images = MutableLiveData<List<Int>>()
     val images: LiveData<List<Int>> get() = _images
 
+    private val _album = MutableLiveData<List<Albums>>()
+    val album: LiveData<List<Albums>> get() = _album
+
+    private val _selectedSong = MutableLiveData<Songs>()
+    val selectedSong: LiveData<Songs> get() = _selectedSong
+
+    fun onSongClicked(song: Songs) {
+        _selectedSong.value = song
+    }
+
+    // LayoutManager cho RecyclerView
+    val playListLayoutManager = LinearLayoutManager(application)
+    val topSongLayoutManagerHorizontal = LinearLayoutManager(application, LinearLayoutManager.HORIZONTAL, false)
+    val famousPersonLayoutManagerHorizontal = LinearLayoutManager(application, LinearLayoutManager.HORIZONTAL, false)
+    val albumLayoutManagerHorizontal = LinearLayoutManager(application, LinearLayoutManager.HORIZONTAL, false)
+
+    // Adapter cho RecyclerView
+    val playListAdapter = PlayListAdapter()
+    val topSongAdapter = TopSongAdapter()
+    val famousPersonAdapter = FamousPersonAdapter()
+    val albumAdapter = AlbumAdapter()
+    val slideViewPagerAdapter = SlideAdapter()
+
 
     var email = MutableLiveData("")
     var password = MutableLiveData("")
@@ -80,6 +109,14 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
     init {
         // Tải thông tin đã lưu khi khởi tạo ViewModel
         loadRememberedData()
+        getSongList()
+        getProfileStar()
+        getAllAlbum()
+        loadImageSlide()
+
+        playListAdapter.setOnItemClick { song ->
+            onSongClicked(song) // Gửi sự kiện click vào LiveData
+        }
     }
 
     fun onResetPasswordClick() {
@@ -285,10 +322,10 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
             val token = getTokenToPreferences().toString().trim()
             try{
                 val response = repository.getSongList("Bearer $token")
-                Log.e("Danh sách nhạc",response.isSuccessful.toString())
                 if(response.isSuccessful){
                     _songs.value= response.body()
-                    Log.e("Danh sách nhạc","{${response.body().toString()}}")
+                    playListAdapter.updatePlaylists(_songs.value ?: listOf())
+                    topSongAdapter.updateTopSong(_songs.value ?: listOf())
                 }
             }catch (e:Exception){
                 _toastMessage.value = "Lỗi kết nối: ${e.message}"
@@ -298,6 +335,7 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
 
     fun loadImageSlide(){
         _images.value= repository.getItemSlide()
+        slideViewPagerAdapter.updateSlide( _images.value!!)
     }
 
     fun getProfileStar(){
@@ -307,8 +345,24 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
                 val response = repository.getProfileStar("Bearer $token")
                 if(response.isSuccessful){
                     _userProfileStar.value=response.body()
-                    Log.e("UserProfileStar","Thông tin:${token}")
-                    Log.e("UserProfileStar","Thông tin:${response.body()}")
+                    famousPersonAdapter.updateFamousPerson(_userProfileStar.value ?: listOf())
+                }else{
+                    _toastMessage.value = "Lỗi: ${response.code()} - ${response.message()}"
+                }
+            }catch(e: Exception){
+                _toastMessage.value = "Lỗi kết nối: ${e.message}"
+            }
+        }
+    }
+
+    fun getAllAlbum(){
+        viewModelScope.launch {
+            try{
+                val response = repository.getAllAlbum()
+                if(response.isSuccessful){
+                   Log.e("getAllAlbum", response.body().toString())
+                    _album.value = response.body()
+                    albumAdapter.updateAlbums(_album.value ?: listOf())
                 }else{
                     _toastMessage.value = "Lỗi: ${response.code()} - ${response.message()}"
                 }

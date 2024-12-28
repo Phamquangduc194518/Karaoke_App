@@ -1,10 +1,19 @@
 package com.duc.karaoke_app.ui.adapter
 
-class AlbumAdapter(
-    private val albums: List<Album>,
-    private val onClick: (Album) -> Unit
-) : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.duc.karaoke_app.data.model.Albums
+import com.duc.karaoke_app.R
+import com.duc.karaoke_app.data.model.User
 
+class AlbumAdapter() : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
+    private var albums: List<Albums> = listOf()
     class AlbumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivAlbumCover: ImageView = itemView.findViewById(R.id.ivAlbumCover)
         val tvAlbumTitle: TextView = itemView.findViewById(R.id.tvAlbumTitle)
@@ -30,8 +39,14 @@ class AlbumAdapter(
             .into(holder.ivAlbumCover)
 
         // Xử lý sự kiện click
-        holder.itemView.setOnClickListener { onClick(album) }
+//        holder.itemView.setOnClickListener { onClick(album) }
     }
 
     override fun getItemCount(): Int = albums.size
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateAlbums(newAlbum: List<Albums>){
+        this.albums = newAlbum
+        notifyDataSetChanged()
+    }
 }

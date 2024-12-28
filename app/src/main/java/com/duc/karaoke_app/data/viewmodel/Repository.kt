@@ -1,6 +1,7 @@
 package com.duc.karaoke_app.data.viewmodel
 
 import com.duc.karaoke_app.R
+import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.ApiResponse
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.RegisterRequest
@@ -95,6 +96,16 @@ class Repository() {
         return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.getProfileStar(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getAllAlbum(): Response<List<Albums>>{
+        return withContext(Dispatchers.IO){
+            try {
+                apiServiceToLogin.getAllAlbum()
             } catch (e: Exception) {
                 throw e
             }

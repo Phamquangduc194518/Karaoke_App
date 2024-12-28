@@ -1,5 +1,6 @@
 package com.duc.karaoke_app.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +14,8 @@ import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.ui.adapter.PlayListAdapter.PlayListViewHolder
 
-class TopSongAdapter( private val topSongList: List<Songs>) : RecyclerView.Adapter<TopSongAdapter.TopSongViewHolder>() {
-
+class TopSongAdapter() : RecyclerView.Adapter<TopSongAdapter.TopSongViewHolder>() {
+    private var topSongList: List<Songs> = listOf()
     class TopSongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val topSongImage: ImageView = itemView.findViewById(R.id.img_TopSongCover)
         val topSongTitle: TextView = itemView.findViewById(R.id.tv_TopSongTitle)
@@ -39,5 +40,10 @@ class TopSongAdapter( private val topSongList: List<Songs>) : RecyclerView.Adapt
             .into(holder.topSongImage)
 
         holder.topSongTitle.text = topSong.title
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateTopSong(topSongList: List<Songs>) {
+        this.topSongList = topSongList
+        notifyDataSetChanged() // Cập nhật giao diện
     }
 }

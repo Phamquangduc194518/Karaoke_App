@@ -1,9 +1,11 @@
 package com.duc.karaoke_app
 
+import android.graphics.Color
 import android.os.Bundle
 
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.duc.karaoke_app.utils.GoogleSignInHelper
 import com.duc.karaoke_app.databinding.ActivityMainBinding
@@ -38,6 +40,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_live->{
                     loadFragment(LiveStreamFragment())
+                    val drawable = ContextCompat.getDrawable(this, R.drawable.live_after_selected)
+                    drawable?.setTint(Color.parseColor("#FF0000")) // Chuyển đổi từ chuỗi sang màu đỏ
+                    item.icon = drawable
                     true
                 }
                 R.id.navigation_duet->{

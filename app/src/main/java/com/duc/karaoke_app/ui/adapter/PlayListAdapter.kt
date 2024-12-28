@@ -1,5 +1,7 @@
 package com.duc.karaoke_app.ui.adapter
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.RoundedCorner
 import android.view.View
@@ -14,7 +16,12 @@ import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.Songs
 import com.google.android.material.shape.RoundedCornerTreatment
 
-class PlayListAdapter( private val playlists: List<Songs>): RecyclerView.Adapter<PlayListAdapter.PlayListViewHolder>() {
+class PlayListAdapter(): RecyclerView.Adapter<PlayListAdapter.PlayListViewHolder>() {
+    private var playlists: List<Songs> = listOf()
+    private var onItemClick: ((Songs) -> Unit)? = null   //Đây là type declaration cho biến onItemClick. Biến này là một lambda function hoặc hàm ẩn danh với:
+                                                            //Tham số đầu vào là một đối tượng kiểu Songs.
+                                                            //Không trả về bất kỳ giá trị nào (Unit tương đương với void trong Java).
+
     class PlayListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val coverImage: ImageView = itemView.findViewById(R.id.ivCoverImage)
         val playlistTitle: TextView = itemView.findViewById(R.id.tvPlaylistTitle)
@@ -31,6 +38,7 @@ class PlayListAdapter( private val playlists: List<Songs>): RecyclerView.Adapter
        return playlists.size
     }
 
+
     override fun onBindViewHolder(holder: PlayListViewHolder, position: Int) {
         val playlist = playlists[position]
         holder.playlistTitle.text = playlist.title
@@ -41,5 +49,20 @@ class PlayListAdapter( private val playlists: List<Songs>): RecyclerView.Adapter
             .placeholder(R.drawable.placeholder_image)
             .error(R.drawable.placeholder_image)
             .into(holder.coverImage)
+        // Xử lý sự kiện click
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(playlist)  //onItemClick?.invoke(song) là cách ngắn gọn để kiểm tra onItemClick không null và gọi lambda.
+                                            // tương đương onItemClick?.let{it(song)}
+            Log.e("Adapter", "Item clicked: ${playlist.title}")
+        }
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    fun updatePlaylists(newPlaylists: List<Songs>) {
+        playlists = newPlaylists
+        notifyDataSetChanged() // Cập nhật giao diện
+    }
+
+    fun setOnItemClick(listener: ((Songs) -> Unit)?) {
+        onItemClick = listener
     }
 }

@@ -1,203 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Back button -->
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Back"
-        android:scaleType="centerCrop"
-        android:src="@drawable/previous"
-        app:tint="@color/white" />
+    <data>
 
-    <!-- Now Playing title -->
-    <TextView
-        android:id="@+id/now_playing_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Now Playing"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        <variable
+            name="ViewModelMusic"
+            type="com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel" />
+    </data>
 
-    <!-- Options button -->
-    <ImageButton
-        android:id="@+id/options_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Options"
-        android:scaleType="centerCrop"
-        android:src="@drawable/options"
-        app:tint="@color/white" />
 
-    <!-- Subtitle (e.g., Remix-Cover) -->
-    <TextView
-        android:id="@+id/subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/now_playing_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"
-        android:text="Ciray Remix-Cover"
-        android:textColor="#CCCCCC"
-        android:textSize="14sp" />
-
-    <!-- Album cover in circular shape -->
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/album_cover"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_below="@+id/subtitle"
-        android:layout_marginTop="20dp"
-        android:layout_centerInParent="true"/>
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_music_background">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/ll_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/album_cover"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
+        <!-- Back button -->
         <ImageButton
-            android:id="@+id/share_button"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="60dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Share"
-            android:scaleType="centerCrop"
-            app:tint="#FFFFFF" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/back_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:orientation="vertical">
-            <!-- Song title -->
-            <TextView
-                android:id="@+id/song_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/album_cover"
-                android:layout_centerHorizontal="true"
-                android:text="Đế Vương"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <!-- Artist name -->
-            <TextView
-                android:id="@+id/artist_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/song_title"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:text="Đình Dũng"
-                android:textColor="#CCCCCC"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/heart_button"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="60dp"
+            android:layout_marginTop="36dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Like"
+            android:contentDescription="Back"
+            android:onClick="@{()->ViewModelMusic.onBackPressed()}"
             android:scaleType="centerCrop"
-            android:src="@drawable/heart"
-            app:tint="#FFFFFF" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            android:src="@drawable/previous"
+            app:tint="@color/white" />
 
-    <!-- Progress bar and timestamps -->
-    <LinearLayout
-        android:id="@+id/progress_bar_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll_navigation"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
-
-        <!-- Progress bar -->
-        <SeekBar
-            android:id="@+id/progress_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:progress="10"
-            android:progressTint="#BB86FC"
-            android:thumbTint="#BB86FC" />
-
-        <!-- Timestamps -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <TextView
-                android:id="@+id/current_time"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="start"
-                android:text="00:05"
-                android:textColor="#CCCCCC"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/total_duration"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="03:19"
-                android:textColor="#CCCCCC"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Control buttons -->
-    <LinearLayout
-        android:id="@+id/control_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/progress_bar_container"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-
-        <ImageButton
-            android:id="@+id/play_pause_button"
+        <!-- Now Playing title -->
+        <TextView
+            android:id="@+id/now_playing_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="36dp"
+            android:text="Now Playing"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <!-- Options button -->
+        <ImageButton
+            android:id="@+id/options_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Play/Pause"
-            app:tint="@color/white"
-            android:src="@drawable/play" />
+            android:contentDescription="Options"
+            android:scaleType="centerCrop"
+            android:src="@drawable/options"
+            app:tint="@color/white" />
 
-    </LinearLayout>
+        <!-- Subtitle (e.g., Remix-Cover) -->
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/now_playing_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="@{ViewModelMusic.song.subTitle}"
+            android:textColor="#CCCCCC"
+            android:textSize="14sp" />
 
-</RelativeLayout>
+        <!-- Album cover in circular shape -->
+        <ScrollView
+            android:id="@+id/album_cover"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/subtitle"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:scrollbars="none"
+            android:layout_marginEnd="16dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                app:htmlText="@{ViewModelMusic.song.lyrics}"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:lineSpacingExtra="10dp"
+                android:textSize="18sp" />
+        </ScrollView>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/album_cover"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/share_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Share"
+                android:scaleType="centerCrop"
+                android:src="@drawable/camera"
+                app:tint="#FFFFFF" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+                <!-- Song title -->
+                <TextView
+                    android:id="@+id/song_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/album_cover"
+                    android:layout_centerHorizontal="true"
+                    android:text="@{ViewModelMusic.song.title}"
+                    android:textColor="#87CEEB"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Artist name -->
+                <TextView
+                    android:id="@+id/artist_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/song_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="4dp"
+                    android:text="@{ViewModelMusic.song.subTitle}"
+                    android:textColor="#87CEEB"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/heart_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Like"
+                android:scaleType="centerCrop"
+                android:src="@drawable/heart"
+                app:tint="#FFFFFF" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- Progress bar and timestamps -->
+        <LinearLayout
+            android:id="@+id/progress_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_navigation"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="26dp"
+            android:orientation="vertical">
+
+            <!-- Progress bar -->
+            <SeekBar
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:progress="10"
+                android:progressTint="@color/white"
+                android:thumbTint="@color/white" />
+
+            <!-- Timestamps -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:id="@+id/current_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="00:05"
+                    android:textColor="#CCCCCC"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/total_duration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="03:19"
+                    android:textColor="#CCCCCC"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Control buttons -->
+        <LinearLayout
+            android:id="@+id/control_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progress_bar_container"
+            android:layout_marginTop="26dp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/recording_by_camera"
+                android:backgroundTint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/play_pause_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Play/Pause"
+                android:src="@drawable/play"
+                android:onClick="@{()->ViewModelMusic.playSong(`https://drive.google.com/uc?export=download&amp;id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk`)}"
+                app:tintColor="@{ViewModelMusic.isPlaying}"
+                />
+
+            <TextView
+                android:id="@+id/tv_recording"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/recording"
+                android:backgroundTint="@color/white" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

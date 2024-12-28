@@ -1,20 +1,30 @@
 package com.duc.karaoke_app.ui.adapter
 
+import android.text.Html
+import android.util.Log
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ImageButton
 import android.widget.Spinner
+import android.widget.TextView
+import androidx.constraintlayout.motion.widget.MotionScene.Transition.TransitionOnClick
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import androidx.databinding.InverseBindingListener
+import androidx.recyclerview.widget.RecyclerView
+import com.duc.karaoke_app.R
+import com.duc.karaoke_app.data.model.Songs
 
 object BindingAdapter {
 
     // BindingAdapter: Gán giá trị từ ViewModel vào Spinner
     @BindingAdapter("selectedValue")
     @JvmStatic
-    fun Spinner.setSelectedValue(value: String){
+    fun Spinner.setSelectedValue(value: String) {
         val adapter = this.adapter ?: return
-        for(i in 0 until adapter.count){
-            if(adapter.getItem(i).toString() == value){
+        for (i in 0 until adapter.count) {
+            if (adapter.getItem(i).toString() == value) {
                 this.setSelectedValue(i.toString())
                 break
             }
@@ -45,4 +55,20 @@ object BindingAdapter {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("htmlText")
+    fun setHtmlText(textView: TextView, html: String?) {
+        html?.let {
+            textView.text = Html.fromHtml(it, Html.FROM_HTML_MODE_COMPACT)
+        }
+    }
+    @JvmStatic
+    @BindingAdapter("app:tintColor")
+    fun setTintColor(imageButton: ImageButton, isPlaying: Boolean) {
+        val color = if (isPlaying) R.color.red else R.color.white
+        imageButton.setColorFilter(ContextCompat.getColor(imageButton.context, color))
+    }
+
 }
+

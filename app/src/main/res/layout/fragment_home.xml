@@ -78,6 +78,7 @@
                     android:id="@+id/vp2_slide"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:adapter="@{ViewModelHome.slideViewPagerAdapter}"
                     android:layout_marginBottom="16dp" />
 
                 <!-- New Songs Section -->
@@ -95,6 +96,8 @@
                     android:id="@+id/recyclerViewTopSong"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layoutManager="@{ViewModelHome.topSongLayoutManagerHorizontal}"
+                    android:adapter="@{ViewModelHome.topSongAdapter}"
                     android:layout_marginBottom="16dp" />
 
                 <TextView
@@ -111,6 +114,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    app:layoutManager="@{ViewModelHome.playListLayoutManager}"
+                    android:adapter="@{ViewModelHome.playListAdapter}"
                     android:orientation="vertical" />
 
                 <!-- Người nổi tiếng -->
@@ -127,6 +132,8 @@
                     android:id="@+id/recyclerFamousPerson"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layoutManager="@{ViewModelHome.famousPersonLayoutManagerHorizontal}"
+                    android:adapter="@{ViewModelHome.famousPersonAdapter}"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Abum hot -->
@@ -140,9 +147,11 @@
                     android:textSize="16sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerAbum"
+                    android:id="@+id/recyclerAlbum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layoutManager="@{ViewModelHome.albumLayoutManagerHorizontal}"
+                    android:adapter="@{ViewModelHome.albumAdapter}"
                     android:layout_marginBottom="16dp" />
 
                 <TextView
