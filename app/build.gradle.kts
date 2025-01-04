@@ -1,16 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") version "4.4.2"
     id("kotlin-kapt")
     id("kotlin-parcelize")
 }
-
-
 android {
     namespace = "com.duc.karaoke_app"
     compileSdk = 35
 
+    packagingOptions {
+        exclude("META-INF/DEPENDENCIES")
+    }
     defaultConfig {
         applicationId = "com.duc.karaoke_app"
         minSdk = 31
@@ -56,26 +57,26 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation (libs.androidx.navigation.fragment.ktx)
-    implementation (libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     implementation(platform(libs.firebase.bom))
-    implementation (libs.firebase.auth)
-    implementation (libs.gms.play.services.auth)
-    implementation (libs.firebase.storage)
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
-    implementation (libs.androidx.lifecycle.livedata.ktx.v251)
-    implementation (libs.glide)
-    implementation (libs.core)
+    implementation(libs.firebase.auth)
+    implementation(libs.gms.play.services.auth)
+    implementation(libs.firebase.storage)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.glide)
+    implementation(libs.core)
     //thư viện liveStream
     implementation("com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:2.0.0")
     implementation("com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtmp:2.0.0")
-    implementation (libs.exoplayer)
-    implementation ("de.hdodenhof:circleimageview:3.1.0")
-    implementation (libs.material)
+    implementation(libs.exoplayer)
+    implementation(libs.circleimageview)
 
-
-
+    implementation("com.google.api-client:google-api-client-android:1.31.2")
+    implementation("com.google.apis:google-api-services-drive:v3-rev197-1.25.0")
+    implementation("com.google.http-client:google-http-client-gson:1.41.3")
+    implementation("com.google.http-client:google-http-client-jackson2:1.42.3")
 
 
 

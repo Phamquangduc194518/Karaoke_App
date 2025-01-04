@@ -69,7 +69,6 @@ class HomeFragment : Fragment() {
 
             }
         }
-
     }
 
     private fun setupAutoSlide(viewPager: ViewPager2) {

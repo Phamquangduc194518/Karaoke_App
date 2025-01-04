@@ -35,7 +35,6 @@ class MusicPlayerActivity : AppCompatActivity() {
         setContentView(musicPlayerBinding.root)
 
         val song = intent.getParcelableExtra<Songs>("song_data")
-        Log.e("dữ liệu nhận được lần 1","${song}")
         if(song !=null){
             viewModel.setSong(song)
             Log.e("dữ liệu nhận được lần 2","${song.title}")

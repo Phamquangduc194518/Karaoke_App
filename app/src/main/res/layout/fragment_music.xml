@@ -99,6 +99,7 @@
             android:layout_marginTop="26dp"
             android:layout_marginEnd="16dp"
             android:gravity="center"
+            android:weightSum="5"
             android:orientation="horizontal">
 
             <ImageButton
@@ -112,32 +113,35 @@
                 app:tint="#FFFFFF" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_weight="4"
                 android:orientation="vertical">
                 <!-- Song title -->
                 <TextView
                     android:id="@+id/song_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/album_cover"
                     android:layout_centerHorizontal="true"
                     android:text="@{ViewModelMusic.song.title}"
                     android:textColor="#87CEEB"
+                    android:gravity="center"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <!-- Artist name -->
                 <TextView
                     android:id="@+id/artist_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/song_title"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
                     android:layout_marginTop="4dp"
+                    android:gravity="center"
                     android:text="@{ViewModelMusic.song.subTitle}"
                     android:textColor="#87CEEB"
                     android:textSize="14sp" />
@@ -215,8 +219,9 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="20dp"
                 android:background="@drawable/recording_by_camera"
                 android:backgroundTint="@color/white" />
 
@@ -224,19 +229,26 @@
                 android:id="@+id/play_pause_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Play/Pause"
                 android:src="@drawable/play"
-                android:onClick="@{()->ViewModelMusic.playSong(`https://drive.google.com/uc?export=download&amp;id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk`)}"
+                android:layout_marginEnd="20dp"
+                android:onClick="@{()->ViewModelMusic.togglePlayPause(`https://drive.google.com/uc?export=download&amp;id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk`)}"
                 app:tintColor="@{ViewModelMusic.isPlaying}"
                 />
 
             <TextView
                 android:id="@+id/tv_recording"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="20dp"
                 android:background="@drawable/recording"
+                android:backgroundTint="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_done"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/done"
                 android:backgroundTint="@color/white" />
 
         </LinearLayout>

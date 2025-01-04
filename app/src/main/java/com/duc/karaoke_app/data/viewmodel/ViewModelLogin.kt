@@ -21,14 +21,13 @@ import com.duc.karaoke_app.ui.adapter.FamousPersonAdapter
 import com.duc.karaoke_app.ui.adapter.PlayListAdapter
 import com.duc.karaoke_app.ui.adapter.SlideAdapter
 import com.duc.karaoke_app.ui.adapter.TopSongAdapter
-import com.google.firebase.auth.UserInfo
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.regex.Pattern
 
 
 class ViewModelLogin(private val repository: Repository, application: Application) :
     AndroidViewModel(application) {
+
     private val _navigateToRegister = MutableLiveData<Boolean>()
     val navigateToRegister: LiveData<Boolean>
         get() = _navigateToRegister
@@ -371,6 +370,7 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
             }
         }
     }
+
 
 
 

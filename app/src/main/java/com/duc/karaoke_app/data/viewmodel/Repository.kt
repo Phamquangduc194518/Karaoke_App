@@ -4,6 +4,7 @@ import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.ApiResponse
 import com.duc.karaoke_app.data.model.LoginRequest
+import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.User
@@ -107,6 +108,16 @@ class Repository() {
             try {
                 apiServiceToLogin.getAllAlbum()
             } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun createRecordedSong(token: String, recorded: RecordedSongs): Response<RecordedSongs>{
+        return withContext(Dispatchers.IO){
+            try{
+                apiServiceToLogin.createRecordedSong(token,recorded)
+            }catch(e: Exception){
                 throw e
             }
         }
