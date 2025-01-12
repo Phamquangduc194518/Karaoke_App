@@ -12,6 +12,7 @@ import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.databinding.ActivityMusicPlayerBinding
 import com.duc.karaoke_app.ui.fragment.MusicFragment
+import com.duc.karaoke_app.utils.GoogleSignInHelper
 
 class MusicPlayerActivity : AppCompatActivity() {
     private lateinit var musicPlayerBinding: ActivityMusicPlayerBinding

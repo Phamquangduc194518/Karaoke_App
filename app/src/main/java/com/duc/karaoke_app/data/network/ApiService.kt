@@ -2,7 +2,10 @@ package com.duc.karaoke_app.data.network
 
 import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.ApiResponse
+import com.duc.karaoke_app.data.model.Comment
+import com.duc.karaoke_app.data.model.CommentDone
 import com.duc.karaoke_app.data.model.LoginRequest
+import com.duc.karaoke_app.data.model.Post
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.data.model.Songs
@@ -19,6 +22,7 @@ import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 //https://www.googleapis.com/youtube/v3/search?part=snippet&q=karaoke&type=video&maxResults=50&key=AIzaSyD7L2AC6LciuwBHR9qWt3QQI4qf1gH3Plg
 //http://localhost:3000/api/register
@@ -70,6 +74,16 @@ interface ApiService {
     @POST("/api/createRecordedSong")
     suspend fun createRecordedSong(@Header("Authorization") token: String, @Body recorded: RecordedSongs): Response<RecordedSongs>
 
+    @GET("/api/getRecordedSongList")
+    suspend fun getRecordedSongList(): Response<List<Post>>
+
+    @POST("/api/createComment")
+    suspend fun createComment(@Header("Authorization") token: String, @Body comment: Comment) : Response<Comment>
+
+    @GET("/api/getComments/{song_id}")
+    suspend fun getComments(@Path("song_id") songId: Int) : Response<List<CommentDone>>
+
+
 
 
 
@@ -85,7 +99,7 @@ interface ApiService {
         }
 
         // Tạo Retrofit cho API Localhost (đăng ký tài khoản)
-        private const val BASE_URL_LOGIN="http://192.168.1.8:3000/"
+        private const val BASE_URL_LOGIN="http://192.168.1.11:3000/"
         val loginApi: ApiService by lazy{
             Retrofit.Builder()
                 .baseUrl(BASE_URL_LOGIN)

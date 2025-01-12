@@ -30,8 +30,6 @@ data class Albums(
 )
 
 data class RecordedSongs(
-    @SerializedName("user_id")
-    val userId: Int,
 
     @SerializedName("song_name")
     val songName: String,
@@ -39,15 +37,46 @@ data class RecordedSongs(
     @SerializedName("recording_path")
     val recordingPath: String,
 
-    @SerializedName("upload_time")
-    val uploadTime: Date = Date(),
-
-    @SerializedName("likes_count")
-    val likesCount: Int = 0,
-
-    @SerializedName("comments_count")
-    val commentsCount: Int = 0,
+    @SerializedName("title")
+    val title: String,
 
     @SerializedName("status")
     val status: String = "public" // default to "public"
+)
+
+data class Post(
+    @SerializedName("id")
+    val post_id: Int,
+
+    @SerializedName("song_name")
+    val songName: String,
+
+    @SerializedName("title")
+    val title: String,
+
+    @SerializedName("recording_path")
+    val recordingPath: String,
+
+    @SerializedName("upload_time")
+    val time: String,
+
+    @SerializedName("likes_count")
+    val likes_count: Int,
+
+    @SerializedName("comments_count")
+    val comments_count: Int,
+
+    @SerializedName("status")
+    val status: String = "public",
+
+    @SerializedName("user")
+    val user: UserPost
+)
+data class UserPost(
+    @SerializedName("user_id")
+    val user_id: Int,
+    @SerializedName("username")
+    val username: String,
+    @SerializedName("avatar_url")
+    val avatar_url: String
 )

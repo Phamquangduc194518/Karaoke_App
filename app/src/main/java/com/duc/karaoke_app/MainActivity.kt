@@ -7,9 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.duc.karaoke_app.utils.GoogleSignInHelper
 import com.duc.karaoke_app.databinding.ActivityMainBinding
-import com.duc.karaoke_app.ui.fragment.DuetFragment
+import com.duc.karaoke_app.ui.fragment.NewsFeed
 import com.duc.karaoke_app.ui.fragment.SingleSingerFragment
 import com.duc.karaoke_app.ui.fragment.HomeFragment
 import com.duc.karaoke_app.ui.fragment.LiveStreamFragment
@@ -26,7 +25,6 @@ class MainActivity : AppCompatActivity() {
         mainbinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainbinding.root)
         bottomNavigation= mainbinding.bottomNavigation
-        GoogleSignInHelper.initialize(this)
         loadFragment(HomeFragment())
         mainbinding.bottomNavigation.setOnItemSelectedListener{ item->
             when(item.itemId){
@@ -34,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(HomeFragment())
                     true
                 }
-                R.id.navigation_favourite->{
+                R.id.navigation_song_ca->{
                     loadFragment(SingleSingerFragment())
                     true
                 }
@@ -45,8 +43,8 @@ class MainActivity : AppCompatActivity() {
                     item.icon = drawable
                     true
                 }
-                R.id.navigation_duet->{
-                    loadFragment(DuetFragment())
+                R.id.navigation_learn->{
+                    loadFragment(NewsFeed())
                     true
                 }
                 R.id.navigation_profile->{

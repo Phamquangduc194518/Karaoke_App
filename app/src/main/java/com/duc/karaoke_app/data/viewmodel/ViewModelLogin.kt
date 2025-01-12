@@ -10,14 +10,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.duc.karaoke_app.data.model.Albums
+import com.duc.karaoke_app.data.model.Comment
+import com.duc.karaoke_app.data.model.CommentDone
 import com.duc.karaoke_app.data.model.LoginRequest
+import com.duc.karaoke_app.data.model.Post
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
 import com.duc.karaoke_app.data.model.UserResponse
 import com.duc.karaoke_app.ui.adapter.AlbumAdapter
+import com.duc.karaoke_app.ui.adapter.CommentPostAdapter
 import com.duc.karaoke_app.ui.adapter.FamousPersonAdapter
+import com.duc.karaoke_app.ui.adapter.NewsFeedAdapter
 import com.duc.karaoke_app.ui.adapter.PlayListAdapter
 import com.duc.karaoke_app.ui.adapter.SlideAdapter
 import com.duc.karaoke_app.ui.adapter.TopSongAdapter
@@ -65,24 +70,57 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
     val songs: LiveData<List<Songs>>
         get()= _songs
 
+    private val _post = MutableLiveData<List<Post>>()
+    val post: LiveData<List<Post>>
+        get()= _post
+
     private val _images = MutableLiveData<List<Int>>()
     val images: LiveData<List<Int>> get() = _images
 
     private val _album = MutableLiveData<List<Albums>>()
     val album: LiveData<List<Albums>> get() = _album
 
+    private val _commentList = MutableLiveData<List<CommentDone>>()
+    val commentList: LiveData<List<CommentDone>> get() = _commentList
+
     private val _selectedSong = MutableLiveData<Songs>()
     val selectedSong: LiveData<Songs> get() = _selectedSong
+
+    //comment
+    var comment = MutableLiveData("")
+    var post_id = MutableLiveData<Int>()
 
     fun onSongClicked(song: Songs) {
         _selectedSong.value = song
     }
+
+    private val _selectedCommentPost= MutableLiveData<Post>()
+    val selectedCommentPost: LiveData<Post>
+        get() = _selectedCommentPost
+
+    private val _isSelectCommentPost = MutableLiveData(false)
+    val isSelectCommentPost: LiveData<Boolean> get() = _isSelectCommentPost
+
+    fun onCommentClicked(post: Post){
+        _selectedCommentPost.value= post
+        _isSelectCommentPost.value=true
+        post_id.value= post.post_id
+        getComments()
+    }
+
+    fun resetCommentSelection() {
+        _isSelectCommentPost.value = false
+    }
+
+
 
     // LayoutManager cho RecyclerView
     val playListLayoutManager = LinearLayoutManager(application)
     val topSongLayoutManagerHorizontal = LinearLayoutManager(application, LinearLayoutManager.HORIZONTAL, false)
     val famousPersonLayoutManagerHorizontal = LinearLayoutManager(application, LinearLayoutManager.HORIZONTAL, false)
     val albumLayoutManagerHorizontal = LinearLayoutManager(application, LinearLayoutManager.HORIZONTAL, false)
+//    val newsFeedLayoutManager = LinearLayoutManager(application, LinearLayoutManager.VERTICAL, false)
+//    val commentLayoutManager= LinearLayoutManager(application, LinearLayoutManager.VERTICAL, false)
 
     // Adapter cho RecyclerView
     val playListAdapter = PlayListAdapter()
@@ -90,6 +128,8 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
     val famousPersonAdapter = FamousPersonAdapter()
     val albumAdapter = AlbumAdapter()
     val slideViewPagerAdapter = SlideAdapter()
+    val newsFeedAdapter = NewsFeedAdapter(this)
+    val commentAdapter = CommentPostAdapter()
 
 
     var email = MutableLiveData("")
@@ -98,8 +138,8 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
     var phone = MutableLiveData("")
     val dateOfBirth = MutableLiveData("01/01/2000")
     var gender = MutableLiveData("")
-
     val rememberMe = MutableLiveData<Boolean>()
+
 
     // SharedPreferences để lưu trạng thái
     private val sharedPreferences =
@@ -112,6 +152,11 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
         getProfileStar()
         getAllAlbum()
         loadImageSlide()
+        getRecordedSongList()
+        userProfile()
+        _userProfile.observeForever { profile ->
+            Log.e("Check UserProfile", "Profile: $profile")
+        }
 
         playListAdapter.setOnItemClick { song ->
             onSongClicked(song) // Gửi sự kiện click vào LiveData
@@ -371,7 +416,58 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
         }
     }
 
+    fun getRecordedSongList(){
+        viewModelScope.launch {
+            try{
+                val response = repository.getRecordedSongList()
+                if(response.isSuccessful){
+                    _post.value= response.body()
+                    newsFeedAdapter.updateRecordedSonglists(post.value?: listOf())
+                }
+            }catch(e: Exception){
+                _toastMessage.value = "Lỗi kết nối: ${e.message}"
+            }
+        }
+    }
 
+    fun createComment(){
+        viewModelScope.launch {
+            try{
+                val token = getTokenToPreferences().toString().trim()
+                val request = Comment(
+                    song_id = post_id.value ?: 0,
+                    comment_text = comment.value ?: ""
+                )
+                Log.e("comment","$request")
+                val response = repository.createComment("Bearer $token", request)
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    Log.e("Tạo comment thành công", "$apiResponse")
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("Comment", "Lỗi: ${response.code()} - $errorBody")
+                }
+            }catch(e: Exception){
+                Log.e("Comment", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
 
+    fun getComments(){
+        viewModelScope.launch {
+            try{
+                val response = repository.getComments(post_id.value?: 0)
+                if(response.isSuccessful){
+                    _commentList.value= response.body()
+                    commentAdapter.updateCommentLists(response.body() ?: listOf())
+                    Log.e("commentDone","${_commentList.value}")
+                }else{
+                    Log.e("Comment", "Lỗi kết nối")
+                }
+            }catch(e: Exception){
+                Log.e("Comment", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
 
 }

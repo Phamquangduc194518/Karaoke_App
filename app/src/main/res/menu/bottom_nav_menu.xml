@@ -5,7 +5,7 @@
         android:icon="@drawable/home"
         android:title="Khám Phá"/>
     <item
-        android:id="@+id/navigation_favourite"
+        android:id="@+id/navigation_song_ca"
         android:icon="@drawable/mic1"
         android:title="song Ca"/>
     <item
@@ -13,7 +13,7 @@
         android:icon="@drawable/live_icon_selector"
         android:title="Phát Trực Tiếp"/>
     <item
-        android:id="@+id/navigation_duet"
+        android:id="@+id/navigation_learn"
         android:icon="@drawable/video"
         android:title="Học"/>
     <item

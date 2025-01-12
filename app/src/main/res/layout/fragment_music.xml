@@ -159,78 +159,33 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- Progress bar and timestamps -->
-        <LinearLayout
-            android:id="@+id/progress_bar_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ll_navigation"
-            android:layout_marginHorizontal="32dp"
-            android:layout_marginTop="26dp"
-            android:orientation="vertical">
 
-            <!-- Progress bar -->
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:progress="10"
-                android:progressTint="@color/white"
-                android:thumbTint="@color/white" />
-
-            <!-- Timestamps -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:id="@+id/tvCurrentTime"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="start"
-                    android:text="00:05"
-                    android:textColor="#CCCCCC"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tvDuration"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="03:19"
-                    android:textColor="#CCCCCC"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </LinearLayout>
 
         <!-- Control buttons -->
         <LinearLayout
             android:id="@+id/control_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/progress_bar_container"
-            android:layout_marginTop="26dp"
+            android:layout_below="@id/ll_navigation"
+            android:layout_marginTop="36dp"
             android:layout_marginBottom="32dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/recording_by_camera"
                 android:backgroundTint="@color/white" />
 
             <ImageButton
                 android:id="@+id/play_pause_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/play"
+                android:src="@{ViewModelMusic.isPlaying() ? @drawable/play_action : @drawable/play}"
                 android:layout_marginEnd="20dp"
                 android:onClick="@{()->ViewModelMusic.togglePlayPause(`https://drive.google.com/uc?export=download&amp;id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk`)}"
                 app:tintColor="@{ViewModelMusic.isPlaying}"
@@ -238,16 +193,16 @@
 
             <TextView
                 android:id="@+id/tv_recording"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/recording"
                 android:backgroundTint="@color/white" />
 
             <TextView
                 android:id="@+id/tv_done"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:background="@drawable/done"
                 android:backgroundTint="@color/white" />
 

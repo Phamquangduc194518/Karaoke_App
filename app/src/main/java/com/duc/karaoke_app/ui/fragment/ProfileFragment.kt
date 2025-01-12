@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.duc.karaoke_app.LoginActivity
 import com.duc.karaoke_app.R
@@ -18,30 +19,20 @@ import com.duc.karaoke_app.databinding.FragmentProfileBinding
 import com.duc.karaoke_app.utils.CustomBottomSheet
 
 class ProfileFragment : Fragment() {
-    private lateinit var viewModel: ViewModelLogin
     private lateinit var profileBinding: FragmentProfileBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val viewModel: ViewModelLogin by activityViewModels {
+        ViewModelFactory(Repository(), requireActivity().application)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val application = requireActivity().application
-        val repository= Repository()
-        val viewModelFactory = ViewModelFactory(repository,application)
-        viewModel = ViewModelProvider(this,viewModelFactory)[ViewModelLogin::class.java]
         profileBinding = FragmentProfileBinding.inflate(layoutInflater)
         profileBinding.viewModelProfile= viewModel
         profileBinding.lifecycleOwner= viewLifecycleOwner
         return profileBinding.root
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.userProfile()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

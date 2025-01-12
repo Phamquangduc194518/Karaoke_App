@@ -1,49 +1,70 @@
 package com.duc.karaoke_app.utils
 
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import com.duc.karaoke_app.R
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Scope
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.http.FileContent
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.services.drive.Drive
+import com.google.api.services.drive.DriveScopes
+import com.google.api.services.drive.model.File
 
-object GoogleSignInHelper {
-    @SuppressLint("StaticFieldLeak")
+
+object  GoogleSignInHelper{
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var appContext: Context
 
-    fun initialize(context: Context): GoogleSignInOptions{
-        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.getString(R.string.default_web_client_id))
+    fun init(context: Context) {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
+            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
             .build()
-        return googleSignInOptions
+        googleSignInClient = GoogleSignIn.getClient(context, gso)
+        appContext = context.applicationContext
+
     }
 
-    fun googleSignInInstance(context: Context):GoogleSignInClient{
-        initialize(context)
-        googleSignInClient = GoogleSignIn.getClient(context, initialize(context))
+    fun getGoogleSignInClient(): GoogleSignInClient {
         return googleSignInClient
     }
 
-    fun getClient(): GoogleSignInClient {
-        return googleSignInClient ?: throw IllegalStateException("GoogleSignInHelper not initialized")
+    fun getSignedInAccount(): GoogleSignInAccount? {
+        return GoogleSignIn.getLastSignedInAccount(appContext)
     }
 
-    fun signInWithGoogle(): Intent? {
-        val signInIntent = googleSignInClient?.signInIntent
-        return signInIntent
-    }
-
-    fun signOut(context:Context){
-        googleSignInClient?.signOut()?.addOnCompleteListener{
-            Log.w("SignOut","SignOut")
-            val sharedPref = context.getSharedPreferences("MyAppPrefs",Context.MODE_PRIVATE)
-            with(sharedPref.edit()){
-                clear()
-                apply()
-            }
+    fun signOut(onSignOutComplete: (() -> Unit)? = null) {
+        googleSignInClient.signOut().addOnCompleteListener {
+            Log.d("GoogleSignInHelper", "Đã đăng xuất khỏi Google")
+            onSignOutComplete?.invoke()
         }
     }
+
+    fun getGoogleDriveService(account: GoogleSignInAccount?): Drive? {
+        if (account == null) {
+            Log.e("GoogleDrive", "Chưa đăng nhập google")
+            return null
+        }
+        Log.e("GoogleDrive", "Tạo Google Drive service cho tài khoản: ${account.email}")
+        val credential = GoogleAccountCredential.usingOAuth2(
+            appContext, listOf(DriveScopes.DRIVE_FILE)
+        ).setSelectedAccount(account.account)
+
+        return Drive.Builder(
+            NetHttpTransport(),
+            GsonFactory(),
+            credential
+        ).setApplicationName("Karaoke App").build()
+    }
+
+
 }

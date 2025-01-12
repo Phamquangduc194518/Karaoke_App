@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-    <variable
-        name="ViewModelEditProfile"
-        type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
+
+        <variable
+            name="ViewModelEditProfile"
+            type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
     </data>
 
     <ScrollView
@@ -41,28 +42,28 @@
 
             <!-- Profile Picture -->
             <FrameLayout
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp">
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <ImageView
                     android:id="@+id/profile_image"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
                     android:background="@drawable/custom_background_avatar"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/anh_dai_dien"
-                    app:civ_circle_background_color="#80FFFFFF" />
+                    android:padding="5dp"
+                    app:imageUrl="@{ViewModelEditProfile.userProfile.userInfo.avatarUrl}" />
 
                 <ImageView
                     android:id="@+id/camera_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:padding="4dp"
                     android:src="@drawable/camera"
-                    app:tint="@color/white" />
+                    app:tint="@color/black" />
 
             </FrameLayout>
 
@@ -83,8 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="5dp"
-                android:text="Name"
                 android:maxLines="1"
+                android:text="Name"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -94,9 +95,9 @@
                 android:layout_height="48dp"
                 android:background="@drawable/custom_edittext_edit_profile"
                 android:hint="Melissa Peters"
+                android:imeOptions="actionDone"
                 android:maxLines="1"
                 android:paddingStart="10dp"
-                android:imeOptions="actionDone"
                 android:text="@={ViewModelEditProfile.username}" />
 
             <TextView
@@ -116,8 +117,8 @@
                 android:hint="+84"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:text="@={ViewModelEditProfile.phone}"
-                android:paddingStart="10dp" />
+                android:paddingStart="10dp"
+                android:text="@={ViewModelEditProfile.phone}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -135,9 +136,9 @@
                 android:background="@drawable/custom_edittext_edit_profile"
                 android:hint="**********"
                 android:inputType="textPassword"
-                android:text="@={ViewModelEditProfile.password}"
                 android:maxLines="1"
-                android:paddingStart="10dp" />
+                android:paddingStart="10dp"
+                android:text="@={ViewModelEditProfile.password}" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -153,12 +154,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/custom_edittext_edit_profile"
-                android:paddingStart="10dp"
-                android:text="@={ViewModelEditProfile.dateOfBirth}"
-                android:textColor="@color/black"
+                android:drawableEnd="@drawable/baseline_arrow_down"
                 android:gravity="center_vertical"
                 android:onClick="@{()->ViewModelEditProfile.onDateOfBirthClick(context)}"
-                android:drawableEnd="@drawable/baseline_arrow_down"/>
+                android:paddingStart="10dp"
+                android:text="@={ViewModelEditProfile.dateOfBirth}"
+                android:textColor="@color/black" />
 
 
             <TextView
@@ -172,10 +173,10 @@
 
             <Spinner
                 android:id="@+id/spinner_gender"
+                selectedValue="@={ViewModelEditProfile.gender}"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/custom_edittext_edit_profile"
-                selectedValue="@={ViewModelEditProfile.gender}"
                 android:paddingStart="10dp" />
 
             <!-- Save Button -->
@@ -185,8 +186,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/custom_button_splashscreen"
-                android:text="Save changes"
                 android:onClick="@{()->ViewModelEditProfile.onClickUpdateProfile()}"
+                android:text="Save changes"
                 android:textColor="@android:color/white" />
         </LinearLayout>
     </ScrollView>

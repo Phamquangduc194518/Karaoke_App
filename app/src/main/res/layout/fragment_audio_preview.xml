@@ -40,7 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="Nếu Là Anh - The Men"
+            android:text="@{AudioPreViewModel.song.title}"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/mau_poster_ca_nhac"/>
+            app:imageUrl="@{AudioPreViewModel.song.coverImageUrl}" />
     </androidx.cardview.widget.CardView>
     <!-- Thanh thời gian -->
     <LinearLayout
@@ -94,12 +94,13 @@
         <!-- Nút Play/Pause -->
         <ImageView
             android:id="@+id/ivPlayPause"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/play"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="10dp"
             android:contentDescription="Play"
-            app:tint="#FFFFFF"
-            android:layout_marginEnd="10dp" />
+            android:onClick="@{()->AudioPreViewModel.togglePlayPause(`/storage/emulated/0/Android/data/com.duc.karaoke_app/cache/recording.mp4`)}"
+            android:src="@{AudioPreViewModel.isPlaying() ? @drawable/play_action : @drawable/play}"
+            app:tint="#FFFFFF" />
 
         <!-- Thời gian hiện tại -->
         <TextView

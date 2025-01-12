@@ -2,12 +2,14 @@ package com.duc.karaoke_app.ui.fragment
 
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.Repository
@@ -17,23 +19,17 @@ import com.duc.karaoke_app.databinding.FragmentEditProfileBinding
 
 class EditProfileFragment : Fragment() {
 
-    private lateinit var viewModel: ViewModelLogin
     private lateinit var editProfileBinding: FragmentEditProfileBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    private val viewmodel: ViewModelLogin by activityViewModels {
+        ViewModelFactory(Repository(), requireActivity().application)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val application = requireActivity().application
-        val repository= Repository()
-        val viewModelFactory = ViewModelFactory(repository,application)
-        viewModel = ViewModelProvider(this, viewModelFactory)[ViewModelLogin::class.java]
         editProfileBinding= FragmentEditProfileBinding.inflate(layoutInflater)
-        editProfileBinding.viewModelEditProfile= viewModel
+        editProfileBinding.viewModelEditProfile= viewmodel
         editProfileBinding.lifecycleOwner= viewLifecycleOwner
         // Gắn Adapter cho Spinner
         val genderAdapter = ArrayAdapter(
@@ -46,14 +42,14 @@ class EditProfileFragment : Fragment() {
         return editProfileBinding.root
 
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.toastMessage.observe(viewLifecycleOwner){messege->
+        viewmodel.toastMessage.observe(viewLifecycleOwner){messege->
             messege.let{
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
 }
