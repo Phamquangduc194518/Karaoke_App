@@ -12,6 +12,7 @@ import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.databinding.ActivityMusicPlayerBinding
 import com.duc.karaoke_app.ui.fragment.MusicFragment
+import com.duc.karaoke_app.ui.fragment.WatchLiveFragment
 import com.duc.karaoke_app.utils.GoogleSignInHelper
 
 class MusicPlayerActivity : AppCompatActivity() {
@@ -24,7 +25,6 @@ class MusicPlayerActivity : AppCompatActivity() {
         val repository= Repository()
         val viewModelFactory = ViewModelFactory(repository,application)
         try {
-            Log.d("MusicPlayerActivity", "Initializing ViewModelProvider")
             viewModel = ViewModelProvider(this, viewModelFactory)[MusicPlayerViewModel::class.java]
             Log.d("MusicPlayerActivity", "ViewModel initialized: $viewModel")
         } catch (e: Exception) {
@@ -35,12 +35,18 @@ class MusicPlayerActivity : AppCompatActivity() {
         musicPlayerBinding.lifecycleOwner= this
         setContentView(musicPlayerBinding.root)
 
-        val song = intent.getParcelableExtra<Songs>("song_data")
+        val fragmentKey = intent.getStringExtra("FRAGMENT_KEY")
+        when(fragmentKey){
+            "Music_Fragment" -> loadFragment(MusicFragment())
+            "Watch_Live_Fragment" -> loadFragment(WatchLiveFragment())
+        }
+
+        val song = intent.getParcelableExtra<Songs>("Play_List")
         if(song !=null){
             viewModel.setSong(song)
             Log.e("dữ liệu nhận được lần 2","${song.title}")
         }
-        loadFragment(MusicFragment())
+
 
         // Quan sát sự kiện "Quay lại"
         viewModel.navigateBack.observe(this) { shouldNavigateBack ->

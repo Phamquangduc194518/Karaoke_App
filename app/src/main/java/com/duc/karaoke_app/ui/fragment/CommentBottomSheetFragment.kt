@@ -1,5 +1,6 @@
 package com.duc.karaoke_app.ui.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
 import com.duc.karaoke_app.databinding.FragmentCommentBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 
 
 class CommentBottomSheetFragment : BottomSheetDialogFragment() {
@@ -48,11 +50,12 @@ class CommentBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
+    @SuppressLint("ResourceType")
     override fun onStart() {
         super.onStart()
 
         val dialog = dialog ?: return
-        val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet = dialog.findViewById<View>(R.layout.fragment_comment_bottom_sheet)
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED // Mở rộng ngay khi hiển thị

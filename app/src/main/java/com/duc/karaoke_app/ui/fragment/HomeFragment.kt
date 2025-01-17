@@ -8,29 +8,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.duc.karaoke_app.MusicPlayerActivity
-import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
 import com.duc.karaoke_app.databinding.FragmentHomeBinding
-import com.duc.karaoke_app.ui.adapter.AlbumAdapter
-import com.duc.karaoke_app.ui.adapter.FamousPersonAdapter
-import com.duc.karaoke_app.ui.adapter.PlayListAdapter
-import com.duc.karaoke_app.ui.adapter.SlideAdapter
-import com.duc.karaoke_app.ui.adapter.TopSongAdapter
 
 class HomeFragment : Fragment() {
 
     private lateinit var viewModel: ViewModelLogin
     private lateinit var homeBinding: FragmentHomeBinding
-//    val apiKey = "AIzaSyD7L2AC6LciuwBHR9qWt3QQI4qf1gH3Plg"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -63,10 +53,22 @@ class HomeFragment : Fragment() {
             song.let {
                 Log.e("HomeFragment", "Selected song: ${song}")
                 val intent = Intent(requireActivity(), MusicPlayerActivity::class.java).apply {
-                    putExtra("song_data", song)
+                    putExtra("FRAGMENT_KEY", "Music_Fragment")
+                    putExtra("Play_List", song)
                 }
                 startActivity(intent)
 
+            }
+        }
+
+        viewModel.selectedUserLiveStream.observe(viewLifecycleOwner){ user->
+            user.let{
+                Log.e("HomeFragment", "Selected user: ${user}")
+                val intent = Intent(requireActivity(), MusicPlayerActivity::class.java).apply {
+                    putExtra("FRAGMENT_KEY","Watch_Live_Fragment")
+                    putExtra("UserLiveStream", user)
+                }
+                startActivity(intent)
             }
         }
 

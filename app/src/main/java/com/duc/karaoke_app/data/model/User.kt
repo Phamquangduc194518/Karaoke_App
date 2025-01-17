@@ -1,8 +1,11 @@
 package com.duc.karaoke_app.data.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 import java.util.Date
 
+@Parcelize
 data class User(
     val username: String,
     val email: String,
@@ -12,7 +15,7 @@ data class User(
     val phone: String?=null,
     val date_of_birth: String?=null,
     val gender: String?=null
-)
+):  Parcelable
 
 
 data class RegisterRequest(

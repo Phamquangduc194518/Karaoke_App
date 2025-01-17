@@ -136,10 +136,14 @@ class MusicFragment : Fragment() {
     }
 
     private fun stopRecording() {
-        mediaRecorder.apply {
-            stop() // Dừng ghi âm
-            release() // Giải phóng tài nguyên
-            Toast.makeText(requireActivity(), "Stop Record", Toast.LENGTH_SHORT).show()
+        if (::mediaRecorder.isInitialized) {
+            mediaRecorder.apply {
+                stop() // Dừng ghi âm
+                release() // Giải phóng tài nguyên
+                Toast.makeText(requireActivity(), "Stop Record", Toast.LENGTH_SHORT).show()
+            }
+        }else {
+            Log.e("MediaRecorder", "stopRecording called but mediaRecorder is not initialized.")
         }
     }
 

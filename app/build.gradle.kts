@@ -68,8 +68,8 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.core)
     //thư viện liveStream
-    implementation("com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:2.0.0")
-    implementation("com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtmp:2.0.0")
+    implementation(libs.rtplibrary)
+    implementation(libs.rtmp)
     implementation(libs.exoplayer)
     implementation(libs.circleimageview)
 
@@ -77,6 +77,8 @@ dependencies {
     implementation("com.google.apis:google-api-services-drive:v3-rev197-1.25.0")
     implementation("com.google.http-client:google-http-client-gson:1.41.3")
     implementation("com.google.http-client:google-http-client-jackson2:1.42.3")
+
+    implementation (libs.androidx.viewpager2)
 
 
 

@@ -11,6 +11,7 @@ import com.duc.karaoke_app.databinding.ActivityMainBinding
 import com.duc.karaoke_app.ui.fragment.NewsFeed
 import com.duc.karaoke_app.ui.fragment.SingleSingerFragment
 import com.duc.karaoke_app.ui.fragment.HomeFragment
+import com.duc.karaoke_app.ui.fragment.LearnFragment
 import com.duc.karaoke_app.ui.fragment.LiveStreamFragment
 import com.duc.karaoke_app.ui.fragment.ProfileFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -38,13 +39,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_live->{
                     loadFragment(LiveStreamFragment())
-                    val drawable = ContextCompat.getDrawable(this, R.drawable.live_after_selected)
-                    drawable?.setTint(Color.parseColor("#FF0000")) // Chuyển đổi từ chuỗi sang màu đỏ
-                    item.icon = drawable
                     true
                 }
                 R.id.navigation_learn->{
-                    loadFragment(NewsFeed())
+                    loadFragment(LearnFragment())
                     true
                 }
                 R.id.navigation_profile->{

@@ -99,7 +99,7 @@ interface ApiService {
         }
 
         // Tạo Retrofit cho API Localhost (đăng ký tài khoản)
-        private const val BASE_URL_LOGIN="http://192.168.1.11:3000/"
+        private const val BASE_URL_LOGIN="http://192.168.1.9:3000/"
         val loginApi: ApiService by lazy{
             Retrofit.Builder()
                 .baseUrl(BASE_URL_LOGIN)

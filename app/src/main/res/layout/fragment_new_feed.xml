@@ -16,16 +16,6 @@
         android:orientation="vertical"
         android:layout_marginTop="30dp">
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Học Thầy không Tày Học Bạn"
-            android:textSize="20dp"
-            android:textColor="@color/black"
-            android:gravity="center"
-            android:layout_marginTop="30dp"/>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_newFeed"
             android:layout_width="match_parent"

@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.duc.karaoke_app.R
 
 
-class LiveFragment : Fragment() {
+class WatchLiveFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -25,7 +25,7 @@ class LiveFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_live, container, false)
+        return inflater.inflate(R.layout.fragment_watch_live, container, false)
     }
 
 }

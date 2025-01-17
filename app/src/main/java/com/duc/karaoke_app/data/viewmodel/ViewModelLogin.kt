@@ -26,6 +26,7 @@ import com.duc.karaoke_app.ui.adapter.NewsFeedAdapter
 import com.duc.karaoke_app.ui.adapter.PlayListAdapter
 import com.duc.karaoke_app.ui.adapter.SlideAdapter
 import com.duc.karaoke_app.ui.adapter.TopSongAdapter
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -86,6 +87,10 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
     private val _selectedSong = MutableLiveData<Songs>()
     val selectedSong: LiveData<Songs> get() = _selectedSong
 
+    private val _selectedUserLiveStream = MutableLiveData<User>()
+    val selectedUserLiveStream: LiveData<User> get() = _selectedUserLiveStream
+
+
     //comment
     var comment = MutableLiveData("")
     var post_id = MutableLiveData<Int>()
@@ -93,6 +98,11 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
     fun onSongClicked(song: Songs) {
         _selectedSong.value = song
     }
+
+    fun onFamousClick(user: User){
+        _selectedUserLiveStream.value= user
+    }
+
 
     private val _selectedCommentPost= MutableLiveData<Post>()
     val selectedCommentPost: LiveData<Post>
@@ -160,6 +170,10 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
 
         playListAdapter.setOnItemClick { song ->
             onSongClicked(song) // Gửi sự kiện click vào LiveData
+        }
+
+        famousPersonAdapter.setOnItemClickOfFamous{ user ->
+            onFamousClick(user)
         }
     }
 
