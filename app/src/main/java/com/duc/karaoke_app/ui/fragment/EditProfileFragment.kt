@@ -1,6 +1,7 @@
 package com.duc.karaoke_app.ui.fragment
 
 import android.app.Application
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,19 +10,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.ViewModelHome
 import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
 import com.duc.karaoke_app.databinding.FragmentEditProfileBinding
 
 class EditProfileFragment : Fragment() {
 
     private lateinit var editProfileBinding: FragmentEditProfileBinding
-    private val viewmodel: ViewModelLogin by activityViewModels {
+    private val viewmodel: ViewModelHome by activityViewModels {
         ViewModelFactory(Repository(), requireActivity().application)
+    }
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            // Chuyển Uri -> File
+            val file = viewmodel.uriToFile(requireContext(), it)
+            if (file != null) {
+                // Gọi ViewModel để upload
+                val token = "JWT_TOKEN_HERE"
+                viewmodel.uploadAvatar(file)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -50,6 +65,20 @@ class EditProfileFragment : Fragment() {
             }
         }
 
+        viewmodel.uploadResult.observe(viewLifecycleOwner) { success ->
+            if (success.message.contains("thành công")) {
+                Toast.makeText(requireContext(), "Upload thành công!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Upload thất bại!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        editProfileBinding.cameraIcon.setOnClickListener{
+            pickImageLauncher.launch("image/*")
+        }
+
     }
+
+
 
 }

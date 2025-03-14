@@ -6,7 +6,7 @@
     <data>
         <variable
             name="CommentBottomSheetViewModel"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
+            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
     </data>
 
     <LinearLayout
@@ -53,17 +53,18 @@
             android:background="#F5F5F5" />
 
         <!-- Danh sách bình luận -->
+
+        <!-- Ô nhập bình luận -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewComments"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:adapter="@{CommentBottomSheetViewModel.commentAdapter}"
             android:padding="8dp"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/comment_item"
-            android:adapter="@{CommentBottomSheetViewModel.commentAdapter}" />
+            android:scrollbars="none"
+            tools:listitem="@layout/comment_item" />
 
-        <!-- Ô nhập bình luận -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

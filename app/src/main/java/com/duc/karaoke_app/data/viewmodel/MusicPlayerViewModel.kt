@@ -3,17 +3,38 @@ package com.duc.karaoke_app.data.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.duc.karaoke_app.data.model.Comment
+import com.duc.karaoke_app.data.model.CommentDone
+import com.duc.karaoke_app.data.model.CommentVideo
+import com.duc.karaoke_app.data.model.CommentVideoDone
 import com.duc.karaoke_app.data.model.GoogleDriveFile
+import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.Songs
+import com.duc.karaoke_app.data.model.Video
+import com.duc.karaoke_app.ui.adapter.AlbumAdapter
+import com.duc.karaoke_app.ui.adapter.CommentPostAdapter
+import com.duc.karaoke_app.ui.adapter.CommentVideoAdapter
+import com.duc.karaoke_app.ui.adapter.DuetSongAdapter
+import com.duc.karaoke_app.ui.adapter.FamousPersonAdapter
+import com.duc.karaoke_app.ui.adapter.NewsFeedAdapter
+import com.duc.karaoke_app.ui.adapter.PlayListAdapter
+import com.duc.karaoke_app.ui.adapter.SlideAdapter
+import com.duc.karaoke_app.ui.adapter.TopSongAdapter
+import com.duc.karaoke_app.ui.adapter.ViewDuetSongAdapter
 import com.duc.karaoke_app.ui.fragment.NewsFeed
 import com.duc.karaoke_app.utils.GoogleSignInHelper
+import com.duc.karaoke_app.utils.SingleLiveEvent
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -23,12 +44,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.URLEncoder
 
 class MusicPlayerViewModel(private val repository: Repository, application: Application) :
     AndroidViewModel(application) {
 
     private val _song = MutableLiveData<Songs>()
     val song: LiveData<Songs> get() = _song
+
+    private val _video = MutableLiveData<Video>()
+    val video: LiveData<Video> get() = _video
+
+    private val _lyricSong = MutableLiveData<List<Lyric>>()
+    val lyricSong: LiveData<List<Lyric>> get() = _lyricSong
 
     private lateinit var exoPlayer: ExoPlayer
 
@@ -51,6 +79,20 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
     var titlePost = MutableLiveData("")
     var recordingPath = MutableLiveData("")
 
+    var comment = MutableLiveData("")
+    var videoId = MutableLiveData<Int>()
+
+    private val _commentList = MutableLiveData<List<CommentVideoDone>>()
+    val commentList: LiveData<List<CommentVideoDone>> get() = _commentList
+
+
+    // LayoutManager cho RecyclerView
+    val viewDuetSongManager = LinearLayoutManager(application)
+
+    // Adapter cho RecyclerView
+    val viewDuetSongAdapter = ViewDuetSongAdapter()
+    val commentAdapter = CommentVideoAdapter()
+
     init {
         saveTokenToMusicPlayerActivity()
     }
@@ -61,11 +103,17 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
 
     fun onBackPressed() {
         _navigateBack.value = true
+        releaseExoPlayer()
     }
 
     fun setSong(song: Songs) {
         _song.value = song
         Log.d("MusicPlayerViewModel", "Song set: ${song.title}")
+    }
+
+    fun setVideo(video: Video) {
+        _video.value = video
+        Log.d("MusicPlayerViewModel", "Video set: ${video.title}")
     }
 
 
@@ -209,8 +257,69 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
                 Log.e("Upload", "Lỗi: Không thể lấy file link từ Google Drive!")
             }
         }
+    }
 
+    fun getDuetLyric(){
+        viewModelScope.launch {
+            try{
+                if (_song.value == null) {
+                    Log.e("Lyric_Duet", "Lỗi: _song.value bị NULL trước khi gọi API")
+                    return@launch
+                }
+                val response = repository.getDuetLyric(_song.value!!.title)
+                Log.e("Lyric_Duet_Title", response.isSuccessful.toString())
+                if(response.isSuccessful){
+                    Log.e("Lyric_Duet_Respone", response.body().toString())
+                    _lyricSong.value = response.body()
+                    viewDuetSongAdapter.updateLyricDuetSong(_lyricSong.value ?: listOf())
+                    Log.e("Lyric_Duet_Respone", _lyricSong.value.toString())
+                }else{
+                    Log.e("Lyric_Duet","Lỗi: ${response.code()} - ${response.message()}")
+                }
+            }catch(e: Exception){
+                Log.e("Lyric_Duet", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
 
+    fun createCommentVideo (){
+        viewModelScope.launch {
+            try {
+                val request = CommentVideo(
+                    videoId = _video.value?.videoId ?: 0,
+                    commentText = comment.value ?: ""
+                )
+                Log.e("comment", "$request")
+                val response = repository.createCommentVideo("Bearer $_toKenToMusicPlayer", request)
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    Log.e("Tạo comment thành công", "$apiResponse")
+                    getCommentVideo()
+                    comment.value=""
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("Comment", "Lỗi: ${response.code()} - $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("Comment", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+    fun getCommentVideo(){
+        viewModelScope.launch {
+            try {
+                val response = repository.getCommentVideo(_video.value?.videoId ?: 0)
+                if (response.isSuccessful) {
+                    _commentList.value = response.body()
+                    commentAdapter.updateCommentLists(response.body() ?: listOf())
+                    Log.e("commentDone", "${_commentList.value}")
+                } else {
+                    Log.e("Comment", "Lỗi kết nối")
+                }
+            } catch (e: Exception) {
+                Log.e("Comment", "Lỗi kết nối: ${e.message}")
+            }
+        }
     }
 }
 

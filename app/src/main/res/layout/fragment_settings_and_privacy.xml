@@ -3,7 +3,7 @@
 <data>
     <variable
         name="ViewModelLoginSettingAndPrivacy"
-        type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
+        type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
 </data>
 
     <ScrollView
@@ -72,6 +72,36 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="40dp"
                         android:text="Tài khoản"
+                        android:textColor="@android:color/black"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/baseline_arrow_next" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/upToVip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:paddingTop="12dp"
+                    android:onClick="@{()-> ViewModelLoginSettingAndPrivacy.onClickVipUpgrade()}"
+                    android:paddingBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:src="@drawable/vip" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="40dp"
+                        android:text="Nâng cấp tài khoản vip"
                         android:textColor="@android:color/black"
                         android:textSize="16sp" />
 

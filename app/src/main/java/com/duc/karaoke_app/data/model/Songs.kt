@@ -12,7 +12,7 @@ data class Songs(
     val subTitle: String,
     @SerializedName("artist_id")
     val artist: Int,
-    val genre: String,
+    val genre: String?=null,
     val lyrics: String,
     @SerializedName("audio_url")
     val audioUrl: String?,
@@ -20,14 +20,31 @@ data class Songs(
     val coverImageUrl: String?
 ) : Parcelable
 
+
+data class topSong(
+    @SerializedName("song_id")
+    val songId: Int,
+    val favoriteCount: Int,
+    @SerializedName("Song")
+    val song: Songs
+)
+
+@Parcelize
 data class Albums(
+    val id: Int,
     val title: String,
     val subTitle: String,
-    @SerializedName("artist_id")
-    val artist: String,
     @SerializedName("cover_url")
-    val coverUrl: String // URL ảnh bìa
-)
+    val coverUrl: String, // URL ảnh bìa
+    @SerializedName("albumArtist")
+    val artist: Artist
+): Parcelable
+
+@Parcelize
+data class Artist(
+    val id: String,
+    val name: String
+): Parcelable
 
 data class RecordedSongs(
 
@@ -57,6 +74,9 @@ data class Post(
     @SerializedName("recording_path")
     val recordingPath: String,
 
+    @SerializedName("cover_image_url")
+    val coverImageUrl: String,
+
     @SerializedName("upload_time")
     val time: String,
 
@@ -79,4 +99,74 @@ data class UserPost(
     val username: String,
     @SerializedName("avatar_url")
     val avatar_url: String
+)
+
+data class LiveStream(
+    val streamId: Int,
+    val title: String,
+    val description: String?,
+    val hostUserId: Int,
+    val status: Status,
+    val participantsCount: Int = 0,
+    val endedAt: Date?
+) {
+    enum class Status {
+        ACTIVE, ENDED
+    }
+}
+
+data class LiveStreamRequest(
+    val title: String
+)
+
+data class Lyric(
+    val start: Float,
+    val end: Float,
+    val text: String,
+    val singer: String
+)
+
+data class Topic(
+    val id: Int,
+    val title: String,
+    val videos: List<Video>
+)
+@Parcelize
+data class Video(
+    @SerializedName("id")
+    val videoId: Int,
+    val topicId: Int,
+    val title: String,
+    val url: String,
+    val thumbnail: String
+): Parcelable
+
+data class Favorite(
+    @SerializedName("song_id")
+    val songId: Int
+)
+
+data class FavoriteSong(
+    @SerializedName("user_id")
+    val userId: Int,
+    @SerializedName("song_id")
+    val songId: Int,
+    @SerializedName("Song")
+    val song : Songs
+)
+data class FavoriteListResponse(
+    val favoriteSongs: List<FavoriteSong>
+)
+
+data class checkFavoriteListResponse(
+    val favoriteSongIds: List<Int>
+)
+
+data class AlbumDetailList(
+    val title: String,
+    val subTitle: String,
+    @SerializedName("cover_url")
+    val coverUrl: String,
+    val artist: Artist,
+    val songs: List<Songs>
 )

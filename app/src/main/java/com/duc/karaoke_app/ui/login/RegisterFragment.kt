@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
@@ -14,20 +14,14 @@ import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
 import com.duc.karaoke_app.databinding.FragmentRegisterBinding
 
 class RegisterFragment : Fragment() {
-    private lateinit var viewmodelLogin: ViewModelLogin
     private lateinit var registerBinding: FragmentRegisterBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val viewmodelLogin: ViewModelLogin by activityViewModels {
+        ViewModelFactory(Repository(), requireActivity().application)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val application = requireActivity().application
-        val repository = Repository()
-        val viewModelFactory = ViewModelFactory(repository,application)
-        viewmodelLogin = ViewModelProvider(this, viewModelFactory).get(ViewModelLogin::class.java)
         registerBinding = FragmentRegisterBinding.inflate(layoutInflater)
         registerBinding.viewModelRegister=viewmodelLogin
         registerBinding.lifecycleOwner=viewLifecycleOwner
@@ -39,7 +33,6 @@ class RegisterFragment : Fragment() {
         viewmodelLogin.registerSuccess.observe(viewLifecycleOwner){navigate->
             if(navigate){
                 findNavController().navigateUp()
-                viewmodelLogin.resetNavigation()
             }
         }
         viewmodelLogin.toastMessage.observe(viewLifecycleOwner){message->

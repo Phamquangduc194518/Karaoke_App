@@ -14,6 +14,7 @@ import com.duc.karaoke_app.data.model.User
 
 class AlbumAdapter() : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
     private var albums: List<Albums> = listOf()
+    private var setOnAlbumClick: ((Albums) -> Unit) ?= null
     class AlbumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivAlbumCover: ImageView = itemView.findViewById(R.id.ivAlbumCover)
         val tvAlbumTitle: TextView = itemView.findViewById(R.id.tvAlbumTitle)
@@ -30,7 +31,7 @@ class AlbumAdapter() : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
 
         // Gán dữ liệu
         holder.tvAlbumTitle.text = album.title
-        holder.tvArtistName.text = album.artist
+        holder.tvArtistName.text = album.artist.name
 
         // Load ảnh album từ URL hoặc drawable
         Glide.with(holder.itemView.context)
@@ -38,8 +39,9 @@ class AlbumAdapter() : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
             .placeholder(R.drawable.rounded_background)
             .into(holder.ivAlbumCover)
 
-        // Xử lý sự kiện click
-//        holder.itemView.setOnClickListener { onClick(album) }
+//         Xử lý sự kiện click
+        holder.itemView.setOnClickListener {
+            setOnAlbumClick?.invoke(album)}
     }
 
     override fun getItemCount(): Int = albums.size
@@ -48,5 +50,9 @@ class AlbumAdapter() : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
     fun updateAlbums(newAlbum: List<Albums>){
         this.albums = newAlbum
         notifyDataSetChanged()
+    }
+
+    fun setOnAlbumClick(listener: ((Albums) -> Unit)?){
+        setOnAlbumClick = listener
     }
 }

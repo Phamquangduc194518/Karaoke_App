@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import com.duc.karaoke_app.R
 import androidx.navigation.fragment.findNavController
 import com.duc.karaoke_app.MainActivity
@@ -17,22 +18,19 @@ import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.databinding.FragmentLoginBinding
 import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
-
 class LoginFragment : Fragment() {
 
-    private lateinit var viewmodelLogin: ViewModelLogin
     private var _binding: FragmentLoginBinding?=null
     val binding get()=_binding!!
-
+    private val viewmodelLogin: ViewModelLogin by activityViewModels {
+        ViewModelFactory(Repository(), requireActivity().application)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val application = requireActivity().application
-        val repository = Repository()
-        val viewModelFactory = ViewModelFactory(repository,application)
-        viewmodelLogin = ViewModelProvider(this, viewModelFactory)[ViewModelLogin::class.java]
+
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.viewModelLogin= viewmodelLogin
         binding.lifecycleOwner=viewLifecycleOwner
@@ -45,13 +43,11 @@ class LoginFragment : Fragment() {
             if(navigate){
                 Log.d("LoginFragment", "Navigating to RegisterFragment")
                 findNavController().navigate(R.id.action_login_Fragment_to_registerFragment)
-                viewmodelLogin.resetNavigation()
             }
         }
         viewmodelLogin.navigateToResetPassword.observe(viewLifecycleOwner){ navigate->
             if(navigate){
                 findNavController().navigate(R.id.action_login_Fragment_to_resetPasswordInfo)
-                viewmodelLogin.resetNavigation()
             }
         }
 
@@ -61,7 +57,6 @@ class LoginFragment : Fragment() {
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     startActivity(intent)
                     requireActivity().finish()
-                    viewmodelLogin.resetNavigation()
                 }
             }
         }

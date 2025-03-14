@@ -5,7 +5,7 @@
     <data>
     <variable
         name="ViewModelProfile"
-        type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
+        type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
     </data>
 
     <RelativeLayout
@@ -84,6 +84,18 @@
                 app:imageUrl="@{ViewModelProfile.userProfile.userInfo.avatarUrl}"
                 android:scaleType="centerCrop" />
 
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieEffect"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignEnd="@id/profileImage"
+                android:layout_alignTop="@id/profileImage"
+                android:layout_marginEnd="-30dp"
+                android:layout_marginTop="70dp"
+                app:lottie_rawRes="@raw/vip_account"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"/>
+
         </RelativeLayout>
 
         <!-- Username -->
@@ -93,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/profile_section"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="2dp"
             android:text="@{ViewModelProfile.userProfile.userInfo.email}"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
@@ -123,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="17"
+                    android:text="@{ViewModelProfile.followingCount.toString()}"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -148,7 +160,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="231"
+                    android:text="@{ViewModelProfile.followerCount.toString()}"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -158,31 +170,6 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Follower"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="2690"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Thích"
                     android:textColor="@color/black" />
             </LinearLayout>
 
@@ -212,6 +199,18 @@
             android:maxWidth="400dp"
             android:text="Khi mà bạn Stress bởi những thứ Web3 mang tới cho bạn nhứng điều thú vị "
             android:textColor="@android:color/black" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tl_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/description"
+            />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp2_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tl_profile"/>
 
     </RelativeLayout>
 </layout>

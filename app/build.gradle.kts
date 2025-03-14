@@ -16,7 +16,7 @@ android {
         applicationId = "com.duc.karaoke_app"
         minSdk = 31
         targetSdk = 35
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -79,6 +79,12 @@ dependencies {
     implementation("com.google.http-client:google-http-client-jackson2:1.42.3")
 
     implementation (libs.androidx.viewpager2)
+
+    implementation ("com.airbnb.android:lottie:6.1.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation (libs.shimmer)
+    implementation (libs.mpandroidchart)
+    implementation (libs.billing)
 
 
 

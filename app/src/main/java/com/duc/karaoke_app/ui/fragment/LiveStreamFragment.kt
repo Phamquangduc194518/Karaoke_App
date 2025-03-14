@@ -9,7 +9,12 @@ import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import com.duc.karaoke_app.R
+import com.duc.karaoke_app.data.viewmodel.Repository
+import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.ViewModelHome
+import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
 import com.duc.karaoke_app.databinding.FragmentLiveStreamBinding
 import com.pedro.rtmp.utils.ConnectCheckerRtmp
 import com.pedro.rtplibrary.rtmp.RtmpCamera1
@@ -18,7 +23,9 @@ class LiveStreamFragment : Fragment(), ConnectCheckerRtmp {
 
     private lateinit var liveStreamBiding: FragmentLiveStreamBinding
     private lateinit var rtmpCamera1: RtmpCamera1
-
+    private val viewModel: ViewModelHome by activityViewModels {
+        ViewModelFactory(Repository(), requireActivity().application)
+    }
     private val rtmpUrl = "rtmp://origin.cdn.wowza.com/live/0I5p2djr6ok4nQDWVxdHwZq76G7b585c"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +61,7 @@ class LiveStreamFragment : Fragment(), ConnectCheckerRtmp {
             if(!rtmpCamera1.isStreaming){
                 if (rtmpCamera1.prepareAudio() && rtmpCamera1.prepareVideo()){
                     rtmpCamera1.startStream(rtmpUrl)
+                    viewModel.createLiveStream()
                     Log.e("LiveStream","Livestream started")
                 }else {
                     Log.e("LiveStream","Error preparing stream")

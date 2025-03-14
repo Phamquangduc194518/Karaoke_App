@@ -1,0 +1,199 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="ViewModelViewDuetSong"
+            type="com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_music_background">
+
+        <!-- Back button -->
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:onClick="@{()->ViewModelViewDuetSong.onBackPressed()}"
+            android:scaleType="centerCrop"
+            android:src="@drawable/previous"
+            app:tint="@color/white" />
+
+        <!-- Now Playing title -->
+        <TextView
+            android:id="@+id/now_playing_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="36dp"
+            android:text="Now Playing"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <!-- Options button -->
+        <ImageButton
+            android:id="@+id/options_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Options"
+            android:scaleType="centerCrop"
+            android:src="@drawable/options"
+            app:tint="@color/white" />
+
+        <!-- Subtitle (e.g., Remix-Cover) -->
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/now_playing_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:text="@{ViewModelViewDuetSong.song.subTitle}"
+            android:textColor="#CCCCCC"
+            android:textSize="14sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_view_duet_song"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/subtitle"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:scrollbars="none"
+            app:layoutManager="@{ViewModelViewDuetSong.viewDuetSongManager}"
+            android:adapter="@{ViewModelViewDuetSong.viewDuetSongAdapter}"
+            android:layout_marginEnd="16dp"/>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rcv_view_duet_song"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="26dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:weightSum="5"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/share_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Share"
+                android:scaleType="centerCrop"
+                android:src="@drawable/camera"
+                app:tint="#FFFFFF" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="4"
+                android:orientation="vertical">
+                <!-- Song title -->
+                <TextView
+                    android:id="@+id/song_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/album_cover"
+                    android:layout_centerHorizontal="true"
+                    android:text="@{ViewModelViewDuetSong.song.title}"
+                    android:textColor="#87CEEB"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Artist name -->
+                <TextView
+                    android:id="@+id/artist_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/song_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="@{ViewModelViewDuetSong.song.subTitle}"
+                    android:textColor="#87CEEB"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/heart_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Like"
+                android:scaleType="centerCrop"
+                android:src="@drawable/heart"
+                app:tint="#FFFFFF" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- Progress bar and timestamps -->
+
+
+        <!-- Control buttons -->
+        <LinearLayout
+            android:id="@+id/control_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_navigation"
+            android:layout_marginTop="36dp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/recording_by_camera"
+                android:backgroundTint="@color/white" />
+
+            <ImageButton
+                android:id="@+id/play_pause_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@{ViewModelViewDuetSong.isPlaying() ? @drawable/play_action : @drawable/play}"
+                android:layout_marginEnd="20dp"
+                android:onClick="@{()->ViewModelViewDuetSong.togglePlayPause(`https://drive.google.com/uc?export=download&amp;id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk`)}"
+                app:tintColor="@{ViewModelViewDuetSong.isPlaying}"
+                />
+
+            <TextView
+                android:id="@+id/tv_recording"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/recording"
+                android:backgroundTint="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_done"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/done"
+                android:backgroundTint="@color/white" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

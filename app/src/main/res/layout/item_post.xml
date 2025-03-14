@@ -2,10 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-    </data>
-
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -65,6 +61,7 @@
                 android:id="@+id/tvContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
                 android:text="Bài này mình mới hát, mọi người nghe và cho ý kiến nha"
                 android:textSize="14sp"
                 android:textColor="@android:color/black"
@@ -73,25 +70,32 @@
             <!-- Ảnh đính kèm với nút Play ở giữa -->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp">
 
-                <ImageView
-                    android:id="@+id/ivPostImage"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:visibility="visible"
-                    android:contentDescription="Ảnh bài đăng" />
+                    app:cardCornerRadius="18dp">
+                    <ImageView
+                        android:id="@+id/ivPostImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="visible"
+                        android:contentDescription="Ảnh bài đăng" />
 
-                <ImageView
-                    android:id="@+id/btnPlay"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/play"
-                    android:contentDescription="Play Button"
-                    app:tint="#27e4F2"
-                    android:padding="10dp" />
+                    <ImageView
+                        android:id="@+id/btnPlay"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/play"
+                        android:contentDescription="Play Button"
+                        app:tint="#27e4F2"
+                        android:padding="10dp" />
+                </androidx.cardview.widget.CardView>
+
             </FrameLayout>
 
             <!-- Like + Comment -->
@@ -121,10 +125,10 @@
                 <ImageView
                     android:id="@+id/btnComment"
                     android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/comment"
                     android:contentDescription="Comment Button"
+                    android:src="@drawable/comment"
                     app:tint="@android:color/darker_gray" />
 
                 <TextView

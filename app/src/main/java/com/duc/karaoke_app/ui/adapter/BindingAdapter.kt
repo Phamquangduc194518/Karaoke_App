@@ -16,8 +16,11 @@ import androidx.databinding.InverseBindingListener
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.Songs
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 
 object BindingAdapter {
 
@@ -85,6 +88,45 @@ object BindingAdapter {
                 .into(view)
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("imageCornerRadius")
+    fun loadImageCornerRadius(view: ImageView, url: String?){
+        if(!url.isNullOrEmpty()){
+            Glide.with(view.context)
+                .load(url)
+                .apply(
+                    RequestOptions()
+                        .transform(RoundedCorners(18)) // Bo góc với giá trị radius
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.placeholder_image)
+                )
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image)
+                .into(view)
+        }
+    }
+
+    fun extractYouTubeVideoId(url: String): String? {
+        // Sử dụng regex để lấy video id sau "v=" trong URL
+        val regex = "(?<=watch\\?v=|/videos/|embed/)[^#\\&\\?]*".toRegex()
+        return regex.find(url)?.value
+    }
+    @JvmStatic
+    @BindingAdapter("videoPlay")
+    fun loadVideo(playerView:com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView, videoUrl: String?){
+        if(videoUrl.isNullOrEmpty()) return
+
+        val videoId = extractYouTubeVideoId(videoUrl)
+        if(videoId.isNullOrEmpty()) return
+        playerView.addYouTubePlayerListener(object: com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener(){
+            override fun onReady(youTubePlayer: YouTubePlayer) {
+                super.onReady(youTubePlayer)
+                youTubePlayer.cueVideo(videoId, 0f)
+            }
+        })
+    }
+
 
 
 }

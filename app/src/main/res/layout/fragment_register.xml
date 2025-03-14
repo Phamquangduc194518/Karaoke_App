@@ -83,6 +83,46 @@
                     app:tint="#4CAF50" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
+            <!-- Email Input -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/custom_edit_text_login"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Email Icon"
+                    android:src="@drawable/user_name"
+                    app:tint="#808080" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="username"
+                    android:inputType="textEmailAddress"
+                    android:padding="8dp"
+                    android:textColor="#000000"
+                    android:text="@={ViewModelRegister.username}"
+                    android:textColorHint="#808080" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="Check Icon"
+                    android:src="@drawable/baseline_check_circle"
+                    android:visibility="@{ViewModelRegister.isValidEmail(ViewModelRegister.email) ? View.VISIBLE : View.GONE}"
+                    app:tint="#4CAF50" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
             <!-- Password Input -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -139,6 +179,7 @@
                     android:hint="Confirm Password"
                     android:inputType="textPassword"
                     android:padding="8dp"
+                    android:text="@={ViewModelRegister.comFirmPass}"
                     android:textColor="#000000"
                     android:textColorHint="#808080" />
             </LinearLayout>
@@ -169,37 +210,6 @@
                 android:text="Already have an account"
                 android:textColor="#001F54"
                 android:textSize="14sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:background="@drawable/custom_edit_text_login"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="5">
-
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:layout_weight="1"
-                    android:contentDescription="Google Icon"
-                    android:gravity="start"
-                    android:padding="7dp"
-                    android:src="@drawable/google" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:contentDescription="Google Icon"
-                    android:gravity="center"
-                    android:text="Login With Google"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
-            </LinearLayout>
 
         </LinearLayout>
 

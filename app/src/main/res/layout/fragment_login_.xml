@@ -161,46 +161,6 @@
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="sans-serif"
-            android:text="Or continue with"
-            android:textColor="#001F54"
-            android:textSize="14sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:background="@drawable/custom_edit_text_login"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="5">
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:contentDescription="Google Icon"
-                android:gravity="start"
-                android:padding="7dp"
-                android:src="@drawable/google" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="4"
-                android:contentDescription="Google Icon"
-                android:gravity="center"
-                android:text="Login With Google"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

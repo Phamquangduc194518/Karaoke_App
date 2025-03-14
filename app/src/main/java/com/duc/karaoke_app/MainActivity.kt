@@ -1,15 +1,18 @@
 package com.duc.karaoke_app
 
-import android.graphics.Color
 import android.os.Bundle
+import android.view.View
+import androidx.activity.OnBackPressedCallback
 
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.duc.karaoke_app.data.viewmodel.Repository
+import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.ViewModelHome
 import com.duc.karaoke_app.databinding.ActivityMainBinding
-import com.duc.karaoke_app.ui.fragment.NewsFeed
-import com.duc.karaoke_app.ui.fragment.SingleSingerFragment
+import com.duc.karaoke_app.ui.fragment.DuetSongFragment
 import com.duc.karaoke_app.ui.fragment.HomeFragment
 import com.duc.karaoke_app.ui.fragment.LearnFragment
 import com.duc.karaoke_app.ui.fragment.LiveStreamFragment
@@ -20,11 +23,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class MainActivity : AppCompatActivity() {
     private lateinit var mainbinding: ActivityMainBinding
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var viewModel: ViewModelHome
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val application = this.application
+        val repository = Repository()
+        val viewModelFactory = ViewModelFactory(repository,application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[ViewModelHome::class.java]
         mainbinding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainbinding.root)
+        viewModel.isDataLoaded.observe(this){
+            if(viewModel.isDataLoaded.value == true){
+                mainbinding.progressBar.visibility = View.GONE
+                mainbinding.fragmentContainer.visibility = View.VISIBLE
+                mainbinding.bottomNavigation.visibility = View.VISIBLE
+            }
+        }
         bottomNavigation= mainbinding.bottomNavigation
         loadFragment(HomeFragment())
         mainbinding.bottomNavigation.setOnItemSelectedListener{ item->
@@ -34,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_song_ca->{
-                    loadFragment(SingleSingerFragment())
+                    loadFragment(DuetSongFragment())
                     true
                 }
                 R.id.navigation_live->{
@@ -53,6 +68,16 @@ class MainActivity : AppCompatActivity() {
                 else -> {false}
             }
         }
+
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack() // Quay lại Fragment trước đó
+                } else {
+//                    moveTaskToBack(true) // Đưa app về background thay vì thoát
+                }
+            }
+        })
     }
 
     private fun loadFragment(fragment: Fragment) {

@@ -12,10 +12,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.Songs
+import com.duc.karaoke_app.data.model.topSong
 import com.duc.karaoke_app.ui.adapter.PlayListAdapter.PlayListViewHolder
 
 class TopSongAdapter() : RecyclerView.Adapter<TopSongAdapter.TopSongViewHolder>() {
-    private var topSongList: List<Songs> = listOf()
+    private var topSongList: List<topSong> = listOf()
+    private var onTopSongClick: ((Songs) -> Unit)?= null
     class TopSongViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val topSongImage: ImageView = itemView.findViewById(R.id.img_TopSongCover)
         val topSongTitle: TextView = itemView.findViewById(R.id.tv_TopSongTitle)
@@ -33,17 +35,24 @@ class TopSongAdapter() : RecyclerView.Adapter<TopSongAdapter.TopSongViewHolder>(
     override fun onBindViewHolder(holder: TopSongViewHolder, position: Int) {
         val topSong = topSongList[position]
         Glide.with(holder.itemView.context)
-            .load(topSong.coverImageUrl)
+            .load(topSong.song.coverImageUrl)
             .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))// bo góc ảnh
             .placeholder(R.drawable.placeholder_image)
             .error(R.drawable.placeholder_image)
             .into(holder.topSongImage)
 
-        holder.topSongTitle.text = topSong.title
+        holder.topSongTitle.text = topSong.song.title
+        holder.itemView.setOnClickListener {
+            onTopSongClick?.invoke(topSong.song)
+        }
     }
     @SuppressLint("NotifyDataSetChanged")
-    fun updateTopSong(topSongList: List<Songs>) {
+    fun updateTopSong(topSongList: List<topSong>) {
         this.topSongList = topSongList
         notifyDataSetChanged() // Cập nhật giao diện
+    }
+
+    fun setOnTopSongClick(listener: ((Songs) -> Unit)?) {
+        onTopSongClick = listener
     }
 }

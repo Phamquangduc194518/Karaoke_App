@@ -187,7 +187,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@{ViewModelMusic.isPlaying() ? @drawable/play_action : @drawable/play}"
                 android:layout_marginEnd="20dp"
-                android:onClick="@{()->ViewModelMusic.togglePlayPause(`https://drive.google.com/uc?export=download&amp;id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk`)}"
+                android:onClick="@{()->ViewModelMusic.togglePlayPause(ViewModelMusic.song.audioUrl)}"
                 app:tintColor="@{ViewModelMusic.isPlaying}"
                 />
 

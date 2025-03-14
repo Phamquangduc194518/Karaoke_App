@@ -15,8 +15,12 @@ class ViewModelFactory(
 
         return when {
             modelClass.isAssignableFrom(ViewModelLogin::class.java) -> {
-                Log.d("ViewModelFactory", "Creating ViewModelLogin")
+                Log.d("ViewModelFactory", "Creating ViewModelLogin2")
                 ViewModelLogin(repository, application) as T
+            }
+            modelClass.isAssignableFrom(ViewModelHome::class.java) -> {
+                Log.d("ViewModelFactory", "Creating ViewModelLogin")
+                ViewModelHome(repository, application) as T
             }
             modelClass.isAssignableFrom(MusicPlayerViewModel::class.java) -> {
                 Log.d("ViewModelFactory", "Creating MusicPlayerViewModel")

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.duc.karaoke_app.ui.fragment.HomeFragment"
+        tools:layout="@layout/fragment_home"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_navigation_home_to_albumDetailsFragment"
+            app:destination="@id/albumDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_song_ca"
+        android:name="com.duc.karaoke_app.ui.fragment.DuetSongFragment"
+        android:label="DuetSongFragment"
+        tools:layout="@layout/fragment_duet_song"/>
+    <fragment
+        android:id="@+id/navigation_live"
+        android:name="com.duc.karaoke_app.ui.fragment.LiveStreamFragment"
+        android:label="LiveStreamFragment"
+        tools:layout="@layout/fragment_live_stream"/>
+    <fragment
+        android:id="@+id/navigation_learn"
+        android:name="com.duc.karaoke_app.ui.fragment.LearnFragment"
+        android:label="LearnFragment"
+        tools:layout="@layout/fragment_learn">
+        <action
+            android:id="@+id/action_navigation_learn_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.duc.karaoke_app.ui.fragment.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_navigation_profile_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/albumDetailsFragment"
+        android:name="com.duc.karaoke_app.ui.fragment.AlbumDetailsFragment"
+        android:label="AlbumDetailsFragment"
+        tools:layout="@layout/fragment_album_details">
+        <action
+            android:id="@+id/action_albumDetailsFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.duc.karaoke_app.ui.fragment.EditProfileFragment"
+        android:label="EditProfileFragment"
+        tools:layout="@layout/fragment_edit_profile"/>
+    <fragment
+        android:id="@+id/newsFeed"
+        android:name="com.duc.karaoke_app.ui.fragment.NewsFeed"
+        android:label="fragment_new_feed"
+        tools:layout="@layout/fragment_new_feed" />
+    <fragment
+        android:id="@+id/learnToSingFragment"
+        android:name="com.duc.karaoke_app.ui.fragment.LearnToSingFragment"
+        android:label="LearnToSingFragment"
+        tools:layout="@layout/fragment_learn_to_sing"/>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.duc.karaoke_app.ui.fragment.UserProfileFragment"
+        android:label="UserProfileFragment"
+        tools:layout="@layout/fragment_user_profile"/>
+</navigation>

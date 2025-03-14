@@ -13,7 +13,9 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/rounded_background"
         android:scaleType="centerCrop"
+        android:clipToOutline="true"
         android:contentDescription="Playlist Cover" />
 
     <!-- Nội dung playlist -->
@@ -57,6 +59,6 @@
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:src="@drawable/heart"
-        app:tint="#666"
+        app:tint="#666666"
         android:contentDescription="Favorite Icon" />
 </LinearLayout>

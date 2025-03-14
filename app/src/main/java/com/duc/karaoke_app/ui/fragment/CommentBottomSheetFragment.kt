@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.ViewModelHome
 import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
 import com.duc.karaoke_app.databinding.FragmentCommentBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,7 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class CommentBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentCommentBottomSheetBinding
-    private val viewModel: ViewModelLogin by activityViewModels{
+    private val viewModel: ViewModelHome by activityViewModels{
         ViewModelFactory(Repository(), requireActivity().application)
     }
     override fun onCreateView(
@@ -38,13 +39,8 @@ class CommentBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerViewComments.layoutManager= LinearLayoutManager(requireActivity())
-        viewModel.commentList.observe(viewLifecycleOwner){list->
-            Log.e("commet view","$list")
-            if(list != null){
-               refreshFragment()
-            }
-        }
 
+        viewModel.getComments()
         binding.ivClose.setOnClickListener{
             fragmentManager?.beginTransaction()?.remove(this)?.commitAllowingStateLoss()
         }
@@ -59,11 +55,11 @@ class CommentBottomSheetFragment : BottomSheetDialogFragment() {
         bottomSheet?.let {
             val behavior = BottomSheetBehavior.from(it)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED // Mở rộng ngay khi hiển thị
-            behavior.peekHeight = 1200 // Đặt chiều cao theo dp
+            behavior.peekHeight = 500 // Đặt chiều cao theo dp
 
             // Đặt chiều cao của BottomSheet theo mong muốn
             val layoutParams = it.layoutParams
-            layoutParams.height = 1000 // Đổi thành chiều cao bạn muốn
+            layoutParams.height = 500 // Đổi thành chiều cao bạn muốn
             it.layoutParams = layoutParams
         }
     }
@@ -74,9 +70,6 @@ class CommentBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
-    fun refreshFragment() {
-        parentFragmentManager.beginTransaction().detach(this).attach(this).commit()
-    }
 
 
 }

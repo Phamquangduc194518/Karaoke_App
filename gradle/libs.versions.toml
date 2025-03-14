@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.0"
+billing = "6.0.1"
 circleimageview = "3.1.0"
 converterGson = "2.9.0"
 core = "12.0.0"
@@ -30,12 +31,14 @@ constraintlayout = "2.2.0"
 annotation = "1.6.0"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
+mpandroidchart = "v3.1.0"
 navigationFragmentKtx = "2.8.3"
 playServicesAuth = "21.2.0"
 playServicesAuthVersion = "21.3.0"
 retrofit = "2.9.0"
 rtmp = " 2.0.0"
 rtplibrary = "2.1.5"
+shimmer = "0.5.0"
 viewpager2 = "1.1.0"
 
 [libraries]
@@ -44,6 +47,7 @@ androidx-lifecycle-livedata-ktx-v251 = { module = "androidx.lifecycle:lifecycle-
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigationFragmentKtx" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 core = { module = "com.pierfrancescosoffritti.androidyoutubeplayer:core", version.ref = "core" }
@@ -72,11 +76,13 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 play-services-auth-v2130 = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 rtmp = { module = "com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtmp", version.ref = "rtmp" }
 rtplibrary = { module = "com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary", version.ref = "rtplibrary" }
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

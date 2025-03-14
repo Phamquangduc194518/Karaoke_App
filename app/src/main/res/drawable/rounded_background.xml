@@ -5,6 +5,6 @@
     <!-- Bo góc -->
     <corners android:radius="16dp" />
 
-    <!-- Nền mặc định nếu ảnh chưa tải -->
-    <solid android:color="@android:color/darker_gray" />
+<!--    &lt;!&ndash; Nền mặc định nếu ảnh chưa tải &ndash;&gt;-->
+<!--    <solid android:color="@android:color/darker_gray" />-->
 </shape>

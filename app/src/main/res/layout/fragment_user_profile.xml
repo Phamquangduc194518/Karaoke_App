@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="ViewModelUserProfile"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
+            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
     </data>
 
     <RelativeLayout
@@ -15,44 +17,67 @@
         android:paddingTop="30dp"
         android:paddingEnd="16dp">
 
+        <RelativeLayout
+            android:id="@+id/rl_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/back2" />
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:text="@{ViewModelUserProfile.userProfileData.username}"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
         <!-- Profile Avatar Section -->
         <RelativeLayout
             android:id="@+id/profile_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center_horizontal">
+            android:layout_below="@+id/rl_navigation"
+            android:layout_marginTop="10dp">
 
             <!-- Avatar -->
             <ImageView
                 android:id="@+id/profileImage"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/custom_background_avatar"
                 android:padding="5dp"
+                imageUrl="@{ViewModelUserProfile.userProfileData.avatarUrl}"
                 android:scaleType="centerCrop" />
 
         </RelativeLayout>
 
         <!-- Username -->
         <TextView
-            android:id="@+id/profile_username"
+            android:id="@+id/tv_user_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/profile_section"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
-            android:text="Đỗ Đạt"
-            android:textStyle="bold"
+            android:text="@{ViewModelUserProfile.userProfileData.email}"
             android:textColor="@android:color/black"
-            android:textSize="22sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        <!-- Stats Section -->
         <LinearLayout
             android:id="@+id/stats_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/profile_username"
+            android:layout_below="@id/tv_user_id"
             android:layout_marginStart="30dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="30dp"
@@ -61,10 +86,12 @@
             android:weightSum="4">
 
             <LinearLayout
+                android:id="@+id/following"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:onClick="@{()-> ViewModelUserProfile.checkFollowClick()}"
                 android:orientation="vertical">
 
                 <TextView
@@ -72,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="17"
+                    android:text="@{ViewModelUserProfile.followingCount.toString()}"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -82,14 +109,16 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Đã follow"
-                    android:textColor="@color/black" />
+                    android:textColor="@android:color/darker_gray" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/follower"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:onClick="@{()-> ViewModelUserProfile.checkFollowClick()}"
                 android:orientation="vertical">
 
                 <TextView
@@ -97,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="231"
+                    android:text="@{ViewModelUserProfile.followerCount.toString()}"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
@@ -107,41 +136,79 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Follower"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="2690"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Thích"
-                    android:textColor="@color/black" />
+                    android:textColor="@android:color/darker_gray" />
             </LinearLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rl_follow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/stats_section"
+            android:orientation="horizontal"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:weightSum="2">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tv_follow"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/button_follow"
+                    android:backgroundTint="#Fe2c55"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Theo dõi"
+                    android:textColor="@android:color/white"
+                    android:textSize="14dp"
+                    android:visibility="@{ViewModelUserProfile.isFollowing ? View.GONE : View.VISIBLE}"
+                    android:onClick="@{()-> ViewModelUserProfile.follow()}"/>
+
+                <TextView
+                    android:id="@+id/tv_unFollow"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/button_follow"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Đã Theo Dõi"
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp"
+                    android:visibility="@{ViewModelUserProfile.isFollowing ? View.VISIBLE : View.GONE}"
+                    android:onClick="@{()-> ViewModelUserProfile.unfollow()}"
+                    />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:background="@drawable/button_follow"
+                android:backgroundTint="@android:color/darker_gray"
+                android:text="Tin nhắn"
+                android:textSize="14dp" />
+
+        </LinearLayout>
+
 
         <!-- Description -->
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/stats_section"
+            android:layout_below="@id/rl_follow"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
@@ -149,36 +216,6 @@
             android:gravity="center_horizontal"
             android:maxWidth="400dp"
             android:text="Yêu màu hồng, ghét sự giả dối"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/tv_follow"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_below="@id/description"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:gravity="center_horizontal"
-            android:text="Theo Dõi"
-            android:textSize="20dp"
-            android:padding="10dp"
-            android:background="@drawable/button_post"
-            android:backgroundTint="#FF4081"
-            android:visibility="gone"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:id="@+id/tv_unFollow"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_below="@id/description"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:gravity="center_horizontal"
-            android:text="Đã Theo Dõi"
-            android:textSize="20dp"
-            android:padding="10dp"
-            android:background="@drawable/button_post"
             android:textColor="@android:color/black" />
 
     </RelativeLayout>

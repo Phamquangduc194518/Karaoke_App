@@ -1,77 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.fragment.VideoPlayerFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-        android:id="@+id/youtubePlayerView"
+    <data>
+        <variable
+            name="ViewModelVideoPlayer"
+            type="com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel" />
+    </data>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.fragment.VideoPlayerFragment">
 
-    <!-- res/layout/item_comment.xml -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <!-- Ảnh đại diện người dùng -->
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_launcher_background"
-            android:scaleType="centerCrop"
-            android:background="?attr/selectableItemBackground" />
-
-        <!-- Thông tin bình luận -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+            android:id="@+id/youtubePlayerView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            app:videoPlay="@{ViewModelVideoPlayer.video.url}"
+            android:visibility="visible" />
 
-            <!-- Tên người dùng và thời gian -->
+        <!-- res/layout/item_comment.xml -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <!-- Ảnh đại diện người dùng -->
+            <ImageView
+                android:id="@+id/ivAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:scaleType="centerCrop"
+                android:src="@drawable/music" />
+
+            <!-- Thông tin bình luận -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- Tên người dùng và thời gian -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvUsername"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Admin"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="2 hours ago"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Nội dung bình luận -->
+                <TextView
+                    android:id="@+id/tvComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{ViewModelVideoPlayer.video.title}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Bình Luận"
+                android:textStyle="bold"
+                android:layout_marginEnd="3dp"
+                android:textColor="@color/black"
+                android:textSize="16dp">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="14dp"
+                android:text="(20)">
+            </TextView>
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvUsername"
-                    android:layout_width="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_video"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Đức Phạm"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/tvTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="2 hours ago"
-                    android:textSize="12sp"
-                    android:textColor="@color/black" />
+                    android:nestedScrollingEnabled="false"
+                    android:scrollbars="none"
+                    android:adapter="@{ViewModelVideoPlayer.commentAdapter}"
+                    tools:listitem="@layout/comment_item" />
             </LinearLayout>
 
-            <!-- Nội dung bình luận -->
-            <TextView
-                android:id="@+id/tvComment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="This is a sample comment for the video."
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/ivUserAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="User Avatar"
+                android:scaleType="centerCrop"
+                />
+
+            <EditText
+                android:id="@+id/etComment"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_edittext"
+                android:gravity="center_vertical"
+                android:hint="Viết bình luận..."
+                android:maxLines="3"
+                android:minLines="1"
+                android:paddingStart="12dp"
+                android:textColor="@color/black"
                 android:textSize="14sp"
-                android:textColor="@color/black" />
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:text="@={ViewModelVideoPlayer.comment}" />
+
+            <ImageView
+                android:id="@+id/btnSendComment"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:onClick="@{()->ViewModelVideoPlayer.createCommentVideo()}"
+                android:contentDescription="Send Comment"
+                android:src="@drawable/send"
+                app:tint="#1877F2" />
         </LinearLayout>
+
     </LinearLayout>
-
-
-
-</LinearLayout>
+</layout>
