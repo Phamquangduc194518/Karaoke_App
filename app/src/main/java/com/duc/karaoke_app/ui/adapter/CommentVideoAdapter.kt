@@ -11,9 +11,11 @@ import com.bumptech.glide.Glide
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.CommentDone
 import com.duc.karaoke_app.data.model.CommentVideoDone
+import com.duc.karaoke_app.utils.ConversionTime
 
 class CommentVideoAdapter : RecyclerView.Adapter<CommentVideoAdapter.CommentVideoViewHolder>() {
     private var comments: List<CommentVideoDone> = listOf()
+    val conversionTime = ConversionTime()
     class CommentVideoViewHolder(view: View): RecyclerView.ViewHolder(view){
         val avatar: ImageView = itemView.findViewById(R.id.ivAvatar)
         val userName: TextView = itemView.findViewById(R.id.tvUserName)
@@ -34,7 +36,7 @@ class CommentVideoAdapter : RecyclerView.Adapter<CommentVideoAdapter.CommentVide
     override fun onBindViewHolder(holder: CommentVideoViewHolder, position: Int) {
         val comment = comments[position]
         holder.commentText.text= comment.comment_text
-        holder.commentTime.text= comment.comment_time
+        holder.commentTime.text= conversionTime.formatRelativeTimePretty(comment.comment_time)
         holder.userName.text= comment.user.username
         Glide.with(holder.itemView.context)
             .load(comment.user.avatar_url)

@@ -19,10 +19,13 @@ import com.duc.karaoke_app.data.model.LiveStream
 import com.duc.karaoke_app.data.model.LiveStreamRequest
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.Lyric
+import com.duc.karaoke_app.data.model.NotificationResponse
 import com.duc.karaoke_app.data.model.Post
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
+import com.duc.karaoke_app.data.model.SearchResponse
 import com.duc.karaoke_app.data.model.Songs
+import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.Topic
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
@@ -37,6 +40,7 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -165,6 +169,19 @@ interface ApiService {
     @Multipart
     @POST("/api/uploadAvatar")
     suspend fun uploadAvatar(@Header("Authorization") token: String,  @Part image: MultipartBody.Part): Response<UploadAvatarResponse>
+
+    @Multipart
+    @POST("/api/uploadImagePost")
+    suspend fun uploadImagePost(@Part image: MultipartBody.Part): Response<UploadAvatarResponse>
+
+    @GET("/api/stickers")
+    suspend fun getStickers() : Response<List<Sticker>>
+
+    @GET("/api/search")
+    suspend fun search(@Query("q") query: String, @Query("type") type: String?=null): Response<SearchResponse>
+
+    @GET("/api/getFollowNotification")
+    suspend fun getFollowNotification(@Header("Authorization") token: String): Response<NotificationResponse>
 
     companion object RetrofitInstance{
         // Tạo Retrofit cho API YouTube

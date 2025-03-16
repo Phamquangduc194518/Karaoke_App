@@ -44,6 +44,13 @@ class CommentBottomSheetFragment : BottomSheetDialogFragment() {
         binding.ivClose.setOnClickListener{
             fragmentManager?.beginTransaction()?.remove(this)?.commitAllowingStateLoss()
         }
+
+        viewModel.isSticker.observe(viewLifecycleOwner){ isSticker->
+            if(isSticker){
+                val commentFragment = StickerChooserFragment.newInstance()
+                commentFragment.show(childFragmentManager, commentFragment.tag)
+            }
+        }
     }
 
     @SuppressLint("ResourceType")

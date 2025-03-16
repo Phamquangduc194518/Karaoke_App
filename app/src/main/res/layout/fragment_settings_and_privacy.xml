@@ -30,6 +30,7 @@
                 android:text="Cài đặt và quyền riêng tư"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
+                android:onClick="@{() -> ViewModelLoginSettingAndPrivacy.setNavigate()}"
                 android:textStyle="bold" />
 
             <!-- Section Tài khoản -->

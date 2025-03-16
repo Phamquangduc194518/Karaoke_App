@@ -14,6 +14,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
@@ -30,10 +32,10 @@ class EditProfileFragment : Fragment() {
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             // Chuyển Uri -> File
+            viewmodel.setSelectedImageUri(it)
             val file = viewmodel.uriToFile(requireContext(), it)
             if (file != null) {
                 // Gọi ViewModel để upload
-                val token = "JWT_TOKEN_HERE"
                 viewmodel.uploadAvatar(file)
             }
         }
@@ -75,6 +77,34 @@ class EditProfileFragment : Fragment() {
 
         editProfileBinding.cameraIcon.setOnClickListener{
             pickImageLauncher.launch("image/*")
+        }
+
+        viewmodel.selectedImageUri.observe(viewLifecycleOwner){
+                uri ->
+            uri?.let {
+                // Ví dụ sử dụng Glide để load ảnh
+                Glide.with(requireContext())
+                    .load(uri)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(editProfileBinding.profileImage)
+            }
+        }
+
+        viewmodel.updateProfileSuccess.observe(viewLifecycleOwner){ isUpdate->
+            if(isUpdate){
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ProfileFragment())
+                    .commit()
+            }
+        }
+
+        viewmodel.isNavigate.observe(viewLifecycleOwner){
+            if(viewmodel.isNavigate.value == true){
+                viewmodel.resetNavigate()
+            }
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ProfileFragment())
+                .commit()
         }
 
     }

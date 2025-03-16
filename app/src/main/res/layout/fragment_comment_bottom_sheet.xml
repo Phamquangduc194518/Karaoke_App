@@ -53,8 +53,6 @@
             android:background="#F5F5F5" />
 
         <!-- Danh sách bình luận -->
-
-        <!-- Ô nhập bình luận -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewComments"
             android:layout_width="match_parent"
@@ -70,6 +68,7 @@
             android:layout_height="1dp"
             android:background="#F5F5F5" />
 
+        <!-- Ô nhập bình luận và nút hiển thị sticker -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,8 +83,7 @@
                 android:layout_height="40dp"
                 android:contentDescription="User Avatar"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{CommentBottomSheetViewModel.userProfile.userInfo.avatarUrl}"
-                />
+                app:imageUrlCircle="@{CommentBottomSheetViewModel.userProfile.userInfo.avatarUrl}" />
 
             <EditText
                 android:id="@+id/etComment"
@@ -104,11 +102,21 @@
                 android:layout_marginEnd="5dp"
                 android:text="@={CommentBottomSheetViewModel.comment}" />
 
+            <!-- Nút hiển thị danh sách sticker -->
+            <ImageView
+                android:id="@+id/btnShowSticker"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="Show Sticker"
+                android:src="@drawable/ic_sticker"
+                android:onClick="@{() -> CommentBottomSheetViewModel.getStickers()}" />
+
             <ImageView
                 android:id="@+id/btnSendComment"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:onClick="@{()->CommentBottomSheetViewModel.createComment()}"
+                android:onClick="@{() -> CommentBottomSheetViewModel.createComment()}"
                 android:contentDescription="Send Comment"
                 android:src="@drawable/send"
                 app:tint="#1877F2" />

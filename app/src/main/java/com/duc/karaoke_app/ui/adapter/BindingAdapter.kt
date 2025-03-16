@@ -82,7 +82,19 @@ object BindingAdapter {
         if(!url.isNullOrEmpty()){
             Glide.with(view.context)
                 .load(url)
-                .transform(CircleCrop())
+                .placeholder(R.drawable.placeholder_image)
+                .error(R.drawable.placeholder_image)
+                .into(view)
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("imageUrlCircle")
+    fun loadImageCircle(view: ImageView, url: String?){
+        if(!url.isNullOrEmpty()){
+            Glide.with(view.context)
+                .load(url)
+                .apply(RequestOptions.circleCropTransform())
                 .placeholder(R.drawable.placeholder_image)
                 .error(R.drawable.placeholder_image)
                 .into(view)

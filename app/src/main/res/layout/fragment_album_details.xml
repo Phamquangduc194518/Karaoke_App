@@ -35,7 +35,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Back"
                     android:scaleType="centerCrop"
-
+                    android:onClick="@{() -> ViewModelAlbumDetail.setNavigate()}"
                     android:src="@drawable/previous"
                     app:tint="@color/black" />
 

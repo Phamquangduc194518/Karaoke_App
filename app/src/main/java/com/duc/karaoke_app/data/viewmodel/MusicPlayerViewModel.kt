@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -21,6 +22,7 @@ import com.duc.karaoke_app.data.model.GoogleDriveFile
 import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.Songs
+import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.Video
 import com.duc.karaoke_app.ui.adapter.AlbumAdapter
 import com.duc.karaoke_app.ui.adapter.CommentPostAdapter
@@ -44,6 +46,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.net.URLEncoder
 
 class MusicPlayerViewModel(private val repository: Repository, application: Application) :
@@ -75,6 +78,14 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
     private val _isUploading = MutableLiveData(false)
     val isUploading: LiveData<Boolean>
         get() = _isUploading
+
+    //lưu ảnh đã chọn
+    private val _selectedImageUri  = MutableLiveData<Uri?>()
+    val selectedImageUri: LiveData<Uri?> get() = _selectedImageUri
+
+    //lưu kết quả ảnh load lên
+    private val _uploadResult = MutableLiveData<UploadAvatarResponse>()
+    val uploadResult: LiveData<UploadAvatarResponse> get() = _uploadResult
 
     var titlePost = MutableLiveData("")
     var recordingPath = MutableLiveData("")
@@ -229,6 +240,7 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
             val request = RecordedSongs(
                 songName = song.value?.title ?: "",
                 recordingPath = recordingPath.value ?: "",
+                coverImageUrl = _uploadResult.value?.avatarUrl ?: "",
                 title = titlePost.value ?: ""
             )
             try {
@@ -318,6 +330,37 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
                 }
             } catch (e: Exception) {
                 Log.e("Comment", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun uriToFile(context: Context, uri: Uri): File? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+            val tempFile = File.createTempFile("avatar", ".jpg", context.cacheDir)
+            tempFile.outputStream().use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun setSelectedImageUri(uri: Uri) {
+        _selectedImageUri.value = uri
+    }
+
+    fun uploadImagePost(file: File){
+        viewModelScope.launch {
+            try{
+                val success = repository.uploadImagePost(file)
+                if (success.isSuccessful) {
+                    _uploadResult.value = success.body()
+                }
+            }catch(e: Exception){
+                Log.e("uploadAvatar", "Lỗi kết nối: ${e.message}")
             }
         }
     }

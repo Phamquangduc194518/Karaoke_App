@@ -36,6 +36,7 @@ class DuetSongFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rcvDuetSong.layoutManager= LinearLayoutManager(requireContext())
+        viewModel.getIsFavoriteToSongID()
         viewModel.selectedDuetSong.observe(viewLifecycleOwner){song->
             song.let {
                 Log.e("DuetSongFragment", "Selected song: ${song}")

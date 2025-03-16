@@ -21,10 +21,13 @@ import com.duc.karaoke_app.data.model.FollowingResponse
 import com.duc.karaoke_app.data.model.LiveStreamRequest
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.Lyric
+import com.duc.karaoke_app.data.model.NotificationResponse
 import com.duc.karaoke_app.data.model.Post
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
+import com.duc.karaoke_app.data.model.SearchResponse
 import com.duc.karaoke_app.data.model.Songs
+import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.Topic
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
@@ -124,7 +127,7 @@ class Repository() {
         }
     }
 
-    fun getItemSlide(): List<Int>{
+    fun getItemSlide(): List<Int> {
         val listSlide = listOf(
             R.drawable.mau_poster_ca_nhac,
             R.drawable.mau_poster_ca_nhac_2,
@@ -146,8 +149,8 @@ class Repository() {
         }
     }
 
-    suspend fun getAllAlbum(): Response<List<Albums>>{
-        return withContext(Dispatchers.IO){
+    suspend fun getAllAlbum(): Response<List<Albums>> {
+        return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.getAllAlbum()
             } catch (e: Exception) {
@@ -156,51 +159,57 @@ class Repository() {
         }
     }
 
-    suspend fun createRecordedSong(token: String, recorded: RecordedSongs): Response<RecordedSongs>{
-        return withContext(Dispatchers.IO){
-            try{
-                apiServiceToLogin.createRecordedSong(token,recorded)
-            }catch(e: Exception){
+    suspend fun createRecordedSong(
+        token: String,
+        recorded: RecordedSongs
+    ): Response<RecordedSongs> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.createRecordedSong(token, recorded)
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getRecordedSongList(): Response<List<Post>>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getRecordedSongList(): Response<List<Post>> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getRecordedSongList()
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun createComment(token: String, comment: Comment): Response<Comment>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun createComment(token: String, comment: Comment): Response<Comment> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.createComment(token, comment)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getComments(songId: Int): Response<List<CommentDone>>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getComments(songId: Int): Response<List<CommentDone>> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getComments(songId)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun createLiveStream(token:String, liveStream: LiveStreamRequest): Response<LiveStreamRequest>{
-        return withContext(Dispatchers.IO){
-            try{
-                apiServiceToLogin.createLiveStream(token,liveStream)
-            }catch(e: Exception){
+    suspend fun createLiveStream(
+        token: String,
+        liveStream: LiveStreamRequest
+    ): Response<LiveStreamRequest> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.createLiveStream(token, liveStream)
+            } catch (e: Exception) {
                 throw e
             }
         }
@@ -216,172 +225,214 @@ class Repository() {
         }
     }
 
-    suspend fun getDuetLyric(lyricName: String): Response<List<Lyric>>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getDuetLyric(lyricName: String): Response<List<Lyric>> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getDuetLyric(lyricName)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getAllTopicsWithVideo(): Response<List<Topic>>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getAllTopicsWithVideo(): Response<List<Topic>> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getAllTopicsWithVideo()
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun createIsFavorite(token: String, songId: Int): Response<Favorite>{
-        return withContext(Dispatchers.IO){
-            try{
-                val request = Favorite(songId= songId)
-                apiServiceToLogin.createIsFavorite(token,request)
-            }catch(e: Exception){
+    suspend fun createIsFavorite(token: String, songId: Int): Response<Favorite> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val request = Favorite(songId = songId)
+                apiServiceToLogin.createIsFavorite(token, request)
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun removeIsFavorite(token: String, songId: Int): Response<FollowResponse>{
-        return withContext(Dispatchers.IO){
-            try{
-                apiServiceToLogin.removeIsFavorite(token,songId)
-            }catch(e: Exception){
+    suspend fun removeIsFavorite(token: String, songId: Int): Response<FollowResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.removeIsFavorite(token, songId)
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getIsFavorite(token: String): Response<FavoriteListResponse>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getIsFavorite(token: String): Response<FavoriteListResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getIsFavorite(token)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getIsFavoriteToSongID(token: String): Response<List<Int>>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getIsFavoriteToSongID(token: String): Response<List<Int>> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getIsFavoriteToSongID(token)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getUserInfo(token: String, user_id: Int): Response<User>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getUserInfo(token: String, user_id: Int): Response<User> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getUserInfo(token, user_id)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun follow(token: String, followingId: Int): Response<FollowResponse>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun follow(token: String, followingId: Int): Response<FollowResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
                 val request = Following(followingId = followingId)
                 apiServiceToLogin.follow(token, request)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun unfollow(token: String, followingId: Int): Response<FollowResponse>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun unfollow(token: String, followingId: Int): Response<FollowResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
                 val request = Following(followingId = followingId)
                 apiServiceToLogin.unfollow(token, request)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun checkFollowStatus(token: String, followingId: Int): Response<FollowStatusResponse>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun checkFollowStatus(token: String, followingId: Int): Response<FollowStatusResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.checkFollowStatus(token, followingId)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getFollowers(token: String, userId: Int): Response<FollowersResponse>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getFollowers(token: String, userId: Int): Response<FollowersResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getFollowers(token, userId)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getFollowing(token: String, userId: Int): Response<FollowingResponse>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getFollowing(token: String, userId: Int): Response<FollowingResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getFollowing(token, userId)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getSongsByAlbum(albumId: Int): Response<AlbumDetailList>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getSongsByAlbum(albumId: Int): Response<AlbumDetailList> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getSongsByAlbum(albumId)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun createCommentVideo(token: String, comment: CommentVideo): Response<CommentVideo>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun createCommentVideo(token: String, comment: CommentVideo): Response<CommentVideo> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.createCommentVideo(token, comment)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun getCommentVideo(videoId: Int): Response<List<CommentVideoDone>>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun getCommentVideo(videoId: Int): Response<List<CommentVideoDone>> {
+        return withContext(Dispatchers.IO) {
+            try {
                 apiServiceToLogin.getCommentsVideo(videoId)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
-    suspend fun uploadAvatar(token: String, image: java.io.File ): Response<UploadAvatarResponse>{
-        return withContext(Dispatchers.IO){
-            try{
+    suspend fun uploadAvatar(token: String, image: java.io.File): Response<UploadAvatarResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
                 // Tạo RequestBody cho file
                 val requestFile = image.asRequestBody("image/*".toMediaTypeOrNull())
                 // Tạo MultipartBody.Part
                 val body = MultipartBody.Part.createFormData("image", image.name, requestFile)
                 apiServiceToLogin.uploadAvatar(token, body)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 throw e
             }
         }
     }
 
+    suspend fun uploadImagePost(image: java.io.File): Response<UploadAvatarResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                // Tạo RequestBody cho file
+                val requestFile = image.asRequestBody("image/*".toMediaTypeOrNull())
+                // Tạo MultipartBody.Part
+                val body = MultipartBody.Part.createFormData("image", image.name, requestFile)
+                apiServiceToLogin.uploadImagePost(body)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
 
+    suspend fun getStickers(): Response<List<Sticker>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getStickers()
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun search(query:String, type: String?): Response<SearchResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.search(query, type)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getFollowNotification(token: String): Response<NotificationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getFollowNotification(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
 }

@@ -37,6 +37,15 @@ class VipUpgradeFragment : Fragment() {
             // Gọi phương thức mua VIP từ ViewModel
             viewModel.onPurchaseVipClicked(requireActivity())
         }
+
+        viewModel.isNavigate.observe(viewLifecycleOwner){
+            if(viewModel.isNavigate.value == true){
+                viewModel.resetNavigate()
+            }
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SettingsAndPrivacyFragment())
+                .commit()
+        }
     }
 
     private fun observeViewModel() {

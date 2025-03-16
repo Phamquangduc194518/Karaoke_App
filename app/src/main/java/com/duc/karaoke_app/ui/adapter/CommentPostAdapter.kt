@@ -9,41 +9,122 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.duc.karaoke_app.R
+import com.duc.karaoke_app.data.model.Comment
 import com.duc.karaoke_app.data.model.CommentDone
+import com.duc.karaoke_app.utils.ConversionTime
 
-class CommentPostAdapter : RecyclerView.Adapter<CommentPostAdapter.CommentViewHolder>() {
+class CommentPostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var comments: List<CommentDone> = listOf()
-    class CommentViewHolder(view: View): RecyclerView.ViewHolder(view){
-        val avatar: ImageView = itemView.findViewById(R.id.ivAvatar)
-        val userName: TextView = itemView.findViewById(R.id.tvUserName)
-        val commentTime: TextView = itemView.findViewById(R.id.tvTimePosted)
-        val commentText: TextView = itemView.findViewById(R.id.tvCommentText)
-
+    companion object {
+        const val TYPE_TEXT = 0
+        const val TYPE_IMAGE = 1
+        const val TYPE_STICKER = 2
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.comment_item, parent, false)
-        return CommentViewHolder(view)
+    override fun getItemViewType(position: Int): Int {
+        val comment = comments[position]
+        return when {
+            // Ưu tiên sticker nếu có
+            !comment.urlSticker.isNullOrBlank() -> TYPE_STICKER
+            // Nếu có ảnh
+            !comment.urlImage.isNullOrBlank() -> TYPE_IMAGE
+            else -> TYPE_TEXT
+        }
+    }
+
+    // ViewHolder cho bình luận text
+    class TextCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvComment: TextView = itemView.findViewById(R.id.tvCommentText)
+        private val ivAvatar: ImageView = itemView.findViewById(R.id.ivAvatar)
+        private val tvUserName: TextView = itemView.findViewById(R.id.tvUserName)
+        private val tvTimePosted: TextView = itemView.findViewById(R.id.tvTimePosted)
+        fun bind(comment: CommentDone) {
+            tvComment.text = comment.comment_text
+            val conversionTime = ConversionTime()
+            tvTimePosted.text = conversionTime.formatRelativeTimePretty(comment.comment_time)
+            tvUserName.text = comment.user.username
+            Glide.with(itemView.context)
+                .load(comment.user.avatar_url)
+                .into(ivAvatar)
+        }
+    }
+
+    // ViewHolder cho bình luận có ảnh
+    class ImageCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageComment: ImageView = itemView.findViewById(R.id.imageComment)
+        private val ivAvatar: ImageView = itemView.findViewById(R.id.ivAvatarComment)
+        private val tvUserName: TextView = itemView.findViewById(R.id.tvUserName)
+        private val tvTimePosted: TextView = itemView.findViewById(R.id.tvTimePosted)
+        fun bind(comment: CommentDone) {
+            tvUserName.text = comment.user.username
+            val conversionTime = ConversionTime()
+            tvTimePosted.text = conversionTime.formatRelativeTimePretty(comment.comment_time)
+            Glide.with(itemView.context)
+                .load(comment.user.avatar_url)
+                .into(ivAvatar)
+            Glide.with(itemView.context)
+                .load(comment.urlSticker)
+                .into(imageComment)
+        }
+    }
+
+    // ViewHolder cho bình luận có sticker
+    class StickerCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageComment: ImageView = itemView.findViewById(R.id.imageComment)
+        private val ivAvatar: ImageView = itemView.findViewById(R.id.ivAvatarComment)
+        private val tvUserName: TextView = itemView.findViewById(R.id.tvUserName)
+        private val tvTimePosted: TextView = itemView.findViewById(R.id.tvTimePosted)
+        fun bind(comment: CommentDone) {
+            tvUserName.text = comment.user.username
+            val conversionTime = ConversionTime()
+            tvTimePosted.text = conversionTime.formatRelativeTimePretty(comment.comment_time)
+            Glide.with(itemView.context)
+                .load(comment.user.avatar_url)
+                .into(ivAvatar)
+            Glide.with(itemView.context)
+                .load(comment.urlSticker)
+                .into(imageComment)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            TYPE_IMAGE -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_comment_sticker, parent, false)
+                ImageCommentViewHolder(view)
+            }
+
+            TYPE_STICKER -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_comment_sticker, parent, false)
+                StickerCommentViewHolder(view)
+            }
+
+            else -> { // TYPE_TEXT
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.comment_item, parent, false)
+                TextCommentViewHolder(view)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return comments.size
     }
 
-    override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val comment = comments[position]
-        holder.commentText.text= comment.comment_text
-        holder.commentTime.text= comment.comment_time
-        holder.userName.text= comment.user.username
-        Glide.with(holder.itemView.context)
-            .load(comment.user.avatar_url)
-            .into(holder.avatar)
-
+        when(holder){
+            is TextCommentViewHolder -> holder.bind(comment)
+            is ImageCommentViewHolder -> holder.bind(comment)
+            is StickerCommentViewHolder -> holder.bind(comment)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateCommentLists(newComment: List<CommentDone>){
-        comments= newComment
+    fun updateCommentLists(newComment: List<CommentDone>) {
+        comments = newComment
         notifyDataSetChanged()
     }
 

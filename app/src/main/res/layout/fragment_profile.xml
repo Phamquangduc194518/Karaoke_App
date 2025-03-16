@@ -81,7 +81,7 @@
                 android:layout_height="130dp"
                 android:background="@drawable/custom_background_avatar"
                 android:padding="5dp"
-                app:imageUrl="@{ViewModelProfile.userProfile.userInfo.avatarUrl}"
+                app:imageUrlCircle="@{ViewModelProfile.userProfile.userInfo.avatarUrl}"
                 android:scaleType="centerCrop" />
 
             <com.airbnb.lottie.LottieAnimationView
@@ -187,7 +187,7 @@
 
         <!-- Description -->
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/tv_sologan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/stats_section"
@@ -197,14 +197,14 @@
             android:layout_marginEnd="20dp"
             android:gravity="center_horizontal"
             android:maxWidth="400dp"
-            android:text="Khi mà bạn Stress bởi những thứ Web3 mang tới cho bạn nhứng điều thú vị "
+            android:text="@{ViewModelProfile.userProfile.userInfo.slogan}"
             android:textColor="@android:color/black" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tl_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/description"
+            android:layout_below="@id/tv_sologan"
             />
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp2_profile"

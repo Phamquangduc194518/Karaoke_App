@@ -57,6 +57,15 @@ class AlbumDetailsFragment : Fragment() {
 
             }
         }
+
+        viewModel.isNavigate.observe(viewLifecycleOwner){
+            if(viewModel.isNavigate.value == true){
+                viewModel.resetNavigate()
+            }
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, HomeFragment())
+                .commit()
+        }
     }
 
 }

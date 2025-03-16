@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,8 +46,7 @@ class HomeFragment : Fragment() {
         homeBinding.recyclerViewTopSong.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
         homeBinding.recyclerViewPlayList.layoutManager = LinearLayoutManager(requireContext())
         homeBinding.recyclerFamousPerson.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        homeBinding.recyclerAlbum.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        homeBinding.recyclerAlbum.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         viewModel.selectedSong.observe(viewLifecycleOwner) { song ->
             song.let {
@@ -90,6 +90,25 @@ class HomeFragment : Fragment() {
             if (shouldNavigate) {
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, AllSongsFragment())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+        viewModel.isClickSearch.observe(viewLifecycleOwner){isClick->
+            if(isClick){
+                viewModel.resetClickSearch()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, SearchResultFragment())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+
+        viewModel.isClickNotification.observe(viewLifecycleOwner){isClick->
+            if(isClick){
+                viewModel.resetClickNotification()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, NotificationFragment())
                     .addToBackStack(null)
                     .commit()
             }

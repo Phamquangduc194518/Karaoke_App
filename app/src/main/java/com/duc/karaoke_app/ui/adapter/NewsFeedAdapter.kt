@@ -16,10 +16,12 @@ import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.Post
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.viewmodel.ViewModelHome
+import com.duc.karaoke_app.utils.ConversionTime
 
 class NewsFeedAdapter(private val viewModel: ViewModelHome) : RecyclerView.Adapter<NewsFeedAdapter.NewsFeedViewHolder>() {
     private var postLists: List<Post> = listOf()
     private var onAvatarClick: ((Int) -> Unit)? = null
+    val conversionTime = ConversionTime()
 
     inner class NewsFeedViewHolder(view: View): RecyclerView.ViewHolder(view){
          val avatar: ImageView = itemView.findViewById(R.id.ivAvatarPost)
@@ -61,7 +63,7 @@ class NewsFeedAdapter(private val viewModel: ViewModelHome) : RecyclerView.Adapt
         val post = postLists[position]
         holder.userName.text= post.user.username
         holder.postContent.text= post.title
-        holder.postTime.text=post.time
+        holder.postTime.text=conversionTime.formatRelativeTimePretty(post.time)
         holder.likeCount.text= post.likes_count.toString()
         holder.commentCount.text= post.comments_count.toString()
         holder.btnComment.setOnClickListener{

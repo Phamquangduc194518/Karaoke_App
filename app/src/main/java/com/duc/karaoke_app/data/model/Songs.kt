@@ -54,6 +54,9 @@ data class RecordedSongs(
     @SerializedName("recording_path")
     val recordingPath: String,
 
+    @SerializedName("cover_image_url")
+    val coverImageUrl: String,
+
     @SerializedName("title")
     val title: String,
 

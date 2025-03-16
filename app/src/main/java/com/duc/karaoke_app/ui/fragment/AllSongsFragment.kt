@@ -72,7 +72,6 @@ class AllSongsFragment : Fragment() {
         lineChart.invalidate() // Refresh biểu đồ
         lineChart.animateX(1000)
         allSongsBinding.rcvAllSongs.layoutManager= LinearLayoutManager(requireContext())
-        viewModel.getIsFavoriteToSongIDOfAllSong()
 
         viewModel.selectedSong.observe(viewLifecycleOwner) { song ->
             song.let {

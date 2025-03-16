@@ -77,11 +77,18 @@
             app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
             <ImageView
-                android:id="@+id/ivCover2"
+                android:id="@+id/iv_image_post"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{PostAudioViewModel.song.coverImageUrl}" />
+                android:layout_gravity="center"/>
+            <ImageView
+                android:id="@+id/ivCover2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                android:src="@drawable/camera" />
         </androidx.cardview.widget.CardView>
 
 
