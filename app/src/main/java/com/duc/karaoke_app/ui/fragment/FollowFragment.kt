@@ -45,6 +45,13 @@ class FollowFragment : Fragment() {
                 else -> "Đã Follow"
             }
         }.attach()
+
+        viewmodel.isNavigate.observe(viewLifecycleOwner){
+            if(viewmodel.isNavigate.value == true){
+                viewmodel.resetNavigate()
+            }
+            requireActivity().supportFragmentManager.popBackStack()
+        }
     }
 
 }

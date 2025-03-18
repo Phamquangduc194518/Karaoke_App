@@ -34,23 +34,20 @@ class UserProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.isFollowClick.observe(viewLifecycleOwner) { isFollowClick ->
             if (isFollowClick) {
+                viewModel.resetCheckFollowClick()
                 val fragment = FollowFragment()
                 val transaction = requireActivity().supportFragmentManager
                 transaction.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
                     .commit()
             }
-            viewModel.resetCheckFollowClick()
         }
 
         viewModel.isNavigate.observe(viewLifecycleOwner){
             if(viewModel.isNavigate.value == true){
                 viewModel.resetNavigate()
             }
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment())
-                .commit()
+            requireActivity().supportFragmentManager.popBackStack()
         }
     }
 

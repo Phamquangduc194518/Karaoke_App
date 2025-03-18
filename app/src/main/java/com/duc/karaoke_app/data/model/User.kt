@@ -49,11 +49,6 @@ data class UserProfile(
     val gender: String? = null
 
 )
-
-data class UserResponse(
-    @SerializedName("userInfo") val userInfo: User
-)
-
 data class Comment(
     @SerializedName("song_id")
     val song_id: Int,
@@ -111,6 +106,10 @@ data class Follower(
 data class FollowResponse(
     val message: String?,
     val error: String?
+)
+
+data class ReadNotificationResponse(
+    val message: String?,
 )
 
 data class FollowStatusResponse(
@@ -205,7 +204,7 @@ data class NotificationUser(
     val type: String,
     val message: String,
     @SerializedName("is_read")
-    val isRead: Boolean,
+    var isRead: Boolean,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("updatedAt")
@@ -220,6 +219,12 @@ data class UserNotification(
     @SerializedName("avatar_url")
     val avatarUrl: String
 )
+
+data class FavoritePost(
+    @SerializedName("post_id")
+    val postId: Int
+)
+
 
 
 

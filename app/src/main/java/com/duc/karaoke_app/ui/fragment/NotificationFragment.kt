@@ -34,5 +34,11 @@ class NotificationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         notificationBinding.rcvNotifications.layoutManager= LinearLayoutManager(requireContext())
+
+        viewmodel.isReadNotifications.observe(viewLifecycleOwner){notificationId->
+            if(notificationId != 0){
+                viewmodel.readNotification()
+            }
+        }
     }
 }

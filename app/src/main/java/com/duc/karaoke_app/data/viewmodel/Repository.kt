@@ -12,6 +12,7 @@ import com.duc.karaoke_app.data.model.CommentVideo
 import com.duc.karaoke_app.data.model.CommentVideoDone
 import com.duc.karaoke_app.data.model.Favorite
 import com.duc.karaoke_app.data.model.FavoriteListResponse
+import com.duc.karaoke_app.data.model.FavoritePost
 import com.duc.karaoke_app.data.model.Follow
 import com.duc.karaoke_app.data.model.FollowResponse
 import com.duc.karaoke_app.data.model.FollowStatusResponse
@@ -23,6 +24,7 @@ import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.NotificationResponse
 import com.duc.karaoke_app.data.model.Post
+import com.duc.karaoke_app.data.model.ReadNotificationResponse
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.data.model.SearchResponse
@@ -32,18 +34,10 @@ import com.duc.karaoke_app.data.model.Topic
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
-import com.duc.karaoke_app.data.model.UserResponse
-import com.duc.karaoke_app.data.model.YouTubeVideoItem
-import com.duc.karaoke_app.data.model.checkFavoriteListResponse
 import com.duc.karaoke_app.data.model.topSong
 import com.duc.karaoke_app.data.network.ApiService
-import com.duc.karaoke_app.utils.GoogleSignInHelper
-import com.google.api.client.http.FileContent
 import com.google.api.services.drive.Drive
-import com.google.api.services.drive.model.File
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -97,7 +91,7 @@ class Repository() {
         }
     }
 
-    suspend fun getProfile(token: String): Response<UserResponse> {
+    suspend fun getProfile(token: String): Response<User> {
         return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.getProfile(token)
@@ -172,10 +166,10 @@ class Repository() {
         }
     }
 
-    suspend fun getRecordedSongList(): Response<List<Post>> {
+    suspend fun getRecordedSongList(token: String): Response<List<Post>> {
         return withContext(Dispatchers.IO) {
             try {
-                apiServiceToLogin.getRecordedSongList()
+                apiServiceToLogin.getRecordedSongList(token)
             } catch (e: Exception) {
                 throw e
             }
@@ -430,6 +424,57 @@ class Repository() {
         return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.getFollowNotification(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun unreadNotifications(token: String): Response<NotificationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.unreadNotifications(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun readNotification(token: String, notificationId: Int): Response<ReadNotificationResponse>{
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.readNotification(token, notificationId)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun createIsFavoritePost(token: String, postId: Int): Response<FavoritePost> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val request = FavoritePost(postId = postId)
+                apiServiceToLogin.createIsFavoritePost(token, request)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun removeIsFavoritePost(token: String, postId: Int): Response<FollowResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.removeIsFavoritePost(token, postId)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getIsFavoritePostToSongID(token: String): Response<List<Int>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getIsFavoritePostToSongID(token)
             } catch (e: Exception) {
                 throw e
             }

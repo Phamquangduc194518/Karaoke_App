@@ -34,7 +34,7 @@ class FollowingsAdapter() : RecyclerView.Adapter<FollowingsAdapter.FollowingsVie
         Glide.with(holder.itemView.context)
             .load(following.avatarUrl)
             .placeholder(R.drawable.placeholder_image)
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))// bo góc ảnh
+            .apply(RequestOptions.circleCropTransform())
             .into(holder.imgAvatar)
     }
 

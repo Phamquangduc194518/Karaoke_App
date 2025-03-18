@@ -108,7 +108,7 @@
                 <ImageView
                     android:id="@+id/btnLike"
                     android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_height="20dp"
                     android:src="@drawable/heart"
                     android:contentDescription="Like Button"
                     app:tint="@android:color/darker_gray" />

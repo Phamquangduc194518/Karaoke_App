@@ -55,8 +55,8 @@ class NewsFeed : Fragment() {
         viewmodel.avatarAndNameClicked.observe(viewLifecycleOwner){ userId ->
             userId?.let {
                 viewmodel.checkFollowStatus()
-                viewmodel.getFollowers()
-                viewmodel.getFollowing()
+                viewmodel.getFollowers(userId)
+                viewmodel.getFollowing(userId)
                 viewmodel.getUserInfo()
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, UserProfileFragment())
@@ -74,6 +74,11 @@ class NewsFeed : Fragment() {
     override fun onPause() {
         super.onPause()
         viewmodel.pauseAudio() // Tạm dừng nhạc khi Fragment không hiển thị
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewmodel.onClearExo()
     }
 
 }

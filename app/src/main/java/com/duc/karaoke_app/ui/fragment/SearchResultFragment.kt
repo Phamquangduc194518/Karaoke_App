@@ -62,8 +62,8 @@ class SearchResultFragment : Fragment() {
         viewModel.avatarAndNameClicked.observe(viewLifecycleOwner){ userId ->
             userId?.let {
                 viewModel.checkFollowStatus()
-                viewModel.getFollowers()
-                viewModel.getFollowing()
+                viewModel.getFollowers(userId)
+                viewModel.getFollowing(userId)
                 viewModel.getUserInfo()
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, UserProfileFragment())

@@ -15,6 +15,7 @@ import com.duc.karaoke_app.utils.ConversionTime
 
 class CommentPostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var comments: List<CommentDone> = listOf()
+    private var onAvatarClick: ((Int) -> Unit)? = null
     companion object {
         const val TYPE_TEXT = 0
         const val TYPE_IMAGE = 1
@@ -33,7 +34,7 @@ class CommentPostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     // ViewHolder cho bình luận text
-    class TextCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TextCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvComment: TextView = itemView.findViewById(R.id.tvCommentText)
         private val ivAvatar: ImageView = itemView.findViewById(R.id.ivAvatar)
         private val tvUserName: TextView = itemView.findViewById(R.id.tvUserName)
@@ -46,11 +47,17 @@ class CommentPostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             Glide.with(itemView.context)
                 .load(comment.user.avatar_url)
                 .into(ivAvatar)
+            ivAvatar.setOnClickListener{
+                onAvatarClick?.invoke(comment.user_id)
+            }
+            tvUserName.setOnClickListener{
+                onAvatarClick?.invoke(comment.user_id)
+            }
         }
     }
 
     // ViewHolder cho bình luận có ảnh
-    class ImageCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ImageCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageComment: ImageView = itemView.findViewById(R.id.imageComment)
         private val ivAvatar: ImageView = itemView.findViewById(R.id.ivAvatarComment)
         private val tvUserName: TextView = itemView.findViewById(R.id.tvUserName)
@@ -65,11 +72,17 @@ class CommentPostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             Glide.with(itemView.context)
                 .load(comment.urlSticker)
                 .into(imageComment)
+            ivAvatar.setOnClickListener{
+                onAvatarClick?.invoke(comment.user_id)
+            }
+            tvUserName.setOnClickListener{
+                onAvatarClick?.invoke(comment.user_id)
+            }
         }
     }
 
     // ViewHolder cho bình luận có sticker
-    class StickerCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class StickerCommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val imageComment: ImageView = itemView.findViewById(R.id.imageComment)
         private val ivAvatar: ImageView = itemView.findViewById(R.id.ivAvatarComment)
         private val tvUserName: TextView = itemView.findViewById(R.id.tvUserName)
@@ -84,6 +97,12 @@ class CommentPostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             Glide.with(itemView.context)
                 .load(comment.urlSticker)
                 .into(imageComment)
+            ivAvatar.setOnClickListener{
+                onAvatarClick?.invoke(comment.user_id)
+            }
+            tvUserName.setOnClickListener{
+                onAvatarClick?.invoke(comment.user_id)
+            }
         }
     }
 
@@ -126,6 +145,10 @@ class CommentPostAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun updateCommentLists(newComment: List<CommentDone>) {
         comments = newComment
         notifyDataSetChanged()
+    }
+
+    fun setOnAvatarAndNameClick(listener: ((Int) -> Unit)?) {
+        onAvatarClick = listener
     }
 
 }

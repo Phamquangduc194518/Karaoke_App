@@ -24,7 +24,6 @@ import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
-import com.duc.karaoke_app.data.model.UserResponse
 import com.duc.karaoke_app.data.model.Video
 import com.duc.karaoke_app.data.model.topSong
 import com.duc.karaoke_app.ui.adapter.AlbumAdapter
@@ -46,6 +45,8 @@ import com.duc.karaoke_app.ui.adapter.TopSongAdapter
 import com.duc.karaoke_app.ui.adapter.TopicsAdapter
 import com.duc.karaoke_app.utils.BillingManager
 import com.duc.karaoke_app.utils.SingleLiveEvent
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import kotlinx.coroutines.async
@@ -71,8 +72,8 @@ class ViewModelHome(private val repository: Repository, application: Application
     private val _updateProfileSuccess = MutableLiveData<Boolean>()
     val updateProfileSuccess: LiveData<Boolean> get() = _updateProfileSuccess
 
-    private val _userProfile = MutableLiveData<UserResponse>()
-    val userProfile: LiveData<UserResponse>
+    private val _userProfile = MutableLiveData<User>()
+    val userProfile: LiveData<User>
         get() = _userProfile
 
     private val _userProfileStar = MutableLiveData<List<User>>()
@@ -115,6 +116,9 @@ class ViewModelHome(private val repository: Repository, application: Application
 
     private val _likedSongIds = SingleLiveEvent<List<Int>>() // Danh sách bài hát đã thích
     val likedSongIds: LiveData<List<Int>> get() = _likedSongIds
+
+    private val _likedPostIds = SingleLiveEvent<List<Int>>() // Danh sách bài viết đã thích
+    val likedPostIds: LiveData<List<Int>> get() = _likedPostIds
 
     private val _likedOfAllSongs = SingleLiveEvent<List<Int>>() // Danh sách bài hát đã thích
     val likedOfAllSongs: LiveData<List<Int>> get() = _likedOfAllSongs
@@ -222,6 +226,18 @@ class ViewModelHome(private val repository: Repository, application: Application
     private val _notificationsMessage = MutableLiveData<List<NotificationUser>>()
     val notificationsMessage: LiveData<List<NotificationUser>> get() = _notificationsMessage
 
+    private val _notificationsCount = MutableLiveData<Int>()
+    val notificationsCount: LiveData<Int> get() = _notificationsCount
+
+    private val _isReadNotifications = SingleLiveEvent<Int>()
+    val isReadNotifications: LiveData<Int> get() = _isReadNotifications
+
+    private val _barEntries = MutableLiveData<List<BarEntry>>()
+    val barEntries: LiveData<List<BarEntry>> get() = _barEntries
+
+    private val _songNames = MutableLiveData<Array<String>>()
+    val songNames: LiveData<Array<String>> get() = _songNames
+
     fun resetIsSelectSticker() {
         _isSelectSticker.value = false
     }
@@ -280,6 +296,10 @@ class ViewModelHome(private val repository: Repository, application: Application
 
     fun onClickVipUpgrade() {
         _isClickVipUpgrade.value = true
+    }
+
+    fun onClickNotificationItem(notificationId: Int) {
+        _isReadNotifications.value = notificationId
     }
 
     private val _selectedCommentPost = SingleLiveEvent<Post>()
@@ -366,10 +386,12 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val duetSongDeferred = async { getDuetSongList() }
                 val allTopicsDeferred = async { getAllTopicsWithVideo() }
                 val favoriteSongsDeferred = async { getIsFavoriteToSongID() }
+                val favoritePostDeferred = async { getIsFavoritePostToSongID() }
                 val getFollowNotification = async { getFollowNotification() }
 
 
                 songListDeferred.await()
+                topSongListDeferred.await()
                 profileStarDeferred.await()
                 allAlbumDeferred.await()
                 imageSlideDeferred.await()
@@ -378,6 +400,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                 duetSongDeferred.await()
                 allTopicsDeferred.await()
                 favoriteSongsDeferred.await()
+                favoritePostDeferred.await()
                 getFollowNotification.await()
 
                 _isDataLoaded.value = true
@@ -436,6 +459,16 @@ class ViewModelHome(private val repository: Repository, application: Application
             }
         }
 
+        newsFeedAdapter.setFavoriteClick { postId ->
+            val isLiked = _likedPostIds.value?.contains(postId) ?: false
+            Log.e("check isFavoritePost", isLiked.toString())
+            if (isLiked) {
+                removeIsFavoritePost(postId)
+            } else {
+                createIsFavoritePost(postId)
+            }
+        }
+
         stickerAdapter.onClickSticker { sticker ->
             _selectSticker.value = sticker
             if (_selectSticker.value != null) {
@@ -458,6 +491,10 @@ class ViewModelHome(private val repository: Repository, application: Application
             onAvatarAndNameClicked(userId)
         }
 
+        commentAdapter.setOnAvatarAndNameClick{userId ->
+            onAvatarAndNameClicked(userId)
+        }
+
         searchResultAdapter.setOnUserClick { userId ->
             onAvatarAndNameClicked(userId)
         }
@@ -475,6 +512,10 @@ class ViewModelHome(private val repository: Repository, application: Application
         // Quan sát trạng thái đang tải từ BillingManager
         billingManager.isLoading.observeForever { isLoading ->
             _billingLoading.postValue(isLoading)
+        }
+
+        notificationAdapter.setOnItemClick { notificationId ->
+            onClickNotificationItem(notificationId) // Gửi sự kiện click vào LiveData
         }
     }
 
@@ -547,8 +588,8 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val response = repository.getProfile("Bearer $token")
                 if (response.isSuccessful) {
                     _userProfile.value = response.body()
-                    profileId.postValue(_userProfile.value?.userInfo?.user_id ?: 0)
-                    Log.e("UserProfile", _userProfile.value?.userInfo?.user_id.toString())
+                    profileId.postValue(_userProfile.value?.user_id ?: 0)
+                    Log.e("UserProfile", _userProfile.value?.user_id.toString())
                     Log.e("UserProfile", "Thông tin:${token}")
                     Log.e("UserProfile", "Thông tin:${response.body()}")
                 } else {
@@ -633,7 +674,12 @@ class ViewModelHome(private val repository: Repository, application: Application
     fun getRecordedSongList() {
         viewModelScope.launch {
             try {
-                val response = repository.getRecordedSongList()
+                val token = getTokenToPreferences().toString().trim()
+                if (token.isEmpty()) {
+                    Log.e("getRecordedSongList", "Token không hợp lệ")
+                    return@launch
+                }
+                val response = repository.getRecordedSongList("Bearer $token")
                 if (response.isSuccessful) {
                     _post.value = response.body()
                     newsFeedAdapter.updateRecordedSonglists(post.value ?: listOf())
@@ -679,6 +725,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                 if (response.isSuccessful) {
                     _commentList.value = response.body()
                     commentAdapter.updateCommentLists(response.body() ?: listOf())
+                    getRecordedSongList()
                     Log.e("commentDone", "${_commentList.value}")
                 } else {
                     Log.e("Comment", "Lỗi kết nối")
@@ -769,7 +816,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                 }
                 val response = repository.removeIsFavorite("Bearer $token", songId)
                 if (response.isSuccessful) {
-                    Log.d("removeFavorite", "bỏ thích bài háth")
+                    Log.d("removeFavorite", "bỏ thích bài hát")
                     getIsFavoriteToSongID()
                 } else {
                     Log.e("removeFavorite", "Thất bại: ${response.errorBody()?.string()}")
@@ -863,6 +910,9 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val response = repository.follow("Bearer $token", _followingId.value ?: 0)
                 if (response.isSuccessful) {
                     _isFollowing.postValue(true)
+                    getFollowers(_followingId.value ?: 0)
+                    getFollowing(_followingId.value ?: 0)
+                    userProfile()
                     Log.e("follow", "follow thành công")
                 }
             }
@@ -882,6 +932,9 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val response = repository.unfollow("Bearer $token", _followingId.value ?: 0)
                 if (response.isSuccessful) {
                     _isFollowing.postValue(false)
+                    getFollowers(_followingId.value ?: 0)
+                    getFollowing(_followingId.value ?: 0)
+                    userProfile()
                 }
             }
         } catch (e: Exception) {
@@ -909,7 +962,7 @@ class ViewModelHome(private val repository: Repository, application: Application
         }
     }
 
-    fun getFollowers() {
+    fun getFollowers(userId: Int) {
         try {
             viewModelScope.launch {
                 val token = getTokenToPreferences().toString().trim()
@@ -918,7 +971,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                     return@launch
                 }
                 val response =
-                    repository.getFollowers("Bearer $token", _avatarAndNameClicked.value ?: 0)
+                    repository.getFollowers("Bearer $token", userId)
                 if (response.isSuccessful) {
                     followerCount.postValue(response.body()?.followerCount ?: 0)
                     followersAdapter.updateFollower(response.body()?.followers ?: listOf())
@@ -929,7 +982,7 @@ class ViewModelHome(private val repository: Repository, application: Application
         }
     }
 
-    fun getFollowing() {
+    fun getFollowing(userId: Int) {
         try {
             viewModelScope.launch {
                 val token = getTokenToPreferences().toString().trim()
@@ -938,7 +991,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                     return@launch
                 }
                 val response =
-                    repository.getFollowing("Bearer $token", _avatarAndNameClicked.value ?: 0)
+                    repository.getFollowing("Bearer $token", userId)
                 if (response.isSuccessful) {
                     followingCount.postValue(response.body()?.followingCount ?: 0)
                     followingsAdapter.updateFollowing(response.body()?.following ?: listOf())
@@ -949,63 +1002,6 @@ class ViewModelHome(private val repository: Repository, application: Application
         }
     }
 
-    fun getFollowersToProfile() {
-        try {
-            viewModelScope.launch {
-                val token = getTokenToPreferences().toString().trim()
-                if (token.isEmpty()) {
-                    Log.e("getFollowersToProfile", "Token không hợp lệ")
-                    return@launch
-                }
-                userProfile.observeForever { profile ->
-                    if (profile != null) {
-                        val userId = profile.userInfo.user_id ?: return@observeForever
-                        Log.e("getFollowersToProfile", userId.toString())
-
-                        viewModelScope.launch {
-                            val response = repository.getFollowers("Bearer $token", userId)
-                            if (response.isSuccessful) {
-                                followerCount.postValue(response.body()?.followerCount ?: 0)
-                            }
-                        }
-                    } else {
-                        Log.e("getFollowersToProfile", "userProfile vẫn null")
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("getFollowersToProfile", "Lỗi kết nối: ${e.message}")
-        }
-    }
-
-    fun getFollowingToProfile() {
-        try {
-            viewModelScope.launch {
-                val token = getTokenToPreferences().toString().trim()
-                if (token.isEmpty()) {
-                    Log.e("getFollowingToProfile", "Token không hợp lệ")
-                    return@launch
-                }
-                userProfile.observeForever { profile ->
-                    if (profile != null) {
-                        val userId = profile.userInfo.user_id ?: return@observeForever
-                        Log.e("getFollowingToProfile", userId.toString())
-
-                        viewModelScope.launch {
-                            val response = repository.getFollowing("Bearer $token", userId)
-                            if (response.isSuccessful) {
-                                followingCount.postValue(response.body()?.followingCount ?: 0)
-                            }
-                        }
-                    } else {
-                        Log.e("getFollowingToProfile", "userProfile vẫn null")
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("getFollowingToProfile", "Lỗi kết nối: ${e.message}")
-        }
-    }
 
     fun checkFollowClick() {
         _isFollowClick.postValue(true)
@@ -1054,8 +1050,7 @@ class ViewModelHome(private val repository: Repository, application: Application
         _isPlaying.value = false
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun onClearExo() {
         exoPlayer?.release()
         exoPlayer = null
     }
@@ -1091,6 +1086,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val success = repository.uploadAvatar("Bearer $token", file)
                 if (success.isSuccessful) {
                     _uploadResult.value = success.body()
+                    userProfile()
                 }
             } catch (e: Exception) {
                 Log.e("uploadAvatar", "Lỗi kết nối: ${e.message}")
@@ -1146,7 +1142,7 @@ class ViewModelHome(private val repository: Repository, application: Application
             try {
                 val token = getTokenToPreferences().toString().trim()
                 if (token.isEmpty()) {
-                    Log.e("getFollowingToProfile", "Token không hợp lệ")
+                    Log.e("getFollowNotification", "Token không hợp lệ")
                     return@launch
                 }
                 val response = repository.getFollowNotification("Bearer $token")
@@ -1157,6 +1153,146 @@ class ViewModelHome(private val repository: Repository, application: Application
                 }
             } catch (e: Exception) {
                 Log.e("notification", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun unreadNotifications() {
+        viewModelScope.launch {
+            try {
+                val token = getTokenToPreferences().toString().trim()
+                if (token.isEmpty()) {
+                    Log.e("unreadNotifications", "Token không hợp lệ")
+                    return@launch
+                }
+                val response = repository.unreadNotifications("Bearer $token")
+                if (response.isSuccessful) {
+                    _notificationsCount.postValue(response.body()?.notificationUser?.size ?: 0)
+                    Log.e("notification số thông báo", response.body()?.notificationUser?.size.toString())
+                }
+            } catch (e: Exception) {
+                Log.e("notification", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun readNotification(){
+        viewModelScope.launch {
+            try {
+                val token = getTokenToPreferences().toString().trim()
+                if (token.isEmpty()) {
+                    Log.e("getFollowingToProfile", "Token không hợp lệ")
+                    return@launch
+                }
+                val response = repository.readNotification("Bearer $token", _isReadNotifications.value?:0)
+                if(response.isSuccessful){
+
+                }
+            } catch (e: Exception) {
+                Log.e("notification", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun topSongChart(){
+        viewModelScope.launch {
+            val token = getTokenToPreferences().toString().trim()
+            try {
+                val response = repository.getTopSong("Bearer $token")
+                if (response.isSuccessful) {
+                    val title1  = response.body()?.get(0)?.song?.title ?: ""
+                    val title2  = response.body()?.get(1)?.song?.title ?: ""
+                    val title3  = response.body()?.get(2)?.song?.title ?: ""
+                    val title4  = response.body()?.get(3)?.song?.title ?: ""
+                    val title5  = response.body()?.get(4)?.song?.title ?: ""
+                    val songNamesArray = arrayOf(title1, title2, title3, title4, title5)
+                    _songNames.postValue(songNamesArray)
+
+                    val dataHeart1 = response.body()?.get(0)?.favoriteCount?.toFloat() ?: 0f
+                    val dataHeart2 = response.body()?.get(1)?.favoriteCount?.toFloat() ?: 0f
+                    val dataHeart3 = response.body()?.get(2)?.favoriteCount?.toFloat() ?: 0f
+                    val dataHeart4 = response.body()?.get(3)?.favoriteCount?.toFloat() ?: 0f
+                    val dataHeart5 = response.body()?.get(4)?.favoriteCount?.toFloat() ?: 0f
+                    val hearts = floatArrayOf(dataHeart1, dataHeart2, dataHeart3, dataHeart4, dataHeart5)
+
+                    val entries = mutableListOf<BarEntry>()
+                    for(i in hearts.indices){
+                        entries.add(BarEntry(i.toFloat(), hearts[i]))
+                    }
+                    _barEntries.postValue(entries)
+                }
+            } catch (e: Exception) {
+                _toastMessage.value = "Lỗi kết nối: ${e.message}"
+            }
+        }
+    }
+
+    fun createIsFavoritePost(postId: Int) {
+        viewModelScope.launch {
+            try {
+                val token = getTokenToPreferences().toString().trim()
+                if (token.isEmpty()) {
+                    Log.e("isFavoritePost", "Token hoặc bài viết không hợp lệ")
+                    return@launch
+                }
+                val response = repository.createIsFavoritePost("Bearer $token", postId)
+                if (response.isSuccessful) {
+                    Log.d("isFavoritePost", "Bài viết đã được thêm vào yêu thích")
+                    getIsFavoritePostToSongID()
+                    getRecordedSongList()
+                } else {
+                    Log.e("isFavoritePost", "Thất bại: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("isFavoritePost", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+
+    fun removeIsFavoritePost(songId: Int) {
+        viewModelScope.launch {
+            try {
+                val token = getTokenToPreferences().toString().trim()
+                if (token.isEmpty()) {
+                    Log.e("removeFavoritePost", "Token hoặc bài viết không hợp lệ")
+                    return@launch
+                }
+                val response = repository.removeIsFavoritePost("Bearer $token", songId)
+                if (response.isSuccessful) {
+                    Log.d("removeFavoritePost", "bỏ thích bài viết")
+                    getIsFavoritePostToSongID()
+                    getRecordedSongList()
+
+                } else {
+                    Log.e("removeFavoritePost", "Thất bại: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("removeFavorite", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getIsFavoritePostToSongID() {
+        viewModelScope.launch {
+            try {
+                val token = getTokenToPreferences().toString().trim()
+                if (token.isEmpty()) {
+                    Log.e("isFavoritePost", "Token hoặc bài viết không hợp lệ")
+                    return@launch
+                }
+                val response = repository.getIsFavoritePostToSongID("Bearer $token")
+                if (response.isSuccessful) {
+                    response.body()?.let { likedPost ->
+                        Log.e("favorited", likedPost.toString())
+                        newsFeedAdapter.updateFavorited(likedPost)
+                        _likedPostIds.postValue(likedPost)
+                    }
+                } else {
+                    Log.e("isFavoritePost", "Thất bại: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("isFavoritePost", "Lỗi kết nối: ${e.message}")
             }
         }
     }

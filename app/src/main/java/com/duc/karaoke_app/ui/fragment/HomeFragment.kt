@@ -60,6 +60,8 @@ class HomeFragment : Fragment() {
             }
         }
 
+        viewModel.unreadNotifications()
+
         viewModel.selectedUserLiveStream.observe(viewLifecycleOwner) { user ->
             user.let {
                 Log.e("HomeFragment", "Selected user: ${user}")
@@ -111,6 +113,14 @@ class HomeFragment : Fragment() {
                     .replace(R.id.fragment_container, NotificationFragment())
                     .addToBackStack(null)
                     .commit()
+            }
+        }
+
+        viewModel.notificationsCount.observe(viewLifecycleOwner){ count->
+            if(count != 0){
+                homeBinding.tvBadge.visibility = View.VISIBLE
+            }else{
+                homeBinding.tvBadge.visibility = View.GONE
             }
         }
     }

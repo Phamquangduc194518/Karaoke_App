@@ -31,6 +31,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/back2"
+                android:onClick="@{() -> ViewModelFollow.setNavigate()}"
                 android:contentDescription="Back"
                 android:layout_marginEnd="16dp" />
 

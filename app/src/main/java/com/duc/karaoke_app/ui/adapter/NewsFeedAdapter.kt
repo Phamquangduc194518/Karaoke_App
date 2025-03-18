@@ -18,26 +18,29 @@ import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.viewmodel.ViewModelHome
 import com.duc.karaoke_app.utils.ConversionTime
 
-class NewsFeedAdapter(private val viewModel: ViewModelHome) : RecyclerView.Adapter<NewsFeedAdapter.NewsFeedViewHolder>() {
+class NewsFeedAdapter(private val viewModel: ViewModelHome) :
+    RecyclerView.Adapter<NewsFeedAdapter.NewsFeedViewHolder>() {
     private var postLists: List<Post> = listOf()
     private var onAvatarClick: ((Int) -> Unit)? = null
+    private var onFavoriteClick: ((Int) -> Unit)? = null
     val conversionTime = ConversionTime()
+    private var mlist: List<Int> = listOf()
 
-    inner class NewsFeedViewHolder(view: View): RecyclerView.ViewHolder(view){
-         val avatar: ImageView = itemView.findViewById(R.id.ivAvatarPost)
-         val userName: TextView = itemView.findViewById(R.id.tvUserNamePost)
-         val postTime: TextView = itemView.findViewById(R.id.tvTimePosted)
-         val postContent: TextView = itemView.findViewById(R.id.tvContent)
-         val postImage: ImageView = itemView.findViewById(R.id.ivPostImage)
-         val likeCount: TextView = itemView.findViewById(R.id.tvLikes)
-         val commentCount: TextView = itemView.findViewById(R.id.tvComments)
-         val btnLike: ImageView = itemView.findViewById(R.id.btnLike)
-         val btnComment: ImageView = itemView.findViewById(R.id.btnComment)
-         val btnPlay: ImageView= itemView.findViewById(R.id.btnPlay)
+    inner class NewsFeedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val avatar: ImageView = itemView.findViewById(R.id.ivAvatarPost)
+        val userName: TextView = itemView.findViewById(R.id.tvUserNamePost)
+        val postTime: TextView = itemView.findViewById(R.id.tvTimePosted)
+        val postContent: TextView = itemView.findViewById(R.id.tvContent)
+        val postImage: ImageView = itemView.findViewById(R.id.ivPostImage)
+        val likeCount: TextView = itemView.findViewById(R.id.tvLikes)
+        val commentCount: TextView = itemView.findViewById(R.id.tvComments)
+        val btnLike: ImageView = itemView.findViewById(R.id.btnLike)
+        val btnComment: ImageView = itemView.findViewById(R.id.btnComment)
+        val btnPlay: ImageView = itemView.findViewById(R.id.btnPlay)
 
-        fun bind(post: Post, position: Int){
-            btnPlay.setOnClickListener{
-                if(viewModel.isPlaying.value == true) {
+        fun bind(post: Post, position: Int) {
+            btnPlay.setOnClickListener {
+                if (viewModel.isPlaying.value == true) {
                     viewModel.pauseAudio()
                     btnPlay.setImageResource(R.drawable.play)
                     btnPlay.setColorFilter(Color.parseColor("#27e4F2"))
@@ -47,11 +50,27 @@ class NewsFeedAdapter(private val viewModel: ViewModelHome) : RecyclerView.Adapt
                     btnPlay.setColorFilter(ContextCompat.getColor(btnPlay.context, R.color.red))
                 }
             }
+
+            btnLike.setOnClickListener {
+                Log.e("NewFeedAdapter click item", "${post.post_id}")
+                onFavoriteClick?.invoke(post.post_id)
+                if (mlist.contains(post.post_id)) {
+
+                    btnLike.setColorFilter(Color.parseColor("#AAAAAA"))
+                } else {
+                    btnLike.setColorFilter(Color.parseColor("#FF0000"))
+                }
+            }
+            if (mlist.contains(post.post_id)) {
+                btnLike.setColorFilter(Color.parseColor("#FF0000"))
+            } else {
+                btnLike.setColorFilter(Color.parseColor("#AAAAAA"))
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsFeedViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false )
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
         return NewsFeedViewHolder(view)
     }
 
@@ -61,12 +80,12 @@ class NewsFeedAdapter(private val viewModel: ViewModelHome) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: NewsFeedViewHolder, position: Int) {
         val post = postLists[position]
-        holder.userName.text= post.user.username
-        holder.postContent.text= post.title
-        holder.postTime.text=conversionTime.formatRelativeTimePretty(post.time)
-        holder.likeCount.text= post.likes_count.toString()
-        holder.commentCount.text= post.comments_count.toString()
-        holder.btnComment.setOnClickListener{
+        holder.userName.text = post.user.username
+        holder.postContent.text = post.title
+        holder.postTime.text = conversionTime.formatRelativeTimePretty(post.time)
+        holder.likeCount.text = post.likes_count.toString()
+        holder.commentCount.text = post.comments_count.toString()
+        holder.btnComment.setOnClickListener {
             viewModel.onCommentClicked(post)
         }
         Glide.with(holder.itemView.context)
@@ -93,8 +112,19 @@ class NewsFeedAdapter(private val viewModel: ViewModelHome) : RecyclerView.Adapt
         postLists = newPostLists
         notifyDataSetChanged()
     }
+
     fun setOnAvatarAndNameClick(listener: ((Int) -> Unit)?) {
         onAvatarClick = listener
+    }
+
+    fun setFavoriteClick(favoriteListener: ((Int) -> Unit)?) {
+        onFavoriteClick = favoriteListener
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateFavorited(newList: List<Int>) {
+        mlist = newList
+        notifyDataSetChanged()
     }
 
 }

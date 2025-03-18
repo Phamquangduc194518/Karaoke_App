@@ -39,7 +39,7 @@
                 android:gravity="center"
                 android:maxWidth="130dp"
                 android:maxLines="1"
-                android:text="@{ViewModelProfile.userProfile.userInfo.username}"
+                android:text="@{ViewModelProfile.userProfile.username}"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -81,7 +81,7 @@
                 android:layout_height="130dp"
                 android:background="@drawable/custom_background_avatar"
                 android:padding="5dp"
-                app:imageUrlCircle="@{ViewModelProfile.userProfile.userInfo.avatarUrl}"
+                app:imageUrlCircle="@{ViewModelProfile.userProfile.avatarUrl}"
                 android:scaleType="centerCrop" />
 
             <com.airbnb.lottie.LottieAnimationView
@@ -106,7 +106,7 @@
             android:layout_below="@id/profile_section"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="2dp"
-            android:text="@{ViewModelProfile.userProfile.userInfo.email}"
+            android:text="@{ViewModelProfile.userProfile.email}"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
 
@@ -128,6 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:onClick="@{()-> ViewModelProfile.checkFollowClick()}"
                 android:orientation="vertical">
 
                 <TextView
@@ -153,6 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:onClick="@{()-> ViewModelProfile.checkFollowClick()}"
                 android:orientation="vertical">
 
                 <TextView
@@ -197,7 +199,7 @@
             android:layout_marginEnd="20dp"
             android:gravity="center_horizontal"
             android:maxWidth="400dp"
-            android:text="@{ViewModelProfile.userProfile.userInfo.slogan}"
+            android:text="@{ViewModelProfile.userProfile.slogan}"
             android:textColor="@android:color/black" />
 
         <com.google.android.material.tabs.TabLayout

@@ -56,7 +56,7 @@
                     android:background="@drawable/custom_background_avatar"
                     android:scaleType="centerCrop"
                     android:padding="5dp"
-                    app:imageUrlCircle="@{ViewModelEditProfile.userProfile.userInfo.avatarUrl}" />
+                    app:imageUrlCircle="@{ViewModelEditProfile.userProfile.avatarUrl}" />
 
                 <ImageView
                     android:id="@+id/camera_icon"

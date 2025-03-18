@@ -23,6 +23,7 @@
             android:layout_height="30dp">
 
             <ImageView
+                android:id="@+id/iv_backpress"
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:onClick="@{() -> ViewModelUserProfile.setNavigate()}"

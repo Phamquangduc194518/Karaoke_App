@@ -9,6 +9,7 @@ import com.duc.karaoke_app.data.model.CommentVideo
 import com.duc.karaoke_app.data.model.CommentVideoDone
 import com.duc.karaoke_app.data.model.Favorite
 import com.duc.karaoke_app.data.model.FavoriteListResponse
+import com.duc.karaoke_app.data.model.FavoritePost
 import com.duc.karaoke_app.data.model.Follow
 import com.duc.karaoke_app.data.model.FollowResponse
 import com.duc.karaoke_app.data.model.FollowStatusResponse
@@ -21,6 +22,7 @@ import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.NotificationResponse
 import com.duc.karaoke_app.data.model.Post
+import com.duc.karaoke_app.data.model.ReadNotificationResponse
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.data.model.SearchResponse
@@ -30,17 +32,13 @@ import com.duc.karaoke_app.data.model.Topic
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
-import com.duc.karaoke_app.data.model.UserResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import com.duc.karaoke_app.data.model.YouTubeResponse
-import com.duc.karaoke_app.data.model.checkFavoriteListResponse
 import com.duc.karaoke_app.data.model.topSong
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -89,7 +87,7 @@ interface ApiService {
     suspend fun updateUser(@Header("Authorization") token: String, @Body profile: UserProfile): Response<ApiResponse>
 
     @GET("/api/userProfile")
-    suspend fun getProfile(@Header("Authorization") token: String): Response<UserResponse>
+    suspend fun getProfile(@Header("Authorization") token: String): Response<User>
 
     @GET("/api/song/getSong")
     suspend fun getSongList(@Header("Authorization") token: String): Response<List<Songs>>
@@ -107,7 +105,7 @@ interface ApiService {
     suspend fun createRecordedSong(@Header("Authorization") token: String, @Body recorded: RecordedSongs): Response<RecordedSongs>
 
     @GET("/api/getRecordedSongList")
-    suspend fun getRecordedSongList(): Response<List<Post>>
+    suspend fun getRecordedSongList(@Header("Authorization") token: String): Response<List<Post>>
 
     @POST("/api/createComment")
     suspend fun createComment(@Header("Authorization") token: String, @Body comment: Comment) : Response<Comment>
@@ -182,6 +180,21 @@ interface ApiService {
 
     @GET("/api/getFollowNotification")
     suspend fun getFollowNotification(@Header("Authorization") token: String): Response<NotificationResponse>
+
+    @GET("/api/unreadNotifications")
+    suspend fun unreadNotifications(@Header("Authorization") token: String): Response<NotificationResponse>
+
+    @PATCH("/api/readNotifications/{notificationId}")
+    suspend fun readNotification(@Header("Authorization") token: String, @Path("notificationId") notificationId: Int): Response<ReadNotificationResponse>
+
+    @POST("/api/createIsFavoritePost")
+    suspend fun createIsFavoritePost(@Header("Authorization") token: String, @Body request: FavoritePost): Response<FavoritePost>
+
+    @DELETE("/api/removeIsFavoritePost/{post_id}")
+    suspend fun removeIsFavoritePost(@Header("Authorization") token: String, @Path("post_id") postId: Int): Response<FollowResponse>
+
+    @GET("/api/getIsFavoritePostToSongID")
+    suspend fun getIsFavoritePostToSongID(@Header("Authorization") token: String): Response<List<Int>>
 
     companion object RetrofitInstance{
         // Tạo Retrofit cho API YouTube

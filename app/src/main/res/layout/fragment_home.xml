@@ -46,9 +46,9 @@
                     android:id="@+id/iv_search"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/search"
                     android:layout_marginEnd="20dp"
                     android:onClick="@{() -> ViewModelHome.onClickSearch()}"
+                    android:src="@drawable/search"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/iv_notification"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -57,11 +57,26 @@
                     android:id="@+id/iv_notification"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/notification"
                     android:onClick="@{() -> ViewModelHome.onClickNotification()}"
+                    android:src="@drawable/notification"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvBadge"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@drawable/custom_badge"
+                    android:gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:text="@{ViewModelHome.notificationsCount.toString()}"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

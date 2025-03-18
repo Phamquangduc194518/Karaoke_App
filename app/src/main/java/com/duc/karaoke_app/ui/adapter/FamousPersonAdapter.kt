@@ -9,9 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.User
-import com.duc.karaoke_app.data.model.UserResponse
 
 class FamousPersonAdapter() : RecyclerView.Adapter<FamousPersonAdapter.FamousPersonViewHolder>() {
     private var famousPersonList: List<User> = listOf()

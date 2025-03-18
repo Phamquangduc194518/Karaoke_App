@@ -83,7 +83,7 @@
                 android:layout_height="40dp"
                 android:contentDescription="User Avatar"
                 android:scaleType="centerCrop"
-                app:imageUrlCircle="@{CommentBottomSheetViewModel.userProfile.userInfo.avatarUrl}" />
+                app:imageUrlCircle="@{CommentBottomSheetViewModel.userProfile.avatarUrl}" />
 
             <EditText
                 android:id="@+id/etComment"

@@ -37,12 +37,11 @@ class ProfileFragment : Fragment() {
         return profileBinding.root
 
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getFollowersToProfile()
-        viewModel.getFollowingToProfile()
+        viewModel.getFollowers(viewModel.userProfile.value?.user_id ?:0)
+        viewModel.getFollowing(viewModel.userProfile.value?.user_id ?:0)
         val adapter = ProfileAdapter(requireActivity())
         profileBinding.vp2Profile.adapter = adapter
 
@@ -65,6 +64,20 @@ class ProfileFragment : Fragment() {
             transaction.commit()
         }
         profileBinding.lottieEffect.playAnimation()
+
+        viewModel.isFollowClick.observe(viewLifecycleOwner) { isFollowClick ->
+            if (isFollowClick) {
+
+                viewModel.resetCheckFollowClick()
+                val fragment = FollowFragment()
+                val transaction = requireActivity().supportFragmentManager
+                transaction.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+
+        }
 
 
     }
