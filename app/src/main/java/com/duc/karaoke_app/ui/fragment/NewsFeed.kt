@@ -41,7 +41,7 @@ class NewsFeed : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         newsFeedBinding.rcvNewFeed.layoutManager = LinearLayoutManager(requireContext())
-
+        viewmodel.getRecordedSongList()
         viewmodel.selectedCommentPost.observe(viewLifecycleOwner) { Comment ->
             if(viewmodel.isSelectCommentPost.value == true){
                 Comment.let{

@@ -2,6 +2,7 @@ package com.duc.karaoke_app.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,6 @@ class StickerAdapter() : RecyclerView.Adapter<StickerAdapter.StickerViewHolder>(
         Glide.with(holder.itemView.context)
             .load(stickerUrl.stickerUrl)
             .into(holder.imageViewSticker)
-
         holder.itemView.setOnClickListener {
             onStickerClick?.invoke(stickerUrl)
         }

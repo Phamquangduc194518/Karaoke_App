@@ -21,6 +21,7 @@ class BillingManager(private val context: Context) {
     // LiveData để thông báo lỗi
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
+    var purchaseTokenCache: String? = null
 
     // Listener để nhận cập nhật từ giao dịch mua
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
@@ -106,6 +107,9 @@ class BillingManager(private val context: Context) {
     // Xử lý giao dịch khi người dùng mua thành công
     private fun handlePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+            Log.d("BillingManager", "Purchase token: ${purchase.purchaseToken}")
+            purchaseTokenCache = purchase.purchaseToken
+            Log.d("BillingManager", "Purchase token: ${purchaseTokenCache}")
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                     .setPurchaseToken(purchase.purchaseToken)
@@ -139,19 +143,17 @@ class BillingManager(private val context: Context) {
             setupBillingClient()
             return
         }
-
-//        // Kiểm tra từ SharedPreferences trước
-//        val isVipFromPrefs = getVipStatusFromPreferences()
-//        if (isVipFromPrefs) {
-//            _purchaseSuccess.postValue(true)
-//            return
-//        }
-
-        // Nếu không có trong SharedPreferences, kiểm tra từ Google Play
         _isLoading.postValue(true)
         billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS) { billingResult, purchases ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 purchases?.let {
+                    for (purchase in it) {
+                        if (purchase.skus.contains("vip_monthly") && purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                            purchaseTokenCache = purchase.purchaseToken
+                            Log.d("BillingManager", "token, token: ${purchaseTokenCache}")
+                            Log.d("BillingManager", "Đã mua sản phẩm vip_monthly, purchaseToken: ${purchase.purchaseToken}")
+                        }
+                    }
                     val isVip = it.any { purchase ->
                         purchase.skus.contains("vip_monthly") && purchase.purchaseState == Purchase.PurchaseState.PURCHASED
                     }

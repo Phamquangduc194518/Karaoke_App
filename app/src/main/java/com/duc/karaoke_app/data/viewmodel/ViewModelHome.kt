@@ -1,6 +1,7 @@
 package com.duc.karaoke_app.data.viewmodel
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Application
 import android.app.DatePickerDialog
 import android.content.Context
@@ -11,10 +12,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
+import com.duc.karaoke_app.data.model.AccountWithFollowers
 import com.duc.karaoke_app.data.model.AlbumDetailList
 import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.Comment
 import com.duc.karaoke_app.data.model.CommentDone
+import com.duc.karaoke_app.data.model.CommentLiveStreamRequest
+import com.duc.karaoke_app.data.model.DeviceTokenRequest
+import com.duc.karaoke_app.data.model.FollowingStar
 import com.duc.karaoke_app.data.model.LiveStreamRequest
 import com.duc.karaoke_app.data.model.NotificationUser
 import com.duc.karaoke_app.data.model.Post
@@ -24,6 +29,7 @@ import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
+import com.duc.karaoke_app.data.model.VerifyPurchaseRequest
 import com.duc.karaoke_app.data.model.Video
 import com.duc.karaoke_app.data.model.topSong
 import com.duc.karaoke_app.ui.adapter.AlbumAdapter
@@ -43,14 +49,19 @@ import com.duc.karaoke_app.ui.adapter.SlideAdapter
 import com.duc.karaoke_app.ui.adapter.StickerAdapter
 import com.duc.karaoke_app.ui.adapter.TopSongAdapter
 import com.duc.karaoke_app.ui.adapter.TopicsAdapter
+import com.duc.karaoke_app.ui.adapter.WatchLiveAdapter
+import com.duc.karaoke_app.ui.fragment.MyDialogFragment
 import com.duc.karaoke_app.utils.BillingManager
 import com.duc.karaoke_app.utils.SingleLiveEvent
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Calendar
 
@@ -76,8 +87,8 @@ class ViewModelHome(private val repository: Repository, application: Application
     val userProfile: LiveData<User>
         get() = _userProfile
 
-    private val _userProfileStar = MutableLiveData<List<User>>()
-    val userProfileStar: LiveData<List<User>>
+    private val _userProfileStar = MutableLiveData<List<AccountWithFollowers>>()
+    val userProfileStar: LiveData<List<AccountWithFollowers>>
         get() = _userProfileStar
 
     private val _songs = MutableLiveData<List<Songs>>()
@@ -111,8 +122,8 @@ class ViewModelHome(private val repository: Repository, application: Application
     private val _selectedDuetSong = SingleLiveEvent<Songs>()
     val selectedDuetSong: LiveData<Songs> get() = _selectedDuetSong
 
-    private val _selectedUserLiveStream = SingleLiveEvent<User>()
-    val selectedUserLiveStream: LiveData<User> get() = _selectedUserLiveStream
+    private val _selectedUserLiveStream = SingleLiveEvent<FollowingStar>()
+    val selectedUserLiveStream: LiveData<FollowingStar> get() = _selectedUserLiveStream
 
     private val _likedSongIds = SingleLiveEvent<List<Int>>() // Danh sách bài hát đã thích
     val likedSongIds: LiveData<List<Int>> get() = _likedSongIds
@@ -238,6 +249,13 @@ class ViewModelHome(private val repository: Repository, application: Application
     private val _songNames = MutableLiveData<Array<String>>()
     val songNames: LiveData<Array<String>> get() = _songNames
 
+    private val _isVipResponse = MutableLiveData<Boolean>()
+    val isVipResponse: LiveData<Boolean> get() = _isVipResponse
+
+    private val _isClickButtonLive = MutableLiveData<Boolean>()
+    val isClickButtonLive: LiveData<Boolean> get() = _isClickButtonLive
+
+
     fun resetIsSelectSticker() {
         _isSelectSticker.value = false
     }
@@ -274,7 +292,7 @@ class ViewModelHome(private val repository: Repository, application: Application
         _selectedDuetSong.value = song
     }
 
-    fun onFamousClick(user: User) {
+    fun onFamousClick(user: FollowingStar) {
         _selectedUserLiveStream.value = user
     }
 
@@ -300,6 +318,14 @@ class ViewModelHome(private val repository: Repository, application: Application
 
     fun onClickNotificationItem(notificationId: Int) {
         _isReadNotifications.value = notificationId
+    }
+
+    fun onButtonLive(){
+        _isClickButtonLive.value= true
+    }
+
+    fun resetButtonLive() {
+        _isClickButtonLive.value = false
     }
 
     private val _selectedCommentPost = SingleLiveEvent<Post>()
@@ -348,7 +374,8 @@ class ViewModelHome(private val repository: Repository, application: Application
     val allSongsAdapter = AllSongsAdapter()
     val stickerAdapter = StickerAdapter()
     val searchResultAdapter = SearchResultAdapter()
-    val notificationAdapter =NotificationAdapter()
+    val notificationAdapter = NotificationAdapter()
+    val watchLiveAdapter = WatchLiveAdapter()
 
     var email = MutableLiveData("")
     var password = MutableLiveData("")
@@ -357,6 +384,7 @@ class ViewModelHome(private val repository: Repository, application: Application
     var phone = MutableLiveData("")
     val dateOfBirth = MutableLiveData("01/01/2000")
     var gender = MutableLiveData("")
+    var titleOfLiveStream = MutableLiveData("")
 
 
     private fun getTokenToPreferences(): String? {
@@ -409,6 +437,7 @@ class ViewModelHome(private val repository: Repository, application: Application
             }
         }
 
+        updateDeviceToken()
         _userProfile.observeForever { profile ->
             Log.e("Check UserProfile", "Profile: $profile")
         }
@@ -419,6 +448,10 @@ class ViewModelHome(private val repository: Repository, application: Application
 
         topSongAdapter.setOnTopSongClick { song ->
             onSongClicked(song) // Gửi sự kiện click vào LiveData
+        }
+
+        likeSongListAdapter.setOnItemClick{ song->
+            onSongClicked(song)
         }
 
         albumTrackListAdapter.setOnAlbumTrackClick { song ->
@@ -491,7 +524,15 @@ class ViewModelHome(private val repository: Repository, application: Application
             onAvatarAndNameClicked(userId)
         }
 
-        commentAdapter.setOnAvatarAndNameClick{userId ->
+        commentAdapter.setOnAvatarAndNameClick { userId ->
+            onAvatarAndNameClicked(userId)
+        }
+
+        followersAdapter.setOnItemClick { userId ->
+            onAvatarAndNameClicked(userId)
+        }
+
+        followingsAdapter.setOnItemClick { userId ->
             onAvatarAndNameClicked(userId)
         }
 
@@ -639,12 +680,15 @@ class ViewModelHome(private val repository: Repository, application: Application
 
     fun getProfileStar() {
         viewModelScope.launch {
-            val token = getTokenToPreferences().toString().trim()
             try {
-                val response = repository.getProfileStar("Bearer $token")
+                val response = repository.getProfileStar()
                 if (response.isSuccessful) {
-                    _userProfileStar.value = response.body()
-                    famousPersonAdapter.updateFamousPerson(_userProfileStar.value ?: listOf())
+                    val starList = response.body() ?: listOf()
+                    withContext(Dispatchers.Main) {
+                        _userProfileStar.value = starList
+                        famousPersonAdapter.updateFamousPerson(starList)
+                    }
+                    Log.e("giá trị nhận được", starList.toString())
                 } else {
                     _toastMessage.value = "Lỗi: ${response.code()} - ${response.message()}"
                 }
@@ -708,6 +752,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                     Log.e("Tạo comment thành công", "$apiResponse")
                     getComments()
                     comment.value = ""
+                    stickerUrl.value=""
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("Comment", "Lỗi: ${response.code()} - $errorBody")
@@ -741,18 +786,39 @@ class ViewModelHome(private val repository: Repository, application: Application
             try {
                 val token = getTokenToPreferences().toString().trim()
                 val request = LiveStreamRequest(
-                    title = "My LiveStream"
+                    title = titleOfLiveStream.value ?: ""
                 )
                 val response = repository.createLiveStream("Bearer $token", request)
                 if (response.isSuccessful) {
                     val apiResponse = response.body()
                     Log.e("Tạo liveStream thành công", "$apiResponse")
+                    getProfileStar()
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("LiveStream", "Lỗi: ${response.code()} - $errorBody")
                 }
             } catch (e: Exception) {
                 Log.e("LiveStream", "Lỗi kết nối: ${e.message}")
+            }
+
+        }
+    }
+
+    fun updateLiveStream() {
+        viewModelScope.launch {
+            try {
+                val token = getTokenToPreferences().toString().trim()
+                val response = repository.updateLiveStream("Bearer $token")
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    Log.e("Kết thúc live", "$apiResponse")
+                    getProfileStar()
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("Tắt LiveStream", "Lỗi: ${response.code()} - $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("Tắt LiveStream", "Lỗi kết nối: ${e.message}")
             }
 
         }
@@ -913,6 +979,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                     getFollowers(_followingId.value ?: 0)
                     getFollowing(_followingId.value ?: 0)
                     userProfile()
+                    getRecordedSongList()
                     Log.e("follow", "follow thành công")
                 }
             }
@@ -935,6 +1002,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                     getFollowers(_followingId.value ?: 0)
                     getFollowing(_followingId.value ?: 0)
                     userProfile()
+                    getRecordedSongList()
                 }
             }
         } catch (e: Exception) {
@@ -1149,7 +1217,9 @@ class ViewModelHome(private val repository: Repository, application: Application
                 if (response.isSuccessful) {
                     _hasNotifications.value = true
                     _notificationsMessage.value = response.body()?.notificationUser ?: listOf()
-                    notificationAdapter.updateDataNotification(response.body()?.notificationUser ?: listOf())
+                    notificationAdapter.updateDataNotification(
+                        response.body()?.notificationUser ?: listOf()
+                    )
                 }
             } catch (e: Exception) {
                 Log.e("notification", "Lỗi kết nối: ${e.message}")
@@ -1168,7 +1238,10 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val response = repository.unreadNotifications("Bearer $token")
                 if (response.isSuccessful) {
                     _notificationsCount.postValue(response.body()?.notificationUser?.size ?: 0)
-                    Log.e("notification số thông báo", response.body()?.notificationUser?.size.toString())
+                    Log.e(
+                        "notification số thông báo",
+                        response.body()?.notificationUser?.size.toString()
+                    )
                 }
             } catch (e: Exception) {
                 Log.e("notification", "Lỗi kết nối: ${e.message}")
@@ -1176,7 +1249,7 @@ class ViewModelHome(private val repository: Repository, application: Application
         }
     }
 
-    fun readNotification(){
+    fun readNotification() {
         viewModelScope.launch {
             try {
                 val token = getTokenToPreferences().toString().trim()
@@ -1184,8 +1257,9 @@ class ViewModelHome(private val repository: Repository, application: Application
                     Log.e("getFollowingToProfile", "Token không hợp lệ")
                     return@launch
                 }
-                val response = repository.readNotification("Bearer $token", _isReadNotifications.value?:0)
-                if(response.isSuccessful){
+                val response =
+                    repository.readNotification("Bearer $token", _isReadNotifications.value ?: 0)
+                if (response.isSuccessful) {
 
                 }
             } catch (e: Exception) {
@@ -1194,17 +1268,17 @@ class ViewModelHome(private val repository: Repository, application: Application
         }
     }
 
-    fun topSongChart(){
+    fun topSongChart() {
         viewModelScope.launch {
             val token = getTokenToPreferences().toString().trim()
             try {
                 val response = repository.getTopSong("Bearer $token")
                 if (response.isSuccessful) {
-                    val title1  = response.body()?.get(0)?.song?.title ?: ""
-                    val title2  = response.body()?.get(1)?.song?.title ?: ""
-                    val title3  = response.body()?.get(2)?.song?.title ?: ""
-                    val title4  = response.body()?.get(3)?.song?.title ?: ""
-                    val title5  = response.body()?.get(4)?.song?.title ?: ""
+                    val title1 = response.body()?.get(0)?.song?.title ?: ""
+                    val title2 = response.body()?.get(1)?.song?.title ?: ""
+                    val title3 = response.body()?.get(2)?.song?.title ?: ""
+                    val title4 = response.body()?.get(3)?.song?.title ?: ""
+                    val title5 = response.body()?.get(4)?.song?.title ?: ""
                     val songNamesArray = arrayOf(title1, title2, title3, title4, title5)
                     _songNames.postValue(songNamesArray)
 
@@ -1213,10 +1287,11 @@ class ViewModelHome(private val repository: Repository, application: Application
                     val dataHeart3 = response.body()?.get(2)?.favoriteCount?.toFloat() ?: 0f
                     val dataHeart4 = response.body()?.get(3)?.favoriteCount?.toFloat() ?: 0f
                     val dataHeart5 = response.body()?.get(4)?.favoriteCount?.toFloat() ?: 0f
-                    val hearts = floatArrayOf(dataHeart1, dataHeart2, dataHeart3, dataHeart4, dataHeart5)
+                    val hearts =
+                        floatArrayOf(dataHeart1, dataHeart2, dataHeart3, dataHeart4, dataHeart5)
 
                     val entries = mutableListOf<BarEntry>()
-                    for(i in hearts.indices){
+                    for (i in hearts.indices) {
                         entries.add(BarEntry(i.toFloat(), hearts[i]))
                     }
                     _barEntries.postValue(entries)
@@ -1293,6 +1368,63 @@ class ViewModelHome(private val repository: Repository, application: Application
                 }
             } catch (e: Exception) {
                 Log.e("isFavoritePost", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun updateVipCheck() {
+        viewModelScope.launch {
+            try {
+                val request = VerifyPurchaseRequest(
+                    user_id = _userProfile.value?.user_id.toString().trim() ?: "",
+                    packageName = "com.duc.karaoke_app",
+                    productId = "vip_monthly",
+                    purchaseToken = billingManager.purchaseTokenCache ?: ""
+                )
+                val response = repository.verifyPurchase(request)
+                if (response.isSuccessful) {
+                    _isVipResponse.value = response.body()?.success
+                    Log.e("kết quả tra vip", _isVipResponse.value.toString())
+                }
+            } catch (e: Exception) {
+                Log.e("verifyPurchase", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getCommentsByStream(){
+        viewModelScope.launch {
+            try{
+                val response = repository.getCommentsByStream(12)
+                if(response.isSuccessful){
+                    watchLiveAdapter.updateCommentLists(response.body() ?: listOf())
+                }
+            }catch (e: Exception) {
+                Log.e("getCommentsByStream", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun updateDeviceToken(){
+        viewModelScope.launch {
+            try{
+                val fcmToken = getApplication<Application>()
+                    .getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+                    .getString("fcm_token", "") ?: ""
+                val token = getTokenToPreferences().toString().trim()
+                if (token.isEmpty()) {
+                    Log.e("isFavoritePost", "Token hoặc bài viết không hợp lệ")
+                    return@launch
+                }
+                val request= DeviceTokenRequest(
+                    deviceToken= fcmToken
+                )
+                val response = repository.updateDeviceToken("Bearer $token", request)
+                if(response.isSuccessful){
+                    Log.e("updateDeviceToken", "Cập nhật token thành công: $fcmToken")
+                }
+            }catch (e: Exception) {
+                Log.e("updateDeviceToken", "Lỗi kết nối: ${e.message}")
             }
         }
     }

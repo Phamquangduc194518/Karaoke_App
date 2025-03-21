@@ -105,20 +105,23 @@ data class UserPost(
 )
 
 data class LiveStream(
+    @SerializedName("stream_id")
     val streamId: Int,
     val title: String,
     val description: String?,
+    @SerializedName("host_user_id")
     val hostUserId: Int,
-    val status: Status,
+    val status: String,
     val participantsCount: Int = 0,
-    val endedAt: Date?
-) {
-    enum class Status {
-        ACTIVE, ENDED
-    }
-}
 
+)
 data class LiveStreamRequest(
+    val title: String
+)
+
+data class LiveStreamResponse(
+    @SerializedName("host_user_id")
+    val hostUserId :Int,
     val title: String
 )
 
@@ -149,6 +152,7 @@ data class Favorite(
     val songId: Int
 )
 
+@Parcelize
 data class FavoriteSong(
     @SerializedName("user_id")
     val userId: Int,
@@ -156,13 +160,10 @@ data class FavoriteSong(
     val songId: Int,
     @SerializedName("Song")
     val song : Songs
-)
+): Parcelable
+
 data class FavoriteListResponse(
     val favoriteSongs: List<FavoriteSong>
-)
-
-data class checkFavoriteListResponse(
-    val favoriteSongIds: List<Int>
 )
 
 data class AlbumDetailList(

@@ -3,13 +3,18 @@ package com.duc.karaoke_app.data.viewmodel
 import android.content.Context
 import android.util.Log
 import com.duc.karaoke_app.R
+import com.duc.karaoke_app.data.model.AccountWithFollowers
 import com.duc.karaoke_app.data.model.AlbumDetailList
 import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.ApiResponse
 import com.duc.karaoke_app.data.model.Comment
 import com.duc.karaoke_app.data.model.CommentDone
+import com.duc.karaoke_app.data.model.CommentLiveStreamList
+import com.duc.karaoke_app.data.model.CommentLiveStreamRequest
+import com.duc.karaoke_app.data.model.CommentResponse
 import com.duc.karaoke_app.data.model.CommentVideo
 import com.duc.karaoke_app.data.model.CommentVideoDone
+import com.duc.karaoke_app.data.model.DeviceTokenRequest
 import com.duc.karaoke_app.data.model.Favorite
 import com.duc.karaoke_app.data.model.FavoriteListResponse
 import com.duc.karaoke_app.data.model.FavoritePost
@@ -19,7 +24,9 @@ import com.duc.karaoke_app.data.model.FollowStatusResponse
 import com.duc.karaoke_app.data.model.FollowersResponse
 import com.duc.karaoke_app.data.model.Following
 import com.duc.karaoke_app.data.model.FollowingResponse
+import com.duc.karaoke_app.data.model.LiveStream
 import com.duc.karaoke_app.data.model.LiveStreamRequest
+import com.duc.karaoke_app.data.model.LiveStreamResponse
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.NotificationResponse
@@ -34,6 +41,8 @@ import com.duc.karaoke_app.data.model.Topic
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
+import com.duc.karaoke_app.data.model.VerifyPurchaseRequest
+import com.duc.karaoke_app.data.model.VerifyPurchaseResponse
 import com.duc.karaoke_app.data.model.topSong
 import com.duc.karaoke_app.data.network.ApiService
 import com.google.api.services.drive.Drive
@@ -133,10 +142,10 @@ class Repository() {
         return listSlide
     }
 
-    suspend fun getProfileStar(token: String): Response<List<User>> {
+    suspend fun getProfileStar(): Response<List<AccountWithFollowers>> {
         return withContext(Dispatchers.IO) {
             try {
-                apiServiceToLogin.getProfileStar(token)
+                apiServiceToLogin.getProfileStar()
             } catch (e: Exception) {
                 throw e
             }
@@ -199,10 +208,30 @@ class Repository() {
     suspend fun createLiveStream(
         token: String,
         liveStream: LiveStreamRequest
-    ): Response<LiveStreamRequest> {
+    ): Response<LiveStreamResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.createLiveStream(token, liveStream)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun updateLiveStream(token: String): Response<ReadNotificationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.updateLiveStream(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getLiveStreamList(): Response<LiveStream> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getLiveStreamList()
             } catch (e: Exception) {
                 throw e
             }
@@ -475,6 +504,46 @@ class Repository() {
         return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.getIsFavoritePostToSongID(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun verifyPurchase(request: VerifyPurchaseRequest): Response<VerifyPurchaseResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.verifyPurchase(request)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun createCommentLiveStream(token: String,request: CommentLiveStreamRequest): Response<CommentResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.createCommentLiveStream(token,request)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getCommentsByStream(liveStreamId: Int): Response<List<CommentLiveStreamList>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getCommentsByStream(liveStreamId)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun updateDeviceToken(token: String, request: DeviceTokenRequest): Response<ReadNotificationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.updateDeviceToken(token,request)
             } catch (e: Exception) {
                 throw e
             }

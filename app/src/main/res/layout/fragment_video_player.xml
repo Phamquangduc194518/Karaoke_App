@@ -136,12 +136,13 @@
             android:padding="12dp">
 
             <ImageView
-                android:id="@+id/ivUserAvatar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:contentDescription="User Avatar"
-                android:scaleType="centerCrop"
-                />
+                android:id="@+id/btnShowSticker"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                android:contentDescription="Show Sticker"
+                android:src="@drawable/ic_sticker"
+                android:onClick="@{() -> ViewModelVideoPlayer.getStickers()}" />
 
             <EditText
                 android:id="@+id/etComment"

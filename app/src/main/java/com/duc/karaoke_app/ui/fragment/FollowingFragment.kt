@@ -36,6 +36,19 @@ class FollowingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         followingBinding.rcvFollowing.layoutManager = LinearLayoutManager(requireContext())
+
+        viewmodel.avatarAndNameClicked.observe(viewLifecycleOwner){ userId ->
+            userId?.let {
+                viewmodel.checkFollowStatus()
+                viewmodel.getFollowers(userId)
+                viewmodel.getFollowing(userId)
+                viewmodel.getUserInfo()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, UserProfileFragment())
+                    .commit()
+                viewmodel.resetAvatarAndNameClicked()
+            }
+        }
     }
 
 }

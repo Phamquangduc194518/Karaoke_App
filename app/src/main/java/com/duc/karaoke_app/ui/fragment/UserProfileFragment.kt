@@ -47,7 +47,9 @@ class UserProfileFragment : Fragment() {
             if(viewModel.isNavigate.value == true){
                 viewModel.resetNavigate()
             }
-            requireActivity().supportFragmentManager.popBackStack()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ProfileFragment())
+                .commit()
         }
     }
 

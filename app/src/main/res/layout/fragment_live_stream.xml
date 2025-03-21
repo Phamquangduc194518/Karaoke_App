@@ -1,28 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SurfaceView
-        android:id="@+id/surfaceView"
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="ViewModelLiveStream"
+            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Live"
-        android:layout_marginBottom="200dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-    <Button
-        android:id="@+id/btnStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Live"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp" />
-</RelativeLayout>
+        <!-- Khung nhập nội dung -->
+        <EditText
+            android:id="@+id/edt_title_liveStream"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/button_follow"
+            android:paddingStart="10dp"
+            android:layout_marginTop="50dp"
+            android:hint="Thêm tiêu đề"
+            android:text="@={ViewModelLiveStream.titleOfLiveStream}"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="@{ViewModelLiveStream.isClickButtonLive()? View.GONE : View.VISIBLE}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_read_comment"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            app:layout_constraintBottom_toTopOf="@id/btnStop"
+            app:layout_constraintTop_toBottomOf="@id/edt_title_liveStream"/>
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/button_post"
+            android:backgroundTint="#FF4081"
+            android:onClick="@{()->ViewModelLiveStream.onButtonLive()}"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="Start Live"
+            app:layout_constraintBottom_toTopOf="@id/btnStop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="#FFFFFF"
+            android:visibility="@{ViewModelLiveStream.isClickButtonLive()? View.GONE : View.VISIBLE}" />
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/button_post"
+            android:backgroundTint="#FF4081"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Stop Live"
+            android:onClick="@{()->ViewModelLiveStream.resetButtonLive()}"
+            android:textColor="#FFFFFF"
+            android:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+

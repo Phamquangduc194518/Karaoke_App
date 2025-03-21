@@ -41,6 +41,13 @@ class VideoPlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         videPlayFragmentBinding.rcvVideo.layoutManager = LinearLayoutManager(requireContext())
         viewModel.getCommentVideo()
+
+        viewModel.isStickerVideo.observe(viewLifecycleOwner){ isSticker->
+            if(isSticker){
+                val commentVideoFragment = StickerVideoFragment.newInstance()
+                commentVideoFragment.show(childFragmentManager, commentVideoFragment.tag)
+            }
+        }
     }
 
 

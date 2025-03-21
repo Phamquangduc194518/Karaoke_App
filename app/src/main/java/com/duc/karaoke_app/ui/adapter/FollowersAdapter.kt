@@ -1,5 +1,7 @@
 package com.duc.karaoke_app.ui.adapter
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,19 +18,20 @@ class FollowersAdapter() :
     RecyclerView.Adapter<FollowersAdapter.FollowerViewHolder>() {
 
     private var followers: List<FollowerItem> = listOf()
+    private var onItemClick: ((Int) -> Unit) ?= null
     inner class FollowerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imgAvatar: ImageView = itemView.findViewById(R.id.imgAvatar)
         val txtUsername: TextView = itemView.findViewById(R.id.txtUsername)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowerViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_followers, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_followers, parent, false)
         return FollowerViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: FollowerViewHolder, position: Int) {
         val follower = followers[position].follower
+        Log.e("dữ liệu follower",follower.username.toString())
         holder.txtUsername.text = follower.username
 
         Glide.with(holder.itemView.context)
@@ -36,11 +39,23 @@ class FollowersAdapter() :
             .placeholder(R.drawable.placeholder_image)
             .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))// bo góc ảnh
             .into(holder.imgAvatar)
+
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(follower.id)
+            Log.e("click vào follower thứ:",follower.id.toString())
+        }
+
     }
 
     override fun getItemCount(): Int = followers.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateFollower(mewFollowers: List<FollowerItem>){
         this.followers = mewFollowers
+        notifyDataSetChanged()
+    }
+
+    fun setOnItemClick(listener: ((Int) -> Unit)?) {
+        onItemClick = listener
     }
 }

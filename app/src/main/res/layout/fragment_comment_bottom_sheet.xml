@@ -105,12 +105,12 @@
             <!-- Nút hiển thị danh sách sticker -->
             <ImageView
                 android:id="@+id/btnShowSticker"
-                android:layout_width="30dp"
+                android:layout_width="25dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="10dp"
                 android:contentDescription="Show Sticker"
-                android:src="@drawable/ic_sticker"
-                android:onClick="@{() -> CommentBottomSheetViewModel.getStickers()}" />
+                android:onClick="@{() -> CommentBottomSheetViewModel.getStickers()}"
+                android:src="@drawable/ic_sticker" />
 
             <ImageView
                 android:id="@+id/btnSendComment"

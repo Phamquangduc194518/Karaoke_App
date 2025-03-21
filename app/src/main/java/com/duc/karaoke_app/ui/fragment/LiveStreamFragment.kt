@@ -26,12 +26,15 @@ class LiveStreamFragment : Fragment(), ConnectCheckerRtmp {
     private val viewModel: ViewModelHome by activityViewModels {
         ViewModelFactory(Repository(), requireActivity().application)
     }
-    private val rtmpUrl = "rtmp://origin.cdn.wowza.com/live/0I5p2djr6ok4nQDWVxdHwZq76G7b585c"
+    private val rtmpUrl = "rtmp://origin.cdn.wowza.com/live/0I5p2opzhJySU7inBFH7z5a0QWCt5855"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         liveStreamBiding= FragmentLiveStreamBinding.inflate(layoutInflater)
+        liveStreamBiding.viewModelLiveStream = viewModel
+        liveStreamBiding.lifecycleOwner = viewLifecycleOwner
         return liveStreamBiding.root
     }
 
@@ -57,22 +60,23 @@ class LiveStreamFragment : Fragment(), ConnectCheckerRtmp {
 
         })
 
-        liveStreamBiding.btnStart.setOnClickListener{
-            if(!rtmpCamera1.isStreaming){
-                if (rtmpCamera1.prepareAudio() && rtmpCamera1.prepareVideo()){
-                    rtmpCamera1.startStream(rtmpUrl)
-                    viewModel.createLiveStream()
-                    Log.e("LiveStream","Livestream started")
-                }else {
-                    Log.e("LiveStream","Error preparing stream")
+        viewModel.isClickButtonLive.observe(viewLifecycleOwner){isClickButtonLive->
+            if(isClickButtonLive){
+                if(!rtmpCamera1.isStreaming){
+                    if (rtmpCamera1.prepareAudio() && rtmpCamera1.prepareVideo()){
+                        rtmpCamera1.startStream(rtmpUrl)
+                        viewModel.createLiveStream()
+                        Log.e("LiveStream","Livestream started")
+                    }else {
+                        Log.e("LiveStream","Error preparing stream")
+                    }
                 }
-            }
-        }
-
-        liveStreamBiding.btnStop.setOnClickListener {
-            if (rtmpCamera1.isStreaming) {
-                rtmpCamera1.stopStream()
-                Log.e("LiveStream","Livestream stopped")
+            }else{
+                viewModel.updateLiveStream()
+                if (rtmpCamera1.isStreaming) {
+                    rtmpCamera1.stopStream()
+                    Log.e("LiveStream","Livestream stopped")
+                }
             }
         }
     }

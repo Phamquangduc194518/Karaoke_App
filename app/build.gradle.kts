@@ -86,6 +86,7 @@ dependencies {
     implementation (libs.mpandroidchart)
     implementation (libs.billing)
     implementation ("org.ocpsoft.prettytime:prettytime:5.0.3.Final")
+    implementation(libs.firebase.messaging)
 
 
 

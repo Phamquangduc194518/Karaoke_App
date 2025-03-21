@@ -2,6 +2,7 @@ package com.duc.karaoke_app.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.duc.karaoke_app.LoginActivity
+import com.duc.karaoke_app.MusicPlayerActivity
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
@@ -60,7 +62,6 @@ class ProfileFragment : Fragment() {
             val fragment = EditProfileFragment()
             val transaction= parentFragmentManager.beginTransaction()
             transaction.replace(R.id.fragment_container, fragment)
-            transaction.addToBackStack(null)
             transaction.commit()
         }
         profileBinding.lottieEffect.playAnimation()
@@ -73,10 +74,21 @@ class ProfileFragment : Fragment() {
                 val transaction = requireActivity().supportFragmentManager
                 transaction.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
                     .commit()
             }
 
+        }
+
+        viewModel.selectedSong.observe(viewLifecycleOwner) { song ->
+            song.let {
+                Log.e("HomeFragment", "Selected song: ${song}")
+                val intent = Intent(requireActivity(), MusicPlayerActivity::class.java).apply {
+                    putExtra("FRAGMENT_KEY", "Music_Fragment")
+                    putExtra("Play_List", song)
+                }
+                startActivity(intent)
+
+            }
         }
 
 

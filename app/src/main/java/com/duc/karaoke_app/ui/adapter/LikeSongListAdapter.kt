@@ -18,6 +18,7 @@ import com.duc.karaoke_app.ui.adapter.PlayListAdapter.PlayListViewHolder
 
 class LikeSongListAdapter : RecyclerView.Adapter<LikeSongListAdapter.LikeSongListViewHolder>() {
     private var likeSongList : List<FavoriteSong> = listOf()
+    private var onItemClick: ((Songs) -> Unit)? = null
     class LikeSongListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val coverImage: ImageView = itemView.findViewById(R.id.ivCoverImage)
         val playlistTitle: TextView = itemView.findViewById(R.id.tvPlaylistTitle)
@@ -43,11 +44,18 @@ class LikeSongListAdapter : RecyclerView.Adapter<LikeSongListAdapter.LikeSongLis
             .placeholder(R.drawable.placeholder_image)
             .error(R.drawable.placeholder_image)
             .into(holder.coverImage)
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(song.song)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateLikeSongLists(newSong: List<FavoriteSong>) {
         likeSongList = newSong
         notifyDataSetChanged() // Cập nhật giao diện
+    }
+
+    fun setOnItemClick(listener: ((Songs) -> Unit)?) {
+        onItemClick = listener
     }
 }

@@ -1,12 +1,18 @@
 package com.duc.karaoke_app.data.network
 
+import com.duc.karaoke_app.data.model.AccountWithFollowers
 import com.duc.karaoke_app.data.model.AlbumDetailList
 import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.ApiResponse
 import com.duc.karaoke_app.data.model.Comment
 import com.duc.karaoke_app.data.model.CommentDone
+import com.duc.karaoke_app.data.model.CommentLiveStream
+import com.duc.karaoke_app.data.model.CommentLiveStreamList
+import com.duc.karaoke_app.data.model.CommentLiveStreamRequest
+import com.duc.karaoke_app.data.model.CommentResponse
 import com.duc.karaoke_app.data.model.CommentVideo
 import com.duc.karaoke_app.data.model.CommentVideoDone
+import com.duc.karaoke_app.data.model.DeviceTokenRequest
 import com.duc.karaoke_app.data.model.Favorite
 import com.duc.karaoke_app.data.model.FavoriteListResponse
 import com.duc.karaoke_app.data.model.FavoritePost
@@ -18,6 +24,7 @@ import com.duc.karaoke_app.data.model.Following
 import com.duc.karaoke_app.data.model.FollowingResponse
 import com.duc.karaoke_app.data.model.LiveStream
 import com.duc.karaoke_app.data.model.LiveStreamRequest
+import com.duc.karaoke_app.data.model.LiveStreamResponse
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.NotificationResponse
@@ -32,6 +39,8 @@ import com.duc.karaoke_app.data.model.Topic
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
+import com.duc.karaoke_app.data.model.VerifyPurchaseRequest
+import com.duc.karaoke_app.data.model.VerifyPurchaseResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import com.duc.karaoke_app.data.model.YouTubeResponse
@@ -95,8 +104,8 @@ interface ApiService {
     @GET("/api/song/getTopSong")
     suspend fun getTopSong(@Header("Authorization") token: String): Response<List<topSong>>
 
-    @GET("/api/admin/getAllAccount")
-    suspend fun getProfileStar(@Header("Authorization") token: String): Response<List<User>>
+    @GET("/api/getStarAccount")
+    suspend fun getProfileStar(): Response<List<AccountWithFollowers>>
 
     @GET("/api/song/getAllAlbum")
     suspend fun getAllAlbum(): Response<List<Albums>>
@@ -114,7 +123,13 @@ interface ApiService {
     suspend fun getComments(@Path("song_id") songId: Int) : Response<List<CommentDone>>
 
     @POST("/api/liveStream/createLiveStream")
-    suspend fun createLiveStream(@Header("Authorization") token: String, @Body liveStream: LiveStreamRequest): Response<LiveStreamRequest>
+    suspend fun createLiveStream(@Header("Authorization") token: String, @Body liveStream: LiveStreamRequest): Response<LiveStreamResponse>
+
+    @PATCH("/api/liveStream/updateLiveStream")
+    suspend fun updateLiveStream(@Header("Authorization") token: String): Response<ReadNotificationResponse>
+
+    @GET("/api/liveStream/getLiveStreamList")
+    suspend fun getLiveStreamList(): Response<LiveStream>
 
     @GET("/api/song/getSongDuet")
     suspend fun getDuetSong(): Response<List<Songs>>
@@ -196,6 +211,18 @@ interface ApiService {
     @GET("/api/getIsFavoritePostToSongID")
     suspend fun getIsFavoritePostToSongID(@Header("Authorization") token: String): Response<List<Int>>
 
+    @POST("/api/verifyPurchase")
+    suspend fun verifyPurchase(@Body request:VerifyPurchaseRequest): Response<VerifyPurchaseResponse>
+
+    @POST("/api/liveStream/createCommentLiveStream")
+    suspend fun createCommentLiveStream(@Header("Authorization") token: String, @Body request: CommentLiveStreamRequest): Response<CommentResponse>
+
+    @GET("/api/liveStream/getCommentsByStream/{stream_id}")
+    suspend fun getCommentsByStream(@Path("stream_id") liveStreamId: Int): Response<List<CommentLiveStreamList>>
+
+    @POST("/api/updateDeviceToken")
+    suspend fun updateDeviceToken(@Header("Authorization") token: String,@Body request: DeviceTokenRequest): Response<ReadNotificationResponse>
+
     companion object RetrofitInstance{
         // Tạo Retrofit cho API YouTube
         // Tạo Interceptor để log request và response
@@ -217,7 +244,7 @@ interface ApiService {
         }
 
         // Tạo Retrofit cho API Localhost (đăng ký tài khoản)
-        private const val BASE_URL_LOGIN="http://192.168.1.11:3000/"
+        private const val BASE_URL_LOGIN="http://192.168.1.10:3000/"
         val loginApi: ApiService by lazy{
             Retrofit.Builder()
                 .baseUrl(BASE_URL_LOGIN)

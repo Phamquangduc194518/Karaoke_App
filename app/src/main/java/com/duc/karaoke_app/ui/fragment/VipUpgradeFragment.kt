@@ -1,6 +1,7 @@
 package com.duc.karaoke_app.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +35,7 @@ class VipUpgradeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.checkVipStatus()
         binding.purchaseButton.setOnClickListener {
-            // Gọi phương thức mua VIP từ ViewModel
+            viewModel.updateVipCheck()
             viewModel.onPurchaseVipClicked(requireActivity())
         }
 
@@ -45,6 +46,14 @@ class VipUpgradeFragment : Fragment() {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SettingsAndPrivacyFragment())
                 .commit()
+        }
+
+        viewModel.isVipResponse.observe(viewLifecycleOwner){isVipResponse->
+            Log.e("Đã đăng ký chưa",isVipResponse.toString())
+            if(isVipResponse != true){
+                val dialog = MyDialogFragment()
+                dialog.show(requireActivity().supportFragmentManager, "MyDialogFragmentTag")
+            }
         }
     }
 
@@ -66,6 +75,8 @@ class VipUpgradeFragment : Fragment() {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
+
+
     }
 
 

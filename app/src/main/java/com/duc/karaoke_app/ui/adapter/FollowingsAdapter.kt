@@ -16,6 +16,7 @@ import com.duc.karaoke_app.data.model.FollowingItem
 class FollowingsAdapter() : RecyclerView.Adapter<FollowingsAdapter.FollowingsViewHolder>() {
 
     private var following: List<FollowingItem> = listOf()
+    private var onItemClick: ((Int) -> Unit)?=null
     inner class FollowingsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imgAvatar: ImageView = itemView.findViewById(R.id.imgAvatarFollowing)
         val txtUsername: TextView = itemView.findViewById(R.id.tvUsernameFollowing)
@@ -36,11 +37,19 @@ class FollowingsAdapter() : RecyclerView.Adapter<FollowingsAdapter.FollowingsVie
             .placeholder(R.drawable.placeholder_image)
             .apply(RequestOptions.circleCropTransform())
             .into(holder.imgAvatar)
+
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(following.id)
+        }
     }
 
     override fun getItemCount(): Int = following.size
 
     fun updateFollowing(mewFollowing: List<FollowingItem>){
         this.following = mewFollowing
+    }
+
+    fun setOnItemClick(listener: ((Int) -> Unit)?) {
+        onItemClick = listener
     }
 }

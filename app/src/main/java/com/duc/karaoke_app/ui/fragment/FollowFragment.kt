@@ -50,7 +50,9 @@ class FollowFragment : Fragment() {
             if(viewmodel.isNavigate.value == true){
                 viewmodel.resetNavigate()
             }
-            requireActivity().supportFragmentManager.popBackStack()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ProfileFragment())
+                .commit()
         }
     }
 

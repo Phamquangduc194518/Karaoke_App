@@ -59,7 +59,6 @@ class HomeFragment : Fragment() {
 
             }
         }
-
         viewModel.unreadNotifications()
 
         viewModel.selectedUserLiveStream.observe(viewLifecycleOwner) { user ->
@@ -72,6 +71,7 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             }
         }
+
 
         viewModel.albumClick.observe(viewLifecycleOwner) { album ->
             album.let {
@@ -125,7 +125,14 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Cập nhật lại danh sách người dùng và trạng thái livestream khi quay lại màn hình chính
+        viewModel.getProfileStar()
+    }
+
 }
+
 
     private fun setupAutoSlide(viewPager: ViewPager2) {
     val handler = Handler(Looper.getMainLooper())

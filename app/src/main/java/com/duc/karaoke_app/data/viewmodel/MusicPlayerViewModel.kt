@@ -16,12 +16,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.duc.karaoke_app.data.model.Comment
 import com.duc.karaoke_app.data.model.CommentDone
+import com.duc.karaoke_app.data.model.CommentLiveStreamRequest
 import com.duc.karaoke_app.data.model.CommentVideo
 import com.duc.karaoke_app.data.model.CommentVideoDone
 import com.duc.karaoke_app.data.model.GoogleDriveFile
+import com.duc.karaoke_app.data.model.LiveStreamRequest
 import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.Songs
+import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.Video
 import com.duc.karaoke_app.ui.adapter.AlbumAdapter
@@ -32,8 +35,10 @@ import com.duc.karaoke_app.ui.adapter.FamousPersonAdapter
 import com.duc.karaoke_app.ui.adapter.NewsFeedAdapter
 import com.duc.karaoke_app.ui.adapter.PlayListAdapter
 import com.duc.karaoke_app.ui.adapter.SlideAdapter
+import com.duc.karaoke_app.ui.adapter.StickerAdapter
 import com.duc.karaoke_app.ui.adapter.TopSongAdapter
 import com.duc.karaoke_app.ui.adapter.ViewDuetSongAdapter
+import com.duc.karaoke_app.ui.adapter.WatchLiveAdapter
 import com.duc.karaoke_app.ui.fragment.NewsFeed
 import com.duc.karaoke_app.utils.GoogleSignInHelper
 import com.duc.karaoke_app.utils.SingleLiveEvent
@@ -87,15 +92,29 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
     private val _uploadResult = MutableLiveData<UploadAvatarResponse>()
     val uploadResult: LiveData<UploadAvatarResponse> get() = _uploadResult
 
+    private val _isStickerVideo = SingleLiveEvent<Boolean>()
+    val isStickerVideo: LiveData<Boolean> get() = _isStickerVideo
+    // lưu sticker đã chọn
+    private val _selectSticker = MutableLiveData<Sticker>()
+    val selectSticker: LiveData<Sticker> get() = _selectSticker
+
+    // kiểm tra xem đã chọn chưa
+    private val _isSelectSticker = MutableLiveData<Boolean>()
+    val isSelectSticker: LiveData<Boolean> get() = _isSelectSticker
+
+
     var titlePost = MutableLiveData("")
     var recordingPath = MutableLiveData("")
 
     var comment = MutableLiveData("")
     var videoId = MutableLiveData<Int>()
+    var stickerUrl = MutableLiveData<String?>()
+    var imageUrl = MutableLiveData<String?>()
 
     private val _commentList = MutableLiveData<List<CommentVideoDone>>()
     val commentList: LiveData<List<CommentVideoDone>> get() = _commentList
 
+    private val _isLiveId = MutableLiveData<Int>(0)
 
     // LayoutManager cho RecyclerView
     val viewDuetSongManager = LinearLayoutManager(application)
@@ -103,13 +122,29 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
     // Adapter cho RecyclerView
     val viewDuetSongAdapter = ViewDuetSongAdapter()
     val commentAdapter = CommentVideoAdapter()
+    val stickerAdapter = StickerAdapter()
+    val watchLiveAdapter = WatchLiveAdapter()
 
     init {
         saveTokenToMusicPlayerActivity()
+        getLiveStreamList()
+        stickerAdapter.onClickSticker { sticker ->
+            _selectSticker.value = sticker
+            if (_selectSticker.value != null) {
+                _isSelectSticker.value = true
+            }
+            Log.e("Sticker đã chọn", _selectSticker.value?.title ?: "")
+            stickerUrl.value = _selectSticker.value?.stickerUrl ?: ""
+
+        }
     }
 
     fun initNewExoPlayer() {
         exoPlayer = ExoPlayer.Builder(getApplication()).build()
+    }
+
+    fun resetIsSelectSticker() {
+        _isSelectSticker.value = false
     }
 
     fun onBackPressed() {
@@ -299,7 +334,9 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
             try {
                 val request = CommentVideo(
                     videoId = _video.value?.videoId ?: 0,
-                    commentText = comment.value ?: ""
+                    commentText = comment.value ?: "",
+                    urlSticker = if (stickerUrl.value.isNullOrBlank()) null else stickerUrl.value,
+                    urlImage = if (imageUrl.value.isNullOrBlank()) null else imageUrl.value
                 )
                 Log.e("comment", "$request")
                 val response = repository.createCommentVideo("Bearer $_toKenToMusicPlayer", request)
@@ -307,7 +344,8 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
                     val apiResponse = response.body()
                     Log.e("Tạo comment thành công", "$apiResponse")
                     getCommentVideo()
-                    comment.value=""
+                    comment.value = ""
+                    stickerUrl.value=""
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("Comment", "Lỗi: ${response.code()} - $errorBody")
@@ -361,6 +399,80 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
                 }
             }catch(e: Exception){
                 Log.e("uploadAvatar", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getStickers() {
+        viewModelScope.launch {
+            try {
+                val sticker = repository.getStickers()
+                if (sticker.isSuccessful) {
+                    stickerAdapter.upDateSticker(sticker.body() ?: listOf())
+                    _isStickerVideo.value = true
+                }
+            } catch (e: Exception) {
+                Log.e("Sticker", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getLiveStreamList() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getLiveStreamList()
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    _isLiveId.value = apiResponse?.streamId ?: 0
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("getLiveStreamList", "Lỗi: ${response.code()} - $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("getLiveStreamList", "Lỗi kết nối: ${e.message}")
+            }
+
+        }
+    }
+
+    fun createCommentLiveStream(){
+        viewModelScope.launch {
+            if(_isLiveId.value == 0){
+                kotlinx.coroutines.delay(500)
+            }
+            try{
+                val request = CommentLiveStreamRequest(
+                    streamId = _isLiveId.value.toString(),
+                    commentText = comment.value ?: "",
+                    urlSticker = if (stickerUrl.value.isNullOrBlank()) null else stickerUrl.value,
+                    urlImage = if (imageUrl.value.isNullOrBlank()) null else imageUrl.value
+                )
+                val response = repository.createCommentLiveStream("Bearer $_toKenToMusicPlayer", request)
+                if(response.isSuccessful){
+                    Log.e("createCommentLiveStream", response.body()?.message ?: "")
+                    getCommentsByStream()
+                    comment.value = ""
+                    stickerUrl.value=""
+                }
+            }catch (e: Exception) {
+                Log.e("createCommentLiveStream", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getCommentsByStream(){
+        viewModelScope.launch {
+            if(_isLiveId.value == 0){
+                kotlinx.coroutines.delay(1000)
+            }
+            try{
+                Log.e("getCommentsByStream",_isLiveId.value.toString())
+                val response = repository.getCommentsByStream(_isLiveId.value ?: 0)
+                if(response.isSuccessful){
+                    watchLiveAdapter.updateCommentLists(response.body() ?: listOf())
+                }
+            }catch (e: Exception) {
+                Log.e("getCommentsByStream", "Lỗi kết nối: ${e.message}")
             }
         }
     }

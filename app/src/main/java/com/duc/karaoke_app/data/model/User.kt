@@ -98,9 +98,25 @@ data class Following(
     val followingId: Int
 )
 
-data class Follower(
-    @SerializedName("follower_id")
-    val followerId: Int
+@Parcelize
+data class LiveStreamStatus(
+    val status: String
+): Parcelable
+@Parcelize
+data class FollowingStar(
+    @SerializedName("user_id")
+    val userId: Int,
+    val username: String,
+    @SerializedName("avatar_url")
+    val avatarUrl: String,
+    val liveStream: LiveStreamStatus?
+): Parcelable
+
+data class AccountWithFollowers(
+    @SerializedName("following_id")
+    val followingId: Int,
+    val followersCount: Int,
+    val following: FollowingStar
 )
 
 data class FollowResponse(
@@ -124,7 +140,7 @@ data class FollowersResponse(
 data class FollowerItem(
     @SerializedName("following_id")
     val followingId: Int,
-    val follower: User
+    val follower: Follower
 )
 
 data class FollowingResponse(
@@ -135,25 +151,42 @@ data class FollowingResponse(
 data class FollowingItem(
     @SerializedName("follower_id")
     val followerId: Int,
-    val following: User
+    val following: Follower
+)
+
+data class Follower(
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("username")
+    val username: String,
+    @SerializedName("avatar_url")
+    val avatarUrl: String
 )
 
 data class CommentVideo(
     @SerializedName("video_id")
     val videoId: Int,
     @SerializedName("comment_text")
-    val commentText: String
+    val commentText: String,
+    @SerializedName("url_sticker")
+    val urlSticker: String?,
+    @SerializedName("url_image")
+    val urlImage: String?
 )
 
 data class CommentVideoDone(
     @SerializedName("user_id")
-    val user_id: Int,
-    @SerializedName("song_id")
-    val song_id: Int,
+    val userId: Int,
+    @SerializedName("video_id")
+    val videoId: Int,
     @SerializedName("comment_text")
-    val comment_text: String,
+    val commentText: String,
+    @SerializedName("url_sticker")
+    val urlSticker: String?,
+    @SerializedName("url_image")
+    val urlImage: String?,
     @SerializedName("comment_time")
-    val comment_time: String,
+    val commentTime: String,
     @SerializedName("user")
     val user: UserComment
 )
@@ -224,6 +257,74 @@ data class FavoritePost(
     @SerializedName("post_id")
     val postId: Int
 )
+
+data class VerifyPurchaseRequest(
+    val user_id: String,
+    val packageName: String,
+    val productId: String,
+    val purchaseToken: String
+)
+
+data class VerifyPurchaseResponse(
+    val success : Boolean
+)
+
+data class CommentLiveStreamRequest(
+    @SerializedName("stream_id")
+    val streamId: String,
+    @SerializedName("comment_text")
+    val commentText: String,
+    @SerializedName("url_sticker")
+    val urlSticker: String?,
+    @SerializedName("url_image")
+    val urlImage: String?,
+)
+data class CommentResponse(
+    val message: String,
+    val comment: CommentLiveStream
+)
+
+data class CommentLiveStream(
+    val status: String,
+    @SerializedName("created_at")
+    val createdAt: String,
+    @SerializedName("live_comment_id")
+    val liveCommentId: Int,
+    @SerializedName("stream_id")
+    val streamId: String,
+    @SerializedName("user_id")
+    val userId: Int,
+    @SerializedName("comment_text")
+    val commentText: String,
+    @SerializedName("url_sticker")
+    val urlSticker: String?,
+    @SerializedName("url_image")
+    val urlImage: String?,
+)
+
+data class CommentLiveStreamList(
+    @SerializedName("live_comment_id")
+    val liveCommentId: Int,
+    @SerializedName("stream_id")
+    val streamId: Int,
+    @SerializedName("user_id")
+    val userId: Int,
+    @SerializedName("comment_text")
+    val commentText: String,
+    @SerializedName("url_sticker")
+    val urlSticker: String?,
+    @SerializedName("url_image")
+    val urlImage: String?,
+    val status: String,
+    @SerializedName("created_at")
+    val commentTime: String,
+    val userCommentLive: UserComment
+)
+
+data class DeviceTokenRequest(
+    val deviceToken: String
+)
+
 
 
 
