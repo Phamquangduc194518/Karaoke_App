@@ -24,6 +24,7 @@ import com.duc.karaoke_app.data.model.LiveStreamRequest
 import com.duc.karaoke_app.data.model.NotificationUser
 import com.duc.karaoke_app.data.model.Post
 import com.duc.karaoke_app.data.model.SearchResponse
+import com.duc.karaoke_app.data.model.SongRequest
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
@@ -255,6 +256,12 @@ class ViewModelHome(private val repository: Repository, application: Application
     private val _isClickButtonLive = MutableLiveData<Boolean>()
     val isClickButtonLive: LiveData<Boolean> get() = _isClickButtonLive
 
+    private val _isClickButtonQA = MutableLiveData<Boolean>()
+    val isClickButtonQA: LiveData<Boolean> get() = _isClickButtonQA
+
+    private val _isClickSendQA = SingleLiveEvent<String>()
+    val isClickSendQA: LiveData<String> get() = _isClickSendQA
+
 
     fun resetIsSelectSticker() {
         _isSelectSticker.value = false
@@ -266,6 +273,14 @@ class ViewModelHome(private val repository: Repository, application: Application
 
     fun resetNavigate() {
         _isNavigate.value = false
+    }
+
+    fun setClickButtonQA() {
+        _isClickButtonQA.value = true
+    }
+
+    fun resetClickButtonQA() {
+        _isClickButtonQA.value = false
     }
 
     fun onClickSearch() {
@@ -320,8 +335,8 @@ class ViewModelHome(private val repository: Repository, application: Application
         _isReadNotifications.value = notificationId
     }
 
-    fun onButtonLive(){
-        _isClickButtonLive.value= true
+    fun onButtonLive() {
+        _isClickButtonLive.value = true
     }
 
     fun resetButtonLive() {
@@ -357,6 +372,12 @@ class ViewModelHome(private val repository: Repository, application: Application
         billingManager.checkVipStatus()
     }
 
+    fun resetQAText(){
+         titleQA.value = ""
+         contentQA.value = ""
+         contactInformationQA.value = ""
+    }
+
     // Adapter cho RecyclerView
     val playListAdapter = PlayListAdapter()
     val topSongAdapter = TopSongAdapter()
@@ -385,6 +406,10 @@ class ViewModelHome(private val repository: Repository, application: Application
     val dateOfBirth = MutableLiveData("01/01/2000")
     var gender = MutableLiveData("")
     var titleOfLiveStream = MutableLiveData("")
+
+    val titleQA = MutableLiveData("")
+    val contentQA = MutableLiveData("")
+    val contactInformationQA = MutableLiveData("")
 
 
     private fun getTokenToPreferences(): String? {
@@ -450,7 +475,7 @@ class ViewModelHome(private val repository: Repository, application: Application
             onSongClicked(song) // Gửi sự kiện click vào LiveData
         }
 
-        likeSongListAdapter.setOnItemClick{ song->
+        likeSongListAdapter.setOnItemClick { song ->
             onSongClicked(song)
         }
 
@@ -752,7 +777,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                     Log.e("Tạo comment thành công", "$apiResponse")
                     getComments()
                     comment.value = ""
-                    stickerUrl.value=""
+                    stickerUrl.value = ""
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("Comment", "Lỗi: ${response.code()} - $errorBody")
@@ -980,6 +1005,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                     getFollowing(_followingId.value ?: 0)
                     userProfile()
                     getRecordedSongList()
+                    getFollowNotification()
                     Log.e("follow", "follow thành công")
                 }
             }
@@ -1392,22 +1418,47 @@ class ViewModelHome(private val repository: Repository, application: Application
         }
     }
 
-    fun getCommentsByStream(){
+    fun songRequestFromUser() {
         viewModelScope.launch {
-            try{
+            try {
+                val token = getTokenToPreferences().toString().trim()
+                if (token.isEmpty()) {
+                    Log.e("songRequestFromUser", "Token không hợp lệ")
+                    return@launch
+                }
+                val request = SongRequest(
+                    title = titleQA.value ?: "",
+                    content = contentQA.value ?: "",
+                    contactInformation = contactInformationQA.value ?: ""
+                )
+                val songRequest = repository.songRequestFromUser("Bearer $token", request)
+                if (songRequest.isSuccessful) {
+                    resetQAText()
+                    _isClickSendQA.value = songRequest.body()?.message ?: ""
+                    Log.e("songRequestFromUser","Gửi đề xuất thành công")
+                }
+            } catch (e: Exception) {
+                Log.e("songRequestFromUser", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getCommentsByStream() {
+        viewModelScope.launch {
+            try {
                 val response = repository.getCommentsByStream(12)
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     watchLiveAdapter.updateCommentLists(response.body() ?: listOf())
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e("getCommentsByStream", "Lỗi kết nối: ${e.message}")
             }
         }
     }
 
-    fun updateDeviceToken(){
+    fun updateDeviceToken() {
         viewModelScope.launch {
-            try{
+            try {
                 val fcmToken = getApplication<Application>()
                     .getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
                     .getString("fcm_token", "") ?: ""
@@ -1416,14 +1467,14 @@ class ViewModelHome(private val repository: Repository, application: Application
                     Log.e("isFavoritePost", "Token hoặc bài viết không hợp lệ")
                     return@launch
                 }
-                val request= DeviceTokenRequest(
-                    deviceToken= fcmToken
+                val request = DeviceTokenRequest(
+                    deviceToken = fcmToken
                 )
                 val response = repository.updateDeviceToken("Bearer $token", request)
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     Log.e("updateDeviceToken", "Cập nhật token thành công: $fcmToken")
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e("updateDeviceToken", "Lỗi kết nối: ${e.message}")
             }
         }

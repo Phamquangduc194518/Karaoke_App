@@ -3,10 +3,12 @@ package com.duc.karaoke_app.data.viewmodel
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.duc.karaoke_app.data.model.ForgotPasswordRequest
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.utils.SingleLiveEvent
@@ -30,6 +32,9 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
 
     private val _registerSuccess = SingleLiveEvent<Boolean>()
     val registerSuccess: LiveData<Boolean> get() = _registerSuccess
+
+    private val _forGotPassWordSuccess = SingleLiveEvent<Boolean>()
+    val forGotPassWordSuccess: LiveData<Boolean> get() = _forGotPassWordSuccess
 
     fun onResetPasswordClick() {
         _navigateToResetPassword.value = true
@@ -148,5 +153,27 @@ class ViewModelLogin(private val repository: Repository, application: Applicatio
                 Log.e("Đăng nhập tài khoản", "Lỗi kết nối: ${e.message}")
             }
         }
+    }
+
+    fun onForgotPasswordClick(){
+        viewModelScope.launch {
+            val request = ForgotPasswordRequest(
+                email = email.value ?: ""
+            )
+            try{
+                val response = repository.forgotPassword(request)
+                if(response.isSuccessful){
+                    val message = response.body()?.message ?: "Email đã được gửi"
+                    _toastMessage.value = message
+                    _forGotPassWordSuccess.value = true
+                }else{
+                    _forGotPassWordSuccess.value = false
+                }
+            }catch (e: Exception) {
+                _toastMessage.value = "Lỗi kết nối: ${e.message}"
+                Log.e("onForgotPasswordClick", "Lỗi kết nối: ${e.message}")
+            }
+        }
+
     }
 }

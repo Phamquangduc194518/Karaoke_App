@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.viewmodel.Repository
 import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
@@ -29,6 +32,18 @@ class ResetPasswordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewmodelLogin.forGotPassWordSuccess.observe(viewLifecycleOwner){ isClick->
+            if(isClick){
+                findNavController().navigate(R.id.action_resetPasswordInfo_to_login_Fragment)
+            }
+        }
+        viewmodelLogin.toastMessage.observe(viewLifecycleOwner){message->
+            message.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+
+        }
     }
 
 

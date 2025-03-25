@@ -76,6 +76,15 @@ class SettingsAndPrivacyFragment : Fragment() {
                 .commit()
         }
 
+        viewModel.isClickButtonQA.observe(viewLifecycleOwner){
+            if(viewModel.isClickButtonQA.value == true){
+                viewModel.resetClickButtonQA()
+            }
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SongRequestFragment())
+                .commit()
+        }
+
 
     }
 

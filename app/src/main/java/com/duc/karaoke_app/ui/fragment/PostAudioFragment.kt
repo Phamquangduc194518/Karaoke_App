@@ -58,6 +58,14 @@ class PostAudioFragment : Fragment() {
                 requireActivity().finish()
             }
         }
+        viewModel.isUploading.observe(viewLifecycleOwner) { uploading ->
+            if (uploading) {
+                postAudioBinding.progressBar.visibility = View.VISIBLE
+            } else {
+                postAudioBinding.progressBar.visibility = View.GONE
+            }
+        }
+
         viewModel.uploadResult.observe(viewLifecycleOwner) { success ->
             if (success.message.contains("thành công")) {
                 Toast.makeText(requireContext(), "Upload thành công!", Toast.LENGTH_SHORT).show()

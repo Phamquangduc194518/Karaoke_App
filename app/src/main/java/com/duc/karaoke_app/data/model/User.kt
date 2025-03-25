@@ -33,6 +33,15 @@ data class LoginRequest(
     val password: String,
 )
 
+data class ForgotPasswordRequest(
+    val email: String
+)
+
+data class ForgotPasswordResponse(
+    val message: String
+)
+
+
 data class ApiResponse(
     val message: String,
     val token: String,
@@ -324,6 +333,13 @@ data class CommentLiveStreamList(
 data class DeviceTokenRequest(
     val deviceToken: String
 )
+
+data class SongRequest(
+    val title: String,
+    val content: String,
+    val contactInformation: String
+)
+
 
 
 

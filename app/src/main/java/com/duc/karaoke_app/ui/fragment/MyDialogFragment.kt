@@ -1,6 +1,8 @@
 package com.duc.karaoke_app.ui.fragment
 
 import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,10 +28,13 @@ class MyDialogFragment : DialogFragment() {
         myDialogBinding.viewModelDialog = viewModel
         myDialogBinding.lifecycleOwner = this
 
-        return AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext())
             .setView(myDialogBinding.root)
             .setCancelable(false)
             .create()
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        return dialog
     }
 
 

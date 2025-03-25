@@ -57,28 +57,4 @@ class VipUpgradeFragment : Fragment() {
         }
     }
 
-    private fun observeViewModel() {
-        // Quan sát kết quả mua VIP
-        viewModel.purchaseSuccess.observe(viewLifecycleOwner) { success ->
-            if (success) {
-                Toast.makeText(
-                    requireContext(),
-                    "Chúc mừng! Bạn đã trở thành thành viên VIP",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-
-        // Quan sát thông báo lỗi
-        viewModel.toastMessage.observe(viewLifecycleOwner) { message ->
-            if (!message.isNullOrEmpty()) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-
-    }
-
-
-
 }

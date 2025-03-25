@@ -80,9 +80,9 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
 
     private var _toKenToMusicPlayer = ""
 
-    private val _isUploading = MutableLiveData(false)
-    val isUploading: LiveData<Boolean>
-        get() = _isUploading
+    // kiểm tra xem có đang up bài hát lên bảng tin ko?
+    private val _isUploading = MutableLiveData<Boolean>()
+    val isUploading: LiveData<Boolean> get() = _isUploading
 
     //lưu ảnh đã chọn
     private val _selectedImageUri  = MutableLiveData<Uri?>()
@@ -295,12 +295,15 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
 
     fun postCoverToServer() {
         viewModelScope.launch {
+            _isUploading.value = true
             val uploadedFileLink = uploadFileToDrive()
             if(uploadedFileLink != null){
                 recordingPath.value = uploadedFileLink
                 createRecordedSongs()
+                _isUploading.value = false
                 _isNavigate.value=true
             }else{
+                _isUploading.value = false
                 Log.e("Upload", "Lỗi: Không thể lấy file link từ Google Drive!")
             }
         }

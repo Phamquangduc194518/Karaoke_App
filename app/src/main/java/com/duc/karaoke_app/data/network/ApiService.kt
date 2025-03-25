@@ -22,6 +22,8 @@ import com.duc.karaoke_app.data.model.FollowStatusResponse
 import com.duc.karaoke_app.data.model.FollowersResponse
 import com.duc.karaoke_app.data.model.Following
 import com.duc.karaoke_app.data.model.FollowingResponse
+import com.duc.karaoke_app.data.model.ForgotPasswordRequest
+import com.duc.karaoke_app.data.model.ForgotPasswordResponse
 import com.duc.karaoke_app.data.model.LiveStream
 import com.duc.karaoke_app.data.model.LiveStreamRequest
 import com.duc.karaoke_app.data.model.LiveStreamResponse
@@ -33,6 +35,7 @@ import com.duc.karaoke_app.data.model.ReadNotificationResponse
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.data.model.SearchResponse
+import com.duc.karaoke_app.data.model.SongRequest
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.Topic
@@ -222,6 +225,12 @@ interface ApiService {
 
     @POST("/api/updateDeviceToken")
     suspend fun updateDeviceToken(@Header("Authorization") token: String,@Body request: DeviceTokenRequest): Response<ReadNotificationResponse>
+
+    @POST("/api/SongRequestFromUser")
+    suspend fun songRequestFromUser(@Header("Authorization") token: String,@Body request: SongRequest): Response<ReadNotificationResponse>
+
+    @POST("/api/forgotPassword")
+    suspend fun forgotPassword (@Body request: ForgotPasswordRequest): Response<ForgotPasswordResponse>
 
     companion object RetrofitInstance{
         // Tạo Retrofit cho API YouTube

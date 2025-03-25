@@ -41,7 +41,7 @@ class ProfileFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel.userProfile()
         viewModel.getFollowers(viewModel.userProfile.value?.user_id ?:0)
         viewModel.getFollowing(viewModel.userProfile.value?.user_id ?:0)
         val adapter = ProfileAdapter(requireActivity())

@@ -3,9 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-    <variable
-        name="ViewModelProfile"
-        type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModelProfile"
+            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
     </data>
 
     <RelativeLayout
@@ -81,20 +84,21 @@
                 android:layout_height="130dp"
                 android:background="@drawable/custom_background_avatar"
                 android:padding="5dp"
-                app:imageUrlCircle="@{ViewModelProfile.userProfile.avatarUrl}"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                app:imageUrlCircle="@{ViewModelProfile.userProfile.avatarUrl}" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieEffect"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_alignEnd="@id/profileImage"
                 android:layout_alignTop="@id/profileImage"
-                android:layout_marginEnd="-30dp"
+                android:layout_alignEnd="@id/profileImage"
                 android:layout_marginTop="70dp"
-                app:lottie_rawRes="@raw/vip_account"
+                android:layout_marginEnd="-30dp"
+                android:visibility="@{ViewModelProfile.userProfile.role.equals(`vip`) ? View.VISIBLE : View.GONE}"
                 app:lottie_autoPlay="true"
-                app:lottie_loop="true"/>
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/vip_account" />
 
         </RelativeLayout>
 
@@ -206,13 +210,13 @@
             android:id="@+id/tl_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_sologan"
-            />
+            android:layout_below="@id/tv_sologan" />
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vp2_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/tl_profile"/>
+            android:layout_below="@+id/tl_profile" />
 
     </RelativeLayout>
 </layout>

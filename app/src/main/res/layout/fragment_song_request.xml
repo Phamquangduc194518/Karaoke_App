@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="ViewModelSongRequest"
+            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/white">
+
+        <!-- AppBar với Toolbar -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbarComplaint"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đề Xuất Với Quản Trị Viên"
+                    android:textColor="@color/black"
+                    android:textSize="19dp"
+                    android:textStyle="bold" />
+            </com.google.android.material.appbar.MaterialToolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Nội dung chính: sử dụng NestedScrollView để đảm bảo cuộn khi nội dung dài -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background"
+            android:padding="16dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Tiêu đề(nếu cần) -->
+                <TextView
+                    android:id="@+id/tvComplaintTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Vui lòng cho chúng tôi biết ý kiến của bạn"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- TextInputLayout cho tiêu đề khiếu nại -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilComplaintSubject"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Tiêu đề"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvComplaintTitle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etComplaintSubject"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/custom_edt_song_request"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="8dp"
+                        android:text="@={ViewModelSongRequest.titleQA}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- TextInputLayout cho nội dung khiếu nại -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilComplaintContent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Nội dung khiếu nại"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tilComplaintSubject">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etComplaintContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_edt_song_request"
+                        android:inputType="textMultiLine"
+                        android:lines="5"
+                        android:maxLines="8"
+                        android:minLines="5"
+                        android:padding="8dp"
+                        android:text="@={ViewModelSongRequest.contentQA}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- TextInputLayout cho thông tin liên hệ (tuỳ chọn) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilContactInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="Thông tin liên hệ (email/số điện thoại)"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tilComplaintContent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etContactInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:background="@drawable/custom_edt_song_request"
+                        android:inputType="textEmailAddress"
+                        android:padding="8dp"
+                        android:text="@={ViewModelSongRequest.contactInformationQA}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Nút gửi khiếu nại -->
+                <Button
+                    android:id="@+id/btnSubmitComplaint"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/custom_background_button_login"
+                    android:backgroundTint="#004AAD"
+                    android:onClick="@{() -> ViewModelSongRequest.songRequestFromUser()}"
+                    android:text="Gửi yêu cầu"
+                    android:textColor="@color/white"
+                    app:cornerRadius="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tilContactInfo" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:gravity="center"
+                    android:text="Hãy đề xuất bài hát mới hoặc ý kiến bạn chưa hài lòng về ứng dụng, chúng tôi xin cảm ơn sự đóng góp của bạn"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnSubmitComplaint" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
