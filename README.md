@@ -15,24 +15,46 @@ Các tính năng :
 - Trang quản trị riêng cho Admin: Quản lý bài hát, người dùng, duyệt nội dung… qua giao diện web hiện đại.
 -  deploy trang Web và ứng dụng đã chạy nội bộ trên google play console.
 
-Một số màn hình của app:
-![Splash screen](./assets/splash_screen.jpg)
-![Đăng ký](./assets/dang_ky.jpg)
-![Đăng nhập](./assets/dang_nhap.jpg)
-![Đặt lại mật khẩu](./assets/reset_pass.jpg)
-![Trang chủ 1](./assets/home.jpg)
-![Trang chủ khi kéo xuống](./assets/home2.jpg)
-![Trang chủ khi kéo xuống](./assets/home3.jpg)
-![Hát bài hát](./assets/hat_bai_hat.jpg)
-![Song ca](./assets/song_ca.jpg)
-![Bảng tin](./assets/Bang_tin.jpg)
-![Khóa học](./assets/khoa_hoc.jpg)
-![Hồ sơ](./assets/profile.jpg)
-![Hồ sơ khi kéo xuống](./assets/profile2.jpg)
-![Phòng chat](./assets/room.jpg)
-![Chat](./assets/chat.jpg)
-![Thông báo](./assets/notification.jpg)
-![Tìm kiếm](./assets/search.jpg)
-![Trang người dùng](./assets/user_profile.jpg)
-![Cài đặt](./assets/setting.jpg)
-![Nâng cấp VIP](./assets/nang_cap_vip.jpg)
+Một số màn hình của app
+
+<p float="left">
+  <img src="./assets/splash_screen.jpg" alt="Splash screen" width="200" />
+  <img src="./assets/dang_ky.jpg"      alt="Đăng ký"            width="200" />
+  <img src="./assets/dang_nhap.jpg"    alt="Đăng nhập"          width="200" />
+</p>
+
+<p float="left">
+  <img src="./assets/reset_pass.jpg"         alt="Đặt lại mật khẩu"     width="200" />
+  <img src="./assets/home.jpg"               alt="Trang chủ 1"           width="200" />
+  <img src="./assets/home2.jpg"              alt="Trang chủ khi kéo xuống" width="200" />
+</p>
+
+<p float="left">
+  <img src="./assets/home3.jpg"           alt="Trang chủ khi kéo xuống" width="200" />
+  <img src="./assets/hat_bai_hat.jpg"    alt="Hát bài hát"             width="200" />
+  <img src="./assets/song_ca.jpg"        alt="Song ca"                  width="200" />
+</p>
+
+<p float="left">
+  <img src="./assets/Bang_tin.jpg"       alt="Bảng tin"                width="200" />
+  <img src="./assets/khoa_hoc.jpg"       alt="Khóa học"                width="200" />
+  <img src="./assets/profile.jpg"        alt="Hồ sơ"                   width="200" />
+</p>
+
+<p float="left">
+  <img src="./assets/profile2.jpg"       alt="Hồ sơ khi kéo xuống"      width="200" />
+  <img src="./assets/room.jpg"           alt="Phòng chat"              width="200" />
+  <img src="./assets/chat.jpg"           alt="Chat"                    width="200" />
+</p>
+
+<p float="left">
+  <img src="./assets/notification.jpg"   alt="Thông báo"               width="200" />
+  <img src="./assets/search.jpg"         alt="Tìm kiếm"                width="200" />
+  <img src="./assets/user_profile.jpg"   alt="Trang người dùng"         width="200" />
+</p>
+
+<p float="left">
+  <img src="./assets/setting.jpg"        alt="Cài đặt"                 width="200" />
+  <img src="./assets/nang_cap_vip.jpg"   alt="Nâng cấp VIP"            width="200" />
+</p>
+
