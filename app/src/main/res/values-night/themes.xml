@@ -1,6 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Karaoke_App" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Karaoke_App" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
     </style>
+    <!-- Circle Image View Style -->
+    <style name="circleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

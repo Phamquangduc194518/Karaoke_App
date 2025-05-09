@@ -11,14 +11,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.duc.karaoke_app.MainActivity
-import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
 import com.duc.karaoke_app.databinding.FragmentPostAudioBinding
-import com.duc.karaoke_app.utils.GoogleSignInHelper
 
 class PostAudioFragment : Fragment() {
 

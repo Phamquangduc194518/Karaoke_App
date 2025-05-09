@@ -6,7 +6,7 @@
 
         <variable
             name="ViewModelSongRequest"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -62,28 +62,24 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- TextInputLayout cho tiêu đề khiếu nại -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilComplaintSubject"
+                    android:id="@+id/tilSpinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Tiêu đề"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusTopStart="8dp"
+                    android:hint="Chọn loại phản ánh"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvComplaintTitle">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etComplaintSubject"
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTitle"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="50dp"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true"
                         android:background="@drawable/custom_edt_song_request"
-                        android:inputType="text"
-                        android:maxLines="1"
                         android:padding="8dp"
                         android:text="@={ViewModelSongRequest.titleQA}" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -94,14 +90,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Nội dung khiếu nại"
+                    android:hint="Nội dung ...."
                     app:boxCornerRadiusBottomEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusTopStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tilComplaintSubject">
+                    app:layout_constraintTop_toBottomOf="@id/tilSpinner">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etComplaintContent"

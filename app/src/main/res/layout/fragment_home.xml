@@ -7,7 +7,7 @@
 
         <variable
             name="ViewModelHome"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -55,12 +55,13 @@
 
                 <ImageView
                     android:id="@+id/iv_notification"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:layout_marginEnd="20dp"
                     android:onClick="@{() -> ViewModelHome.onClickNotification()}"
                     android:src="@drawable/notification"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_messages"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -68,7 +69,34 @@
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/iv_notification"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@drawable/custom_badge"
+                    android:gravity="center"
+                    android:layout_marginStart="11dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="@{ViewModelHome.notificationsCount.toString()}"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/iv_messages"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:src="@drawable/messages"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="5dp"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvBadOfMessages"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/iv_messages"
+                    android:layout_marginStart="11dp"
                     app:layout_constraintTop_toTopOf="parent"
                     android:background="@drawable/custom_badge"
                     android:gravity="center"
@@ -77,6 +105,7 @@
                     android:textColor="@android:color/white"
                     android:textSize="10sp"
                     android:visibility="gone" />
+
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -107,7 +136,21 @@
                     android:layout_marginBottom="16dp"
                     android:adapter="@{ViewModelHome.slideViewPagerAdapter}" />
 
-                <!-- New Songs Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Bài Hát Được Đề Xuất"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewRecommendedSongs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:adapter="@{ViewModelHome.recommendedSongAdapter}" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

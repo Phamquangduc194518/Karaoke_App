@@ -2,7 +2,6 @@ package com.duc.karaoke_app.ui.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.data.model.Post
-import com.duc.karaoke_app.data.model.Songs
-import com.duc.karaoke_app.data.viewmodel.ViewModelHome
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
 import com.duc.karaoke_app.utils.ConversionTime
 
 class NewsFeedAdapter(private val viewModel: ViewModelHome) :
@@ -99,6 +97,27 @@ class NewsFeedAdapter(private val viewModel: ViewModelHome) :
             .into(holder.postImage)
 
         holder.bind(post, position)
+
+        if(post.statusFromAdmin == "pending"){
+            holder.itemView.alpha = 0.5f
+            holder.itemView.isEnabled = false
+            holder.itemView.isClickable = false
+            holder.btnLike.isEnabled = false
+            holder.btnComment.isEnabled = false
+            holder.btnPlay.isEnabled = false
+            holder.avatar.isEnabled = false
+            holder.userName.isEnabled = false
+            holder.postImage.isEnabled = false
+        }else{
+            holder.itemView.isEnabled = true
+            holder.itemView.isClickable = true
+            holder.btnLike.isEnabled = true
+            holder.btnComment.isEnabled = true
+            holder.btnPlay.isEnabled = true
+            holder.avatar.isEnabled = true
+            holder.userName.isEnabled = true
+            holder.postImage.isEnabled = true
+        }
 
         val profileClickListener = View.OnClickListener {
             post.user.user_id?.let { userId -> onAvatarClick?.invoke(userId) }

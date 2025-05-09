@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="ViewModelLiveStream"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="60dp"
             android:background="@drawable/button_post"
             android:backgroundTint="#FF4081"
             android:paddingLeft="20dp"

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="ViewModelAllSongs"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
@@ -27,7 +27,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/white"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:titleTextColor="@android:color/white"
                 app:layout_scrollFlags="scroll|enterAlways">

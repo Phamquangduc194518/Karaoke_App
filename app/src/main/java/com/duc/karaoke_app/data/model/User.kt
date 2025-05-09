@@ -18,7 +18,8 @@ data class User(
     val phone: String? = null,
     val date_of_birth: String? = null,
     val gender: String? = null,
-    val role: String? = null
+    val role: String? = null,
+    val rank: String? = null
 ) : Parcelable
 
 
@@ -338,6 +339,25 @@ data class SongRequest(
     val title: String,
     val content: String,
     val contactInformation: String
+)
+
+data class UpdateSongStatusRequest(
+    val status: String
+)
+
+data class CheckPostingConditionResponse(
+    val canPost: Boolean
+)
+
+data class ActivityStatisticsResponse(
+    @SerializedName("coverPostCount")
+    val coverPostCount: Int,
+    @SerializedName("likeCoverCount")
+    val likeCoverCount: Int,
+    @SerializedName("likeSongCount")
+    val likeSongCount: Int,
+    @SerializedName("commentCount")
+    val commentCount: Int
 )
 
 

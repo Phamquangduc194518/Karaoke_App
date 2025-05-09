@@ -20,7 +20,7 @@ import com.duc.karaoke_app.generated.callback.OnClickListener
 class DuetSongAdapter : RecyclerView.Adapter<DuetSongAdapter.DuetSongViewHolder>() {
     private var duetSongList: List<Songs> = listOf()
     private var onItemClick: ((Songs) -> Unit)? = null
-    private var onFavoriteClick: ((Int) -> Unit)?= null
+    private var onFavoriteClick: ((Songs) -> Unit)?= null
     private var mlist: List<Int> = listOf()
     class DuetSongViewHolder(view: View) : RecyclerView.ViewHolder(view){
         val coverImage: ImageView = itemView.findViewById(R.id.ivCoverImage)
@@ -59,7 +59,7 @@ class DuetSongAdapter : RecyclerView.Adapter<DuetSongAdapter.DuetSongViewHolder>
             holder.favoriteIcon.setColorFilter(Color.parseColor("#666666"))
         }
         holder.favoriteIcon.setOnClickListener{
-            onFavoriteClick?.invoke(duetSong.id)
+            onFavoriteClick?.invoke(duetSong)
             if (mlist.contains(duetSong.id)) {
 
                 holder.favoriteIcon.setColorFilter(Color.parseColor("#666666"))
@@ -78,7 +78,7 @@ class DuetSongAdapter : RecyclerView.Adapter<DuetSongAdapter.DuetSongViewHolder>
     fun setOnItemClick(listener :((Songs)-> Unit)?){
         onItemClick = listener
     }
-    fun setFavoriteClick(favoriteListener: ((Int) -> Unit)?) {
+    fun setFavoriteClick(favoriteListener: ((Songs) -> Unit)?) {
         onFavoriteClick = favoriteListener
     }
 

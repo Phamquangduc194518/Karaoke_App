@@ -1,9 +1,11 @@
 package com.duc.karaoke_app.data.network
 
 import com.duc.karaoke_app.data.model.AccountWithFollowers
+import com.duc.karaoke_app.data.model.ActivityStatisticsResponse
 import com.duc.karaoke_app.data.model.AlbumDetailList
 import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.ApiResponse
+import com.duc.karaoke_app.data.model.CheckPostingConditionResponse
 import com.duc.karaoke_app.data.model.Comment
 import com.duc.karaoke_app.data.model.CommentDone
 import com.duc.karaoke_app.data.model.CommentLiveStream
@@ -29,21 +31,28 @@ import com.duc.karaoke_app.data.model.LiveStreamRequest
 import com.duc.karaoke_app.data.model.LiveStreamResponse
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.Lyric
+import com.duc.karaoke_app.data.model.Message
 import com.duc.karaoke_app.data.model.NotificationResponse
 import com.duc.karaoke_app.data.model.Post
 import com.duc.karaoke_app.data.model.ReadNotificationResponse
+import com.duc.karaoke_app.data.model.RecommendationResponse
+import com.duc.karaoke_app.data.model.RecordedSong
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
+import com.duc.karaoke_app.data.model.RoomResponse
 import com.duc.karaoke_app.data.model.SearchResponse
 import com.duc.karaoke_app.data.model.SongRequest
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.Topic
+import com.duc.karaoke_app.data.model.UpdateSongStatusRequest
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
+import com.duc.karaoke_app.data.model.UserInfo
 import com.duc.karaoke_app.data.model.UserProfile
 import com.duc.karaoke_app.data.model.VerifyPurchaseRequest
 import com.duc.karaoke_app.data.model.VerifyPurchaseResponse
+import com.duc.karaoke_app.data.model.Video
 import retrofit2.http.GET
 import retrofit2.http.Query
 import com.duc.karaoke_app.data.model.YouTubeResponse
@@ -205,6 +214,9 @@ interface ApiService {
     @PATCH("/api/readNotifications/{notificationId}")
     suspend fun readNotification(@Header("Authorization") token: String, @Path("notificationId") notificationId: Int): Response<ReadNotificationResponse>
 
+    @GET("/api/CheckPostingCondition")
+    suspend fun CheckPostingCondition(@Header("Authorization") token: String): Response<CheckPostingConditionResponse>
+
     @POST("/api/createIsFavoritePost")
     suspend fun createIsFavoritePost(@Header("Authorization") token: String, @Body request: FavoritePost): Response<FavoritePost>
 
@@ -232,6 +244,33 @@ interface ApiService {
     @POST("/api/forgotPassword")
     suspend fun forgotPassword (@Body request: ForgotPasswordRequest): Response<ForgotPasswordResponse>
 
+    @GET("/api/getRecordedSongOfUser")
+    suspend fun getRecordedSongOfUser (@Header("Authorization") token: String): Response<List<RecordedSong>>
+
+    @POST("/api/makeSongPublic/{songPostId}")
+    suspend fun makeSongPublic(@Path("songPostId")songPostId: Int, @Body request:UpdateSongStatusRequest):  Response<ReadNotificationResponse>
+
+    @DELETE("/api/removeRecordedSong/{songPostId}")
+    suspend fun removeRecordedSong(@Path("songPostId")songPostId: Int):  Response<ReadNotificationResponse>
+
+    @GET("/api/getAllVideoOfTopic/{topicId}")
+    suspend fun getAllVideoOfTopic(@Path("topicId")topicId: Int):  Response<Topic>
+
+    @GET("/api/recommendSongs")
+    suspend fun recommendSongs(@Header("Authorization") token: String): Response<RecommendationResponse>
+
+    @GET("/api/activityStatistics")
+    suspend fun activityStatistics(@Header("Authorization") token: String): Response<ActivityStatisticsResponse>
+
+    @GET("/api/chat/getOnlineFollowingUsers")
+    suspend fun getOnlineFollowingUsers(@Header("Authorization") token: String): Response<List<UserInfo>>
+
+    @GET("/api/chat/rooms")
+    suspend fun getRooms(@Header("Authorization") token: String): Response<List<RoomResponse>>
+
+    @GET("/api/chat/rooms/{roomId}/messages")
+    suspend fun getMessages(@Header("Authorization") token: String,@Path("roomId") roomId: Int): Response<List<Message>>
+
     companion object RetrofitInstance{
         // Tạo Retrofit cho API YouTube
         // Tạo Interceptor để log request và response
@@ -253,7 +292,7 @@ interface ApiService {
         }
 
         // Tạo Retrofit cho API Localhost (đăng ký tài khoản)
-        private const val BASE_URL_LOGIN="http://192.168.1.10:3000/"
+        private const val BASE_URL_LOGIN="http://192.168.1.12:8080/"
         val loginApi: ApiService by lazy{
             Retrofit.Builder()
                 .baseUrl(BASE_URL_LOGIN)

@@ -37,6 +37,7 @@ class NotificationAdapter() : RecyclerView.Adapter<NotificationAdapter.Notificat
                 .placeholder(R.drawable.placeholder_image)
                 .into(ivIcon)
             tvSenderId.text = notification.user.username
+            tvMessage.text = notification.message
             tvTime.text = conversionTime.formatRelativeTimePretty(notification.createdAt)
             if(!notification.isRead){
                 ctl_item_notification.setBackgroundColor(Color.parseColor("#E7F3FF")) // Màu nổi bật (ví dụ: đỏ)

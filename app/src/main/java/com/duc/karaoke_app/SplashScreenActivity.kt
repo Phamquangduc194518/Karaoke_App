@@ -1,15 +1,12 @@
 package com.duc.karaoke_app
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import com.duc.karaoke_app.data.viewmodel.ViewModelSplashScreen
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelSplashScreen
 import com.duc.karaoke_app.databinding.ActivitySplashScreenBinding
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -19,6 +16,7 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         splashScreenBinding= ActivitySplashScreenBinding.inflate(layoutInflater)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         setContentView(splashScreenBinding.root)
 
         viewModel = ViewModelProvider(this)[ViewModelSplashScreen::class.java]

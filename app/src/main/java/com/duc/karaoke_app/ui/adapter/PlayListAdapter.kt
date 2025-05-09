@@ -23,7 +23,7 @@ class PlayListAdapter() : RecyclerView.Adapter<PlayListAdapter.PlayListViewHolde
     //Tham số đầu vào là một đối tượng kiểu Songs.
     //Không trả về bất kỳ giá trị nào (Unit tương đương với void trong Java).
 
-    private var onFavoriteClick: ((Int) -> Unit)? = null
+    private var onFavoriteClick: ((Songs) -> Unit)? = null
     private var mlist: List<Int> = listOf()
 
     class PlayListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -65,7 +65,7 @@ class PlayListAdapter() : RecyclerView.Adapter<PlayListAdapter.PlayListViewHolde
             holder.favoriteIcon.setColorFilter(Color.parseColor("#666666"))
         }
         holder.favoriteIcon.setOnClickListener {
-            onFavoriteClick?.invoke(playlist.id)
+            onFavoriteClick?.invoke(playlist)
             if (mlist.contains(playlist.id)) {
 
                 holder.favoriteIcon.setColorFilter(Color.parseColor("#666666"))
@@ -85,7 +85,7 @@ class PlayListAdapter() : RecyclerView.Adapter<PlayListAdapter.PlayListViewHolde
         onItemClick = listener
     }
 
-    fun setFavoriteClick(favoriteListener: ((Int) -> Unit)?) {
+    fun setFavoriteClick(favoriteListener: ((Songs) -> Unit)?) {
         onFavoriteClick = favoriteListener
     }
 

@@ -18,7 +18,7 @@ import com.duc.karaoke_app.data.model.Songs
 class AllSongsAdapter : RecyclerView.Adapter<AllSongsAdapter.AllSongsViewHolder>() {
     private var allSongList: List<Songs> = listOf()
     private var onItemClick: ((Songs) -> Unit)? = null
-    private var onFavoriteClick: ((Int) -> Unit)? = null
+    private var onFavoriteClick: ((Songs) -> Unit)? = null
     private var mlist: List<Int> = listOf()
 
     inner class AllSongsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -57,7 +57,7 @@ class AllSongsAdapter : RecyclerView.Adapter<AllSongsAdapter.AllSongsViewHolder>
             holder.favoriteIcon.setColorFilter(Color.parseColor("#666666"))
         }
         holder.favoriteIcon.setOnClickListener {
-            onFavoriteClick?.invoke(song.id)
+            onFavoriteClick?.invoke(song)
             if (mlist.contains(song.id)) {
 
                 holder.favoriteIcon.setColorFilter(Color.parseColor("#666666"))
@@ -76,7 +76,7 @@ class AllSongsAdapter : RecyclerView.Adapter<AllSongsAdapter.AllSongsViewHolder>
         onItemClick = listener
     }
 
-    fun setFavoriteClick(favoriteListener: ((Int) -> Unit)?) {
+    fun setFavoriteClick(favoriteListener: ((Songs) -> Unit)?) {
         onFavoriteClick = favoriteListener
     }
 

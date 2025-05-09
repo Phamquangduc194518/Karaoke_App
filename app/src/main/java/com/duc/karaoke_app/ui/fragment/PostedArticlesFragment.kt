@@ -5,56 +5,41 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.duc.karaoke_app.R
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.duc.karaoke_app.data.model.UpdateSongStatusRequest
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
+import com.duc.karaoke_app.databinding.FragmentPostedArticlesBinding
+import com.duc.karaoke_app.ui.adapter.RecordedSongAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PostedArticlesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PostedArticlesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private lateinit var postedArticlesBinding: FragmentPostedArticlesBinding
+    private val viewModel: ViewModelHome by activityViewModels {
+        ViewModelFactory(Repository(), requireActivity().application)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_posted_articles, container, false)
+        postedArticlesBinding = FragmentPostedArticlesBinding.inflate(layoutInflater)
+        postedArticlesBinding.viewModelPostedArticles= viewModel
+        postedArticlesBinding.lifecycleOwner= viewLifecycleOwner
+        return postedArticlesBinding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PostedArticlesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PostedArticlesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postedArticlesBinding.rcvPostedArticles.layoutManager = LinearLayoutManager(requireContext())
+        viewModel.getRecordedSongOfUser()
+
+        viewModel.recordedSongAdapter.setOnStatusChangeListener(object: RecordedSongAdapter.OnSongStatusChangeListener{
+            override fun onStatusChanged(songId: Int, newStatus: String) {
+                val request = UpdateSongStatusRequest(status = newStatus)
+                viewModel.makeSongPublic(songId, request)
             }
+
+        })
     }
 }

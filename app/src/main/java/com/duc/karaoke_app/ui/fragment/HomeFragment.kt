@@ -8,16 +8,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.duc.karaoke_app.MessengerActivity
 import com.duc.karaoke_app.MusicPlayerActivity
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.data.viewmodel.ViewModelHome
+import com.duc.karaoke_app.data.Repository.FavoriteSongsRepository
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.favoriteSongsLocal.FavoriteSongsViewModel
+import com.duc.karaoke_app.data.viewmodel.favoriteSongsLocal.FavoriteSongsViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
 import com.duc.karaoke_app.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -25,6 +28,14 @@ class HomeFragment : Fragment() {
     private lateinit var homeBinding: FragmentHomeBinding
     private val viewModel: ViewModelHome by activityViewModels {
         ViewModelFactory(Repository(), requireActivity().application)
+    }
+
+    private val favVM: FavoriteSongsViewModel by activityViewModels {
+        FavoriteSongsViewModelFactory(
+            requireActivity().application,
+            FavoriteSongsRepository(requireContext()),
+            viewModel
+        )
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,11 +53,14 @@ class HomeFragment : Fragment() {
         viewModel.images.observe(viewLifecycleOwner) {
             setupAutoSlide(homeBinding.vp2Slide)
         }
+        favVM.loadFavoriteSongs()
         viewModel.getIsFavoriteToSongID()
+        viewModel.getFollowNotification()
         homeBinding.recyclerViewTopSong.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
         homeBinding.recyclerViewPlayList.layoutManager = LinearLayoutManager(requireContext())
         homeBinding.recyclerFamousPerson.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         homeBinding.recyclerAlbum.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        homeBinding.recyclerViewRecommendedSongs.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.selectedSong.observe(viewLifecycleOwner) { song ->
             song.let {
@@ -119,9 +133,18 @@ class HomeFragment : Fragment() {
         viewModel.notificationsCount.observe(viewLifecycleOwner){ count->
             if(count != 0){
                 homeBinding.tvBadge.visibility = View.VISIBLE
+                homeBinding.tvBadOfMessages.visibility = View.VISIBLE
             }else{
                 homeBinding.tvBadge.visibility = View.GONE
+                homeBinding.tvBadOfMessages.visibility = View.VISIBLE
             }
+        }
+
+        homeBinding.ivMessages.setOnClickListener{
+            val intent = Intent(requireActivity(), MessengerActivity::class.java).apply {
+                putExtra("MESSAGE_KEY", "MESSAGE_ROOM")
+            }
+            startActivity(intent)
         }
     }
 

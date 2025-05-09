@@ -9,9 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelLogin
 import com.duc.karaoke_app.databinding.FragmentResetPasswordBinding
 
 class ResetPasswordFragment : Fragment() {

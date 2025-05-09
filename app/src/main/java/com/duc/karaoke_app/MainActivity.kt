@@ -8,15 +8,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.data.viewmodel.ViewModelHome
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
 import com.duc.karaoke_app.databinding.ActivityMainBinding
 import com.duc.karaoke_app.ui.fragment.DuetSongFragment
 import com.duc.karaoke_app.ui.fragment.HomeFragment
 import com.duc.karaoke_app.ui.fragment.LearnFragment
 import com.duc.karaoke_app.ui.fragment.LiveStreamFragment
 import com.duc.karaoke_app.ui.fragment.ProfileFragment
+import com.duc.karaoke_app.ui.fragment.VipRequiredFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -53,7 +54,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_live->{
-                    loadFragment(LiveStreamFragment())
+                    if(viewModel.userProfile.value?.role == "vip"){
+                        loadFragment(LiveStreamFragment())
+                    }else{
+                        loadFragment(VipRequiredFragment())
+                    }
                     true
                 }
                 R.id.navigation_learn->{

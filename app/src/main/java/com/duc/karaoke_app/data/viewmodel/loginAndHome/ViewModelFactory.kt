@@ -1,9 +1,10 @@
-package com.duc.karaoke_app.data.viewmodel
+package com.duc.karaoke_app.data.viewmodel.loginAndHome
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.duc.karaoke_app.data.Repository.Repository
 
 class ViewModelFactory(
     private val repository: Repository,
@@ -21,10 +22,6 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(ViewModelHome::class.java) -> {
                 Log.d("ViewModelFactory", "Creating ViewModelLogin")
                 ViewModelHome(repository, application) as T
-            }
-            modelClass.isAssignableFrom(MusicPlayerViewModel::class.java) -> {
-                Log.d("ViewModelFactory", "Creating MusicPlayerViewModel")
-                MusicPlayerViewModel(repository, application) as T
             }
             else -> {
                 Log.e("ViewModelFactory", "Unknown ViewModel class: ${modelClass.name}")

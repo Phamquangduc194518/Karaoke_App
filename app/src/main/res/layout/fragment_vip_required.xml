@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="ViewModelVipRequired"
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@drawable/background"
+        android:gravity="center_horizontal">
+
+        <!-- Thẻ thông báo bo góc -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:gravity="center_horizontal"
+                android:background="@android:color/white">
+
+                <!-- Icon VIP -->
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_vip_lock"
+                    android:contentDescription="Yêu cầu VIP" />
+
+                <!-- Tiêu đề -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chỉ dành cho tài khoản VIP"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF9800"
+                    android:layout_marginTop="16dp" />
+
+                <!-- Gạch dưới -->
+                <View
+                    android:layout_width="60dp"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="4dp"
+                    android:background="#FF9800" />
+
+                <!-- Mô tả -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rất tiếc! Tài khoản của bạn chưa đủ quyền để sử dụng tính năng Livestream."
+                    android:textSize="16sp"
+                    android:textColor="#333333"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp" />
+
+                <!-- Danh sách lý do -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="- Tính năng này chỉ dành cho tài khoản VIP.\n- Yêu cầu camera, micro và băng thông cao.\n- Đảm bảo bảo mật và tránh lạm dụng nội dung livestream."
+                    android:textSize="15sp"
+                    android:textColor="#666666"
+                    android:layout_marginTop="12dp" />
+
+                <!-- Button nâng cấp -->
+                <Button
+                    android:id="@+id/btnUpgradeVip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✨ Nâng cấp ngay"
+                    android:onClick="@{()-> ViewModelVipRequired.setClickVipUpdateOfLiveStream()}"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="24dp"
+                    android:backgroundTint="#FF9800"
+                    android:textColor="@android:color/white"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="32dp"
+                    android:elevation="4dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</layout>

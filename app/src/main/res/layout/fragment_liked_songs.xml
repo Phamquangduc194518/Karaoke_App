@@ -6,7 +6,7 @@
 
         <variable
             name="LikeSongViewModel"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
     </data>
 
     <androidx.core.widget.NestedScrollView

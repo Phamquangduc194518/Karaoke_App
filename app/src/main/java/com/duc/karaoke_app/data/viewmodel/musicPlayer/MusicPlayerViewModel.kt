@@ -1,60 +1,45 @@
-package com.duc.karaoke_app.data.viewmodel
+package com.duc.karaoke_app.data.viewmodel.musicPlayer
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
-import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.duc.karaoke_app.data.model.Comment
-import com.duc.karaoke_app.data.model.CommentDone
+import com.duc.karaoke_app.data.Repository.FavoriteSongsRepository
+import com.duc.karaoke_app.data.Repository.Repository
 import com.duc.karaoke_app.data.model.CommentLiveStreamRequest
 import com.duc.karaoke_app.data.model.CommentVideo
 import com.duc.karaoke_app.data.model.CommentVideoDone
-import com.duc.karaoke_app.data.model.GoogleDriveFile
-import com.duc.karaoke_app.data.model.LiveStreamRequest
 import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.Video
-import com.duc.karaoke_app.ui.adapter.AlbumAdapter
-import com.duc.karaoke_app.ui.adapter.CommentPostAdapter
 import com.duc.karaoke_app.ui.adapter.CommentVideoAdapter
-import com.duc.karaoke_app.ui.adapter.DuetSongAdapter
-import com.duc.karaoke_app.ui.adapter.FamousPersonAdapter
-import com.duc.karaoke_app.ui.adapter.NewsFeedAdapter
-import com.duc.karaoke_app.ui.adapter.PlayListAdapter
-import com.duc.karaoke_app.ui.adapter.SlideAdapter
 import com.duc.karaoke_app.ui.adapter.StickerAdapter
-import com.duc.karaoke_app.ui.adapter.TopSongAdapter
 import com.duc.karaoke_app.ui.adapter.ViewDuetSongAdapter
 import com.duc.karaoke_app.ui.adapter.WatchLiveAdapter
-import com.duc.karaoke_app.ui.fragment.NewsFeed
 import com.duc.karaoke_app.utils.GoogleSignInHelper
 import com.duc.karaoke_app.utils.SingleLiveEvent
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.api.client.http.FileContent
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.net.URLEncoder
 
-class MusicPlayerViewModel(private val repository: Repository, application: Application) :
+class MusicPlayerViewModel(
+    private val repository: Repository,
+    private val favoriteRepo: FavoriteSongsRepository,
+    application: Application
+) :
     AndroidViewModel(application) {
 
     private val _song = MutableLiveData<Songs>()
@@ -85,7 +70,7 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
     val isUploading: LiveData<Boolean> get() = _isUploading
 
     //lưu ảnh đã chọn
-    private val _selectedImageUri  = MutableLiveData<Uri?>()
+    private val _selectedImageUri = MutableLiveData<Uri?>()
     val selectedImageUri: LiveData<Uri?> get() = _selectedImageUri
 
     //lưu kết quả ảnh load lên
@@ -94,6 +79,7 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
 
     private val _isStickerVideo = SingleLiveEvent<Boolean>()
     val isStickerVideo: LiveData<Boolean> get() = _isStickerVideo
+
     // lưu sticker đã chọn
     private val _selectSticker = MutableLiveData<Sticker>()
     val selectSticker: LiveData<Sticker> get() = _selectSticker
@@ -101,6 +87,9 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
     // kiểm tra xem đã chọn chưa
     private val _isSelectSticker = MutableLiveData<Boolean>()
     val isSelectSticker: LiveData<Boolean> get() = _isSelectSticker
+
+    private val _checkPostingCondition = MutableLiveData<Boolean>()
+    val checkPostingCondition: LiveData<Boolean> get() = _checkPostingCondition
 
 
     var titlePost = MutableLiveData("")
@@ -128,6 +117,7 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
     init {
         saveTokenToMusicPlayerActivity()
         getLiveStreamList()
+        CheckPostingCondition()
         stickerAdapter.onClickSticker { sticker ->
             _selectSticker.value = sticker
             if (_selectSticker.value != null) {
@@ -140,7 +130,9 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
     }
 
     fun initNewExoPlayer() {
-        exoPlayer = ExoPlayer.Builder(getApplication()).build()
+        if (!::exoPlayer.isInitialized) {
+            exoPlayer = ExoPlayer.Builder(getApplication()).build()
+        }
     }
 
     fun resetIsSelectSticker() {
@@ -164,15 +156,26 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
 
 
     fun playSong(url: String) {
-        val mediaItem = MediaItem.fromUri(url)
-        if (url.isEmpty()) {
-            Log.e("ExoPlayer", "Lỗi: Đường dẫn nhạc rỗng!")
-            return
+        viewModelScope.launch {
+            val favEntity = withContext(Dispatchers.IO) {
+                favoriteRepo.getFavoriteById(_song.value?.id ?: return@withContext null)
+            }
+            val sourceUri: Uri = if (favEntity?.localAudioPath != null) {
+                Uri.fromFile(File(favEntity.localAudioPath))
+            } else {
+                Uri.parse(url)
+            }
+            if (sourceUri.toString().isEmpty()) {
+                Log.e("ExoPlayer", "Lỗi: Đường dẫn nhạc rỗng!")
+                return@launch
+            }
+            val mediaItem = MediaItem.fromUri(sourceUri)
+            Log.d("MusicPlayerVM", "==> Playing from path: ${sourceUri}")
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.prepare()
+            exoPlayer.play()
+            _isPlaying.value = true
         }
-        exoPlayer.setMediaItem(mediaItem)
-        exoPlayer.prepare()
-        exoPlayer.play()
-        _isPlaying.value = true
     }
 
     fun pauseSong() {
@@ -198,6 +201,7 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
             }
         }
     }
+
 
     fun releaseExoPlayer() {
         if (::exoPlayer.isInitialized) {
@@ -251,7 +255,7 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
             parents = listOf(folderId)
         }
         val mediaContent = FileContent("video/mp4", file)
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             try {
                 val uploadedFile = driveService.files()?.create(fileMetadata, mediaContent)
                     ?.setFields("id, name, webViewLink, webContentLink")
@@ -297,42 +301,42 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
         viewModelScope.launch {
             _isUploading.value = true
             val uploadedFileLink = uploadFileToDrive()
-            if(uploadedFileLink != null){
+            if (uploadedFileLink != null) {
                 recordingPath.value = uploadedFileLink
                 createRecordedSongs()
                 _isUploading.value = false
-                _isNavigate.value=true
-            }else{
+                _isNavigate.value = true
+            } else {
                 _isUploading.value = false
                 Log.e("Upload", "Lỗi: Không thể lấy file link từ Google Drive!")
             }
         }
     }
 
-    fun getDuetLyric(){
+    fun getDuetLyric() {
         viewModelScope.launch {
-            try{
+            try {
                 if (_song.value == null) {
                     Log.e("Lyric_Duet", "Lỗi: _song.value bị NULL trước khi gọi API")
                     return@launch
                 }
                 val response = repository.getDuetLyric(_song.value!!.title)
                 Log.e("Lyric_Duet_Title", response.isSuccessful.toString())
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     Log.e("Lyric_Duet_Respone", response.body().toString())
                     _lyricSong.value = response.body()
                     viewDuetSongAdapter.updateLyricDuetSong(_lyricSong.value ?: listOf())
                     Log.e("Lyric_Duet_Respone", _lyricSong.value.toString())
-                }else{
-                    Log.e("Lyric_Duet","Lỗi: ${response.code()} - ${response.message()}")
+                } else {
+                    Log.e("Lyric_Duet", "Lỗi: ${response.code()} - ${response.message()}")
                 }
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 Log.e("Lyric_Duet", "Lỗi kết nối: ${e.message}")
             }
         }
     }
 
-    fun createCommentVideo (){
+    fun createCommentVideo() {
         viewModelScope.launch {
             try {
                 val request = CommentVideo(
@@ -348,7 +352,7 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
                     Log.e("Tạo comment thành công", "$apiResponse")
                     getCommentVideo()
                     comment.value = ""
-                    stickerUrl.value=""
+                    stickerUrl.value = ""
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("Comment", "Lỗi: ${response.code()} - $errorBody")
@@ -358,7 +362,8 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
             }
         }
     }
-    fun getCommentVideo(){
+
+    fun getCommentVideo() {
         viewModelScope.launch {
             try {
                 val response = repository.getCommentVideo(_video.value?.videoId ?: 0)
@@ -393,14 +398,14 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
         _selectedImageUri.value = uri
     }
 
-    fun uploadImagePost(file: File){
+    fun uploadImagePost(file: File) {
         viewModelScope.launch {
-            try{
+            try {
                 val success = repository.uploadImagePost(file)
                 if (success.isSuccessful) {
                     _uploadResult.value = success.body()
                 }
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 Log.e("uploadAvatar", "Lỗi kết nối: ${e.message}")
             }
         }
@@ -438,44 +443,58 @@ class MusicPlayerViewModel(private val repository: Repository, application: Appl
         }
     }
 
-    fun createCommentLiveStream(){
+    fun createCommentLiveStream() {
         viewModelScope.launch {
-            if(_isLiveId.value == 0){
+            if (_isLiveId.value == 0) {
                 kotlinx.coroutines.delay(500)
             }
-            try{
+            try {
                 val request = CommentLiveStreamRequest(
                     streamId = _isLiveId.value.toString(),
                     commentText = comment.value ?: "",
                     urlSticker = if (stickerUrl.value.isNullOrBlank()) null else stickerUrl.value,
                     urlImage = if (imageUrl.value.isNullOrBlank()) null else imageUrl.value
                 )
-                val response = repository.createCommentLiveStream("Bearer $_toKenToMusicPlayer", request)
-                if(response.isSuccessful){
+                val response =
+                    repository.createCommentLiveStream("Bearer $_toKenToMusicPlayer", request)
+                if (response.isSuccessful) {
                     Log.e("createCommentLiveStream", response.body()?.message ?: "")
                     getCommentsByStream()
                     comment.value = ""
-                    stickerUrl.value=""
+                    stickerUrl.value = ""
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e("createCommentLiveStream", "Lỗi kết nối: ${e.message}")
             }
         }
     }
 
-    fun getCommentsByStream(){
+    fun getCommentsByStream() {
         viewModelScope.launch {
-            if(_isLiveId.value == 0){
+            if (_isLiveId.value == 0) {
                 kotlinx.coroutines.delay(1000)
             }
-            try{
-                Log.e("getCommentsByStream",_isLiveId.value.toString())
+            try {
+                Log.e("getCommentsByStream", _isLiveId.value.toString())
                 val response = repository.getCommentsByStream(_isLiveId.value ?: 0)
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     watchLiveAdapter.updateCommentLists(response.body() ?: listOf())
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e("getCommentsByStream", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun CheckPostingCondition() {
+        viewModelScope.launch {
+            try {
+                val response = repository.CheckPostingCondition("Bearer $_toKenToMusicPlayer")
+                if (response.isSuccessful) {
+                    _checkPostingCondition.value = response.body()?.canPost
+                }
+            } catch (e: Exception) {
+                Log.e("CheckPostingCondition", "Lỗi kết nối: ${e.message}")
             }
         }
     }

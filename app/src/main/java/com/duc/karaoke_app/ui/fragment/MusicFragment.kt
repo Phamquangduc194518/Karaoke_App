@@ -9,40 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import android.Manifest
-import android.app.Activity
 import android.content.pm.PackageManager
-import android.widget.SeekBar
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.data.Repository.FavoriteSongsRepository
+import com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModelFactory
 import com.duc.karaoke_app.databinding.FragmentMusicBinding
-import com.duc.karaoke_app.utils.GoogleSignInHelper
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.http.FileContent
-import com.google.api.client.http.javanet.NetHttpTransport
-import com.google.api.client.json.gson.GsonFactory
-import com.google.api.services.drive.Drive
-import com.google.api.services.drive.DriveScopes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
 
 
 class MusicFragment : Fragment() {
 
     private lateinit var musicBinding: FragmentMusicBinding
     private val viewModel: MusicPlayerViewModel by activityViewModels {
-        ViewModelFactory(Repository(), requireActivity().application)
+        MusicPlayerViewModelFactory(Repository(),FavoriteSongsRepository(requireContext()), requireActivity().application)
     }
     private val REQUEST_CODE = 100
     private lateinit var mediaRecorder: MediaRecorder

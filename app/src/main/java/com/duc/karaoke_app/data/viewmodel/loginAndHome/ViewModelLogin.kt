@@ -1,13 +1,13 @@
-package com.duc.karaoke_app.data.viewmodel
+package com.duc.karaoke_app.data.viewmodel.loginAndHome
 
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.duc.karaoke_app.data.Repository.Repository
 import com.duc.karaoke_app.data.model.ForgotPasswordRequest
 import com.duc.karaoke_app.data.model.LoginRequest
 import com.duc.karaoke_app.data.model.RegisterRequest

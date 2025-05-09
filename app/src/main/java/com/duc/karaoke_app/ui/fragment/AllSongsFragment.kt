@@ -12,15 +12,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.duc.karaoke_app.MusicPlayerActivity
 import com.github.mikephil.charting.data.Entry
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.data.viewmodel.ViewModelHome
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
 import com.duc.karaoke_app.databinding.FragmentAllSongsBinding
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
 
 class AllSongsFragment : Fragment() {

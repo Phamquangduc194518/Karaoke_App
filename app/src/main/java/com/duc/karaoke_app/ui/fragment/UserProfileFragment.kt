@@ -1,16 +1,18 @@
 package com.duc.karaoke_app.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.duc.karaoke_app.MessengerActivity
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.data.viewmodel.ViewModelHome
-import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
 import com.duc.karaoke_app.databinding.FragmentUserProfileBinding
 
 class UserProfileFragment : Fragment() {
@@ -19,7 +21,7 @@ class UserProfileFragment : Fragment() {
     private val viewModel: ViewModelHome by activityViewModels {
         ViewModelFactory(Repository(), requireActivity().application)
     }
-
+    var navigationChat = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,6 +52,28 @@ class UserProfileFragment : Fragment() {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, ProfileFragment())
                 .commit()
+        }
+
+        viewModel.navigationHistoryChat.observe(viewLifecycleOwner) { navigationHistoryChat ->
+            if (navigationHistoryChat == true) {
+                viewModel.resetNavigationHistoryChat()
+                navigationChat = true
+            }
+        }
+
+        viewModel.userDataMessage.observe(viewLifecycleOwner) { userData ->
+            Log.d("DEBUG", "userProfileData cập nhật: id=${userData}")
+            userData?.let{
+                if (userData.userId != 0 && navigationChat) {
+                    navigationChat = false
+                    val intent = Intent(requireContext(), MessengerActivity::class.java).apply {
+                        putExtra("MESSAGE_KEY", "MESSAGE_HISTORY")
+                        putExtra("userData", userData)
+                        Log.e("dữ liệu gửi", userData.toString())
+                    }
+                    startActivity(intent)
+                }
+            }
         }
     }
 

@@ -4,7 +4,7 @@
     <data>
         <variable
             name="ViewModelViewDuetSong"
-            type="com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel" />
+            type="com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel" />
     </data>
 
     <RelativeLayout

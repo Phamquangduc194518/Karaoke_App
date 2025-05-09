@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="ViewModelUserProfile"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
     </data>
 
     <RelativeLayout
@@ -196,10 +196,11 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:onClick="@{() -> ViewModelUserProfile.setNavigationHistoryChat(ViewModelUserProfile.dataFromUserProfile)}"
                 android:textColor="@color/black"
                 android:background="@drawable/button_follow"
                 android:backgroundTint="@android:color/darker_gray"
-                android:text="Tin nhắn"
+                android:text="Tin Nhắn"
                 android:textSize="14dp" />
 
         </LinearLayout>

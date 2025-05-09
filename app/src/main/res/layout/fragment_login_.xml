@@ -6,7 +6,7 @@
         <import type="android.view.View" />
         <variable
             name="ViewModelLogin"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelLogin" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -144,14 +144,13 @@
 
         <!-- Sign In Button -->
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/tv_signIn_loginScreen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
-            android:background="@drawable/custom_background_button_login"
             android:backgroundTint="#004AAD"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
@@ -159,7 +158,9 @@
             android:padding="12dp"
             android:text="Sign in"
             android:textColor="#FFFFFF"
-            android:textSize="20dp" />
+            android:textSize="20sp"
+            app:cornerRadius="21dp" />
+
 
         <LinearLayout
             android:layout_width="match_parent"

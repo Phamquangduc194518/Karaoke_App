@@ -8,21 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
 import com.duc.karaoke_app.databinding.FragmentAudioPreviewBinding
 import com.duc.karaoke_app.utils.GoogleSignInHelper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.google.api.client.http.FileContent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AudioPreviewFragment : Fragment() {
 
@@ -63,14 +57,15 @@ class AudioPreviewFragment : Fragment() {
         val account = GoogleSignInHelper.getSignedInAccount()
         Log.e("Đăng nhập google","${account?.email}")
 
+        viewModel.checkPostingCondition.observe(viewLifecycleOwner){ checkPostingCondition->
+            if(checkPostingCondition != true){
+                Log.e("checkPostingCondition",checkPostingCondition.toString())
+                        val dialog = MyDialogFragment()
+                        dialog.show(requireActivity().supportFragmentManager, "MyDialogFragmentTag")
+            }
+        }
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        GoogleSignInHelper.signOut {
-//            Log.e("GoogleSignIn", "Người dùng đã logout")
-//        }
-//    }
 
     private val signInLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

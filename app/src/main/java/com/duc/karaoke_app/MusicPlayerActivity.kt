@@ -6,18 +6,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.duc.karaoke_app.data.Repository.FavoriteSongsRepository
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.Video
-import com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModelFactory
 import com.duc.karaoke_app.databinding.ActivityMusicPlayerBinding
 import com.duc.karaoke_app.ui.fragment.MusicFragment
-import com.duc.karaoke_app.ui.fragment.UserProfileFragment
 import com.duc.karaoke_app.ui.fragment.VideoPlayerFragment
 import com.duc.karaoke_app.ui.fragment.ViewDuetSongFragment
 import com.duc.karaoke_app.ui.fragment.WatchLiveFragment
-import com.duc.karaoke_app.utils.GoogleSignInHelper
 
 class MusicPlayerActivity : AppCompatActivity() {
     private lateinit var musicPlayerBinding: ActivityMusicPlayerBinding
@@ -27,7 +26,8 @@ class MusicPlayerActivity : AppCompatActivity() {
         enableEdgeToEdge()
         val application = this.application
         val repository= Repository()
-        val viewModelFactory = ViewModelFactory(repository,application)
+        val favRepo = FavoriteSongsRepository(this)
+        val viewModelFactory = MusicPlayerViewModelFactory(repository,favRepo,application)
         try {
             viewModel = ViewModelProvider(this, viewModelFactory)[MusicPlayerViewModel::class.java]
             Log.d("MusicPlayerActivity", "ViewModel initialized: $viewModel")

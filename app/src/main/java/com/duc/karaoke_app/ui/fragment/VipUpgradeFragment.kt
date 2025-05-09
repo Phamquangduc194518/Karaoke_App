@@ -1,18 +1,15 @@
 package com.duc.karaoke_app.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.data.viewmodel.ViewModelHome
-import com.duc.karaoke_app.databinding.FragmentSettingsAndPrivacyBinding
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
 import com.duc.karaoke_app.databinding.FragmentVipUpgradeBinding
 
 class VipUpgradeFragment : Fragment() {
@@ -46,14 +43,6 @@ class VipUpgradeFragment : Fragment() {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SettingsAndPrivacyFragment())
                 .commit()
-        }
-
-        viewModel.isVipResponse.observe(viewLifecycleOwner){isVipResponse->
-            Log.e("Đã đăng ký chưa",isVipResponse.toString())
-            if(isVipResponse != true){
-                val dialog = MyDialogFragment()
-                dialog.show(requireActivity().supportFragmentManager, "MyDialogFragmentTag")
-            }
         }
     }
 

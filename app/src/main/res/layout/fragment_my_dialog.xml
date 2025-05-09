@@ -5,7 +5,7 @@
 
         <variable
             name="ViewModelDialog"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
     </data>
 
     <LinearLayout
@@ -15,7 +15,6 @@
         android:background="@drawable/bg_rounded_dialog"
         android:orientation="vertical">
 
-        <!-- Tiêu đề -->
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
@@ -27,7 +26,6 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- Mô tả / Hướng dẫn -->
         <TextView
             android:id="@+id/tvSubtitle"
             android:layout_width="match_parent"
@@ -35,7 +33,40 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:text="Email google này đã đăng ký cho tài khoản khác, xin vui lòng sử dụng email khác để đăng ký vip"
+            android:text="Bạn đã vượt quá số bài đăng được phép. Vui lòng nâng cấp rank để đăng thêm bài."
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvSubtitle2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center"
+            android:text="rank Đồng (3 follower) -> 3 bài đăng"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvSubtitle3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center"
+            android:text="rank Bạc (4 follower) -> 5 bài đăng"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvSubtitle4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:gravity="center"
+            android:text="rank Vàng(trên 5 follower) -> 10 bài đăng"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 

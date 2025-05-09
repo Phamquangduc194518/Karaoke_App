@@ -92,6 +92,8 @@ data class Post(
     @SerializedName("status")
     val status: String = "public",
 
+    val statusFromAdmin: String,
+
     @SerializedName("user")
     val user: UserPost
 )
@@ -135,6 +137,9 @@ data class Lyric(
 data class Topic(
     val id: Int,
     val title: String,
+    val subTitle: String,
+    val duration: String,
+    val type: String,
     val videos: List<Video>
 )
 @Parcelize
@@ -143,8 +148,10 @@ data class Video(
     val videoId: Int,
     val topicId: Int,
     val title: String,
+    val subTitle: String,
     val url: String,
-    val thumbnail: String
+    val thumbnail: String,
+    val duration: String
 ): Parcelable
 
 data class Favorite(
@@ -174,3 +181,30 @@ data class AlbumDetailList(
     val artist: Artist,
     val songs: List<Songs>
 )
+
+data class RecordedSong(
+    val id: Int,
+    @SerializedName("user_id")
+    val userId: Int,
+    @SerializedName("song_name")
+    val songName: String,
+    val title: String,
+    @SerializedName("recording_path")
+    val recordingPath: String,
+    @SerializedName("cover_image_url")
+    val coverImageUrl: String,
+    @SerializedName("upload_time")
+    val uploadTime: String,
+    @SerializedName("likes_count")
+    val likesCount: Int,
+    @SerializedName("comments_count")
+    val commentsCount: Int,
+    val status: String,
+    val statusFromAdmin: String
+)
+
+@Parcelize
+data class RecommendationResponse(
+    val recommendations: List<Songs>
+): Parcelable
+

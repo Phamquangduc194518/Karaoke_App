@@ -6,7 +6,7 @@
     <data>
         <variable
             name="ViewModelWatchLive"
-            type="com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel" />
+            type="com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

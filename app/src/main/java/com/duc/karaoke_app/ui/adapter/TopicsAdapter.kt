@@ -16,11 +16,12 @@ import com.duc.karaoke_app.data.model.Video
 
 class TopicsAdapter : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
     private var topicsList: List<Topic> = listOf()
-    // Biến callback để truyền sự kiện click lên Fragment
-    private var onVideoClickListener: ((Video) -> Unit)? = null
+    private var onTopicClickListener: ((Int) -> Unit)? = null
     class TopicsViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        val title: TextView = itemView.findViewById(R.id.tv_topic_name)
-        val rcvVideo: RecyclerView = itemView.findViewById(R.id.rcv_video_list)
+        val title: TextView = itemView.findViewById(R.id.featured_title)
+        val lessonCount: TextView = itemView.findViewById(R.id.lesson_count)
+        val lessonDuration: TextView = itemView.findViewById(R.id.lesson_duration)
+        val featuredCategory: TextView = itemView.findViewById(R.id.featured_category)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicsViewHolder {
@@ -35,22 +36,18 @@ class TopicsAdapter : RecyclerView.Adapter<TopicsAdapter.TopicsViewHolder>() {
     override fun onBindViewHolder(holder: TopicsViewHolder, position: Int) {
         val topic = topicsList[position]
         holder.title.text = topic.title
-        val videoAdapter = VideosAdapter(topic.videos)
-        videoAdapter.setOnVideoClick { video ->
-            if (onVideoClickListener != null) {
-                onVideoClickListener?.invoke(video)
-            } else {
-                Log.e("TopicsAdapter", "onVideoClickListener chưa được set!")
-            }
+        holder.lessonCount.text =topic.videos.size.toString()
+        holder.lessonDuration.text =topic.duration
+        holder.featuredCategory.text =topic.type
+        holder.itemView.setOnClickListener {
+            onTopicClickListener?.invoke(topic.id)
+            Log.e("TopicAdapter", topic.id.toString())
         }
-
-        holder.rcvVideo.layoutManager = GridLayoutManager(holder.itemView.context, 2)
-        holder.rcvVideo.adapter = videoAdapter
     }
 
     // Hàm thiết lập sự kiện click cho Video
-    fun setOnVideoClickListener(listener: (Video) -> Unit) {
-        onVideoClickListener  = listener
+    fun setOnTopicClickListener(listener: (Int) -> Unit) {
+        onTopicClickListener  = listener
     }
 
     @SuppressLint("NotifyDataSetChanged")

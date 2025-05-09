@@ -6,7 +6,7 @@
     <data>
         <variable
             name="ViewModelVideoPlayer"
-            type="com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel" />
+            type="com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"

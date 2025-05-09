@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="ViewModelRegister"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelLogin" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelLogin" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

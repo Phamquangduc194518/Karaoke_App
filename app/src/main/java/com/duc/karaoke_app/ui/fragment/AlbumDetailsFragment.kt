@@ -12,10 +12,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.duc.karaoke_app.MusicPlayerActivity
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.data.viewmodel.ViewModelHome
-import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
 import com.duc.karaoke_app.databinding.FragmentAlbumDetailsBinding
 
 class AlbumDetailsFragment : Fragment() {

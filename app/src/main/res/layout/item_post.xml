@@ -15,7 +15,6 @@
             android:orientation="vertical"
             android:padding="12dp">
 
-            <!-- Avatar + Name + Time -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,7 +55,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Nội dung bài đăng -->
             <TextView
                 android:id="@+id/tvContent"
                 android:layout_width="match_parent"
@@ -67,7 +65,6 @@
                 android:textColor="@android:color/black"
                 android:paddingTop="8dp" />
 
-            <!-- Ảnh đính kèm với nút Play ở giữa -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +95,6 @@
 
             </FrameLayout>
 
-            <!-- Like + Comment -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,12 +1,13 @@
-package com.duc.karaoke_app.data.viewmodel
+package com.duc.karaoke_app.data.Repository
 
-import android.content.Context
-import android.util.Log
 import com.duc.karaoke_app.R
+import com.duc.karaoke_app.data.local.dao.FavoriteSongsDao
 import com.duc.karaoke_app.data.model.AccountWithFollowers
+import com.duc.karaoke_app.data.model.ActivityStatisticsResponse
 import com.duc.karaoke_app.data.model.AlbumDetailList
 import com.duc.karaoke_app.data.model.Albums
 import com.duc.karaoke_app.data.model.ApiResponse
+import com.duc.karaoke_app.data.model.CheckPostingConditionResponse
 import com.duc.karaoke_app.data.model.Comment
 import com.duc.karaoke_app.data.model.CommentDone
 import com.duc.karaoke_app.data.model.CommentLiveStreamList
@@ -18,7 +19,6 @@ import com.duc.karaoke_app.data.model.DeviceTokenRequest
 import com.duc.karaoke_app.data.model.Favorite
 import com.duc.karaoke_app.data.model.FavoriteListResponse
 import com.duc.karaoke_app.data.model.FavoritePost
-import com.duc.karaoke_app.data.model.Follow
 import com.duc.karaoke_app.data.model.FollowResponse
 import com.duc.karaoke_app.data.model.FollowStatusResponse
 import com.duc.karaoke_app.data.model.FollowersResponse
@@ -34,6 +34,8 @@ import com.duc.karaoke_app.data.model.Lyric
 import com.duc.karaoke_app.data.model.NotificationResponse
 import com.duc.karaoke_app.data.model.Post
 import com.duc.karaoke_app.data.model.ReadNotificationResponse
+import com.duc.karaoke_app.data.model.RecommendationResponse
+import com.duc.karaoke_app.data.model.RecordedSong
 import com.duc.karaoke_app.data.model.RecordedSongs
 import com.duc.karaoke_app.data.model.RegisterRequest
 import com.duc.karaoke_app.data.model.SearchResponse
@@ -41,6 +43,7 @@ import com.duc.karaoke_app.data.model.SongRequest
 import com.duc.karaoke_app.data.model.Songs
 import com.duc.karaoke_app.data.model.Sticker
 import com.duc.karaoke_app.data.model.Topic
+import com.duc.karaoke_app.data.model.UpdateSongStatusRequest
 import com.duc.karaoke_app.data.model.UploadAvatarResponse
 import com.duc.karaoke_app.data.model.User
 import com.duc.karaoke_app.data.model.UserProfile
@@ -178,6 +181,16 @@ class Repository() {
         }
     }
 
+    suspend fun CheckPostingCondition(token: String): Response<CheckPostingConditionResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.CheckPostingCondition(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
     suspend fun getRecordedSongList(token: String): Response<List<Post>> {
         return withContext(Dispatchers.IO) {
             try {
@@ -265,6 +278,16 @@ class Repository() {
         return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.getAllTopicsWithVideo()
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getAllVideoOfTopic(topicId: Int): Response<Topic> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getAllVideoOfTopic(topicId)
             } catch (e: Exception) {
                 throw e
             }
@@ -567,6 +590,56 @@ class Repository() {
         return withContext(Dispatchers.IO) {
             try {
                 apiServiceToLogin.forgotPassword(request)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getRecordedSongOfUser(token: String): Response<List<RecordedSong>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.getRecordedSongOfUser(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun makeSongPublic(songPostId: Int, request: UpdateSongStatusRequest): Response<ReadNotificationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.makeSongPublic(songPostId, request)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun removeRecordedSong(songPostId: Int): Response<ReadNotificationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.removeRecordedSong(songPostId)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun recommendSongs(token: String): Response<RecommendationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.recommendSongs(token)
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun activityStatistics(token: String): Response<ActivityStatisticsResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                apiServiceToLogin.activityStatistics(token)
             } catch (e: Exception) {
                 throw e
             }

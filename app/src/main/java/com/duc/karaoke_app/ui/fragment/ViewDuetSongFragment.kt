@@ -1,6 +1,5 @@
 package com.duc.karaoke_app.ui.fragment
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,11 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.MusicPlayerViewModel
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.databinding.FragmentMusicBinding
+import com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
 import com.duc.karaoke_app.databinding.FragmentViewDuetSongBinding
 
 class ViewDuetSongFragment : Fragment() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,24 +9,22 @@
 
         <variable
             name="ViewModelProfile"
-            type="com.duc.karaoke_app.data.viewmodel.ViewModelHome" />
+            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="16dp"
-        android:paddingTop="30dp"
-        android:paddingEnd="16dp">
+        android:background="@drawable/background">
 
-        <!-- Header Section -->
         <LinearLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="30dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -68,155 +67,543 @@
                 android:src="@drawable/baseline_menu" />
         </LinearLayout>
 
-        <!-- Profile Avatar Section -->
-        <RelativeLayout
-            android:id="@+id/profile_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/header"
-            android:layout_marginTop="16dp"
-            android:gravity="center_horizontal">
-
-            <!-- Avatar -->
-            <ImageView
-                android:id="@+id/profileImage"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:background="@drawable/custom_background_avatar"
-                android:padding="5dp"
-                android:scaleType="centerCrop"
-                app:imageUrlCircle="@{ViewModelProfile.userProfile.avatarUrl}" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottieEffect"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_alignTop="@id/profileImage"
-                android:layout_alignEnd="@id/profileImage"
-                android:layout_marginTop="70dp"
-                android:layout_marginEnd="-30dp"
-                android:visibility="@{ViewModelProfile.userProfile.role.equals(`vip`) ? View.VISIBLE : View.GONE}"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/vip_account" />
-
-        </RelativeLayout>
-
-        <!-- Username -->
-        <TextView
-            android:id="@+id/profile_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/profile_section"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="2dp"
-            android:text="@{ViewModelProfile.userProfile.email}"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-        <!-- Stats Section -->
-        <LinearLayout
-            android:id="@+id/stats_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/profile_username"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="30dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="4">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:onClick="@{()-> ViewModelProfile.checkFollowClick()}"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@{ViewModelProfile.followingCount.toString()}"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Đã follow"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:onClick="@{()-> ViewModelProfile.checkFollowClick()}"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@{ViewModelProfile.followerCount.toString()}"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Follower"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/icon_edit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_weight="1"
-                android:background="@drawable/custom_edit_profile_button"
-                android:contentDescription="Edit"
-                android:padding="8dp"
-                android:src="@drawable/baseline_edit" />
-        </LinearLayout>
-
-        <!-- Description -->
-        <TextView
-            android:id="@+id/tv_sologan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/stats_section"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="center_horizontal"
-            android:maxWidth="400dp"
-            android:text="@{ViewModelProfile.userProfile.slogan}"
-            android:textColor="@android:color/black" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tl_profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_sologan" />
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vp2_profile"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/tl_profile" />
+            android:layout_below="@id/header"
+            android:fillViewport="true">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/profile_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <RelativeLayout
+                            android:id="@+id/profile_section"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal">
+
+                            <FrameLayout
+                                android:id="@+id/avatar_container"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true">
+
+                                <ImageView
+                                    android:id="@+id/profileImage"
+                                    android:layout_width="130dp"
+                                    android:layout_height="130dp"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/custom_background_avatar"
+                                    android:padding="5dp"
+                                    android:scaleType="centerCrop"
+                                    app:imageUrlCircle="@{ViewModelProfile.userProfile.avatarUrl}" />
+                            </FrameLayout>
+
+                            <com.airbnb.lottie.LottieAnimationView
+                                android:id="@+id/lottieEffect"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:layout_alignTop="@id/avatar_container"
+                                android:layout_alignEnd="@id/avatar_container"
+                                android:layout_marginTop="70dp"
+                                android:layout_marginEnd="-30dp"
+                                android:visibility="@{ViewModelProfile.userProfile.role.equals(`vip`) ? View.VISIBLE : View.GONE}"
+                                app:lottie_autoPlay="true"
+                                app:lottie_loop="true"
+                                app:lottie_rawRes="@raw/vip_account" />
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/rank_badge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/avatar_container"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="-24dp"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="4dp">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="horizontal"
+                                    android:paddingHorizontal="10dp"
+                                    android:paddingVertical="6dp">
+
+                                    <ImageView
+                                        android:id="@+id/rank_icon"
+                                        android:layout_width="18dp"
+                                        android:layout_height="18dp"
+                                        android:src="@{ViewModelProfile.userProfile.rank.equals(`Gold`) ? @drawable/gold : ViewModelProfile.userProfile.rank.equals(`Silver`) ? @drawable/sliver : ViewModelProfile.userProfile.rank.equals(`Bronze`) ? @drawable/bronze : @drawable/bronze}" />
+
+                                    <TextView
+                                        android:id="@+id/rank_text"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="4dp"
+                                        android:text="@{ViewModelProfile.userProfile.rank.equals(`Gold`) ? `Gold` : ViewModelProfile.userProfile.rank.equals(`Silver`) ? `Silver` : ViewModelProfile.userProfile.rank.equals(`Bronze`) ? `Bronze`: `Bronze`}"
+                                        android:textColor="@{ViewModelProfile.userProfile.rank.equals(`Gold`) ? @android:color/holo_orange_light : ViewModelProfile.userProfile.rank.equals(`Silver`) ? @android:color/darker_gray : ViewModelProfile.userProfile.rank.equals(`Bronze`) ? @android:color/holo_orange_dark : @android:color/black}"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/profile_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="3dp"
+                            android:text="@{ViewModelProfile.userProfile.email}"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="2dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:onClick="@{()-> ViewModelProfile.checkFollowClick()}"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@{ViewModelProfile.followingCount.toString()}"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Đã follow"
+                                    android:textColor="@android:color/darker_gray"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#E0E0E0" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:onClick="@{()-> ViewModelProfile.checkFollowClick()}"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@{ViewModelProfile.followerCount.toString()}"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Follower"
+                                    android:textColor="@android:color/darker_gray"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <!-- Vertical Divider -->
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="#E0E0E0" />
+
+                            <!-- Edit Profile Button -->
+                            <LinearLayout
+                                android:id="@+id/ll_icon_edit"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:id="@+id/icon_edit"
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:contentDescription="Edit"
+                                    android:src="@drawable/baseline_edit" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Chỉnh sửa"
+                                    android:textColor="@android:color/darker_gray"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_sologan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center_horizontal"
+                            android:maxWidth="400dp"
+                            android:text="@{ViewModelProfile.userProfile.slogan}"
+                            android:textColor="@color/black" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/statistics_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/profile_card"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="#FFF8E1"
+                    app:cardCornerRadius="16dp"
+                    app:strokeColor="#FFD54F"
+                    app:strokeWidth="2dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="10dp">
+
+                            <ImageView
+                                android:id="@+id/profileImage_statistical"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="5dp"
+                                android:scaleType="centerCrop"
+                                app:imageUrlCircle="@{ViewModelProfile.userProfile.avatarUrl}" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:drawablePadding="8dp"
+                                android:drawableTint="#2196F3"
+                                android:text="Thống kê hoạt động"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Bài hát đã thu -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Hoạt động cá nhân"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:text="Bài hát đã thu"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="14sp" />
+
+                            <FrameLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1">
+
+                                <ProgressBar
+                                    android:id="@+id/recorded_songs_progress"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp"
+                                    android:progress="0"
+                                    android:max="100"
+                                    android:progressBackgroundTint="#E0E0E0"
+                                    android:progressTint="#4CAF50" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="8dp"
+                                android:text="@{String.valueOf(ViewModelProfile.activityStatisticsValue.coverPostCount)}"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:text="Bài viết đã đăng"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="14sp" />
+
+                            <FrameLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1">
+
+                                <ProgressBar
+                                    android:id="@+id/posts_progress"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp"
+                                    android:progress="0"
+                                    android:max="100"
+                                    android:progressBackgroundTint="#E0E0E0"
+                                    android:progressTint="#FF9800" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="8dp"
+                                android:text="@{String.valueOf(ViewModelProfile.activityStatisticsValue.coverPostCount)}"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Tương tác Section -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="24dp"
+                            android:text="Tương tác"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:text="Lượt thích cover"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="14sp" />
+
+                            <FrameLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1">
+
+                                <ProgressBar
+                                    android:id="@+id/likes_progress"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp"
+                                    android:progress="0"
+                                    android:max="100"
+                                    android:progressBackgroundTint="#E0E0E0"
+                                    android:progressTint="#E91E63" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="8dp"
+                                android:text="@{String.valueOf(ViewModelProfile.activityStatisticsValue.likeCoverCount)}"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:text="Lượt thích bài hát"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="14sp" />
+
+                            <FrameLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1">
+
+                                <ProgressBar
+                                    android:id="@+id/listens_progress"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp"
+                                    android:progress="0"
+                                    android:max="100"
+                                    android:progressBackgroundTint="#E0E0E0"
+                                    android:progressTint="#2196F3" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="8dp"
+                                android:text="@{String.valueOf(ViewModelProfile.activityStatisticsValue.likeSongCount)}"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="90dp"
+                                android:layout_height="wrap_content"
+                                android:text="Bình luận"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="14sp" />
+
+                            <FrameLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1">
+
+                                <ProgressBar
+                                    android:id="@+id/comments_progress"
+                                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="10dp"
+                                    android:progress="0"
+                                    android:max="100"
+                                    android:progressBackgroundTint="#E0E0E0"
+                                    android:progressTint="#673AB7" />
+                            </FrameLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="8dp"
+                                android:text="@{String.valueOf(ViewModelProfile.activityStatisticsValue.commentCount)}"
+                                android:textColor="@android:color/black"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                >
+
+                <!-- Tab Layout -->
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tl_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/statistics_card"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    app:tabIndicatorAnimationMode="elastic"
+                    app:tabIndicatorColor="#00BFA5"
+                    app:tabIndicatorFullWidth="false"
+                    app:tabIndicatorHeight="2dp"
+                    app:tabRippleColor="@android:color/transparent"
+                    app:tabSelectedTextColor="#FFD54F"
+                    app:tabTextAppearance="@style/CustomTabTextAppearance"
+                    app:tabTextColor="@color/black" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vp2_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_below="@+id/tl_profile"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_below="@id/vp2_profile" />
+
+            </RelativeLayout>
+        </ScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/trashIcon"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="Thùng rác"
+                android:src="@drawable/trash"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 </layout>

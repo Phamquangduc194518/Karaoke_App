@@ -1,25 +1,19 @@
 package com.duc.karaoke_app.ui.fragment
 
-import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.duc.karaoke_app.LoginActivity
 import com.duc.karaoke_app.R
-import com.duc.karaoke_app.data.viewmodel.Repository
-import com.duc.karaoke_app.data.viewmodel.ViewModelFactory
-import com.duc.karaoke_app.data.viewmodel.ViewModelHome
-import com.duc.karaoke_app.data.viewmodel.ViewModelLogin
+import com.duc.karaoke_app.data.Repository.Repository
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelFactory
+import com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome
 import com.duc.karaoke_app.databinding.FragmentSettingsAndPrivacyBinding
-import com.duc.karaoke_app.ui.login.LoginFragment
-import com.duc.karaoke_app.utils.BillingManager
 
 class SettingsAndPrivacyFragment : Fragment() {
 
@@ -79,10 +73,10 @@ class SettingsAndPrivacyFragment : Fragment() {
         viewModel.isClickButtonQA.observe(viewLifecycleOwner){
             if(viewModel.isClickButtonQA.value == true){
                 viewModel.resetClickButtonQA()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, SongRequestFragment())
+                    .commit()
             }
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SongRequestFragment())
-                .commit()
         }
 
 

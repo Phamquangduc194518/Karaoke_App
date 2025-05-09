@@ -51,7 +51,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     testImplementation(libs.junit)
@@ -61,7 +60,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
-    implementation(libs.gms.play.services.auth)
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
     implementation(libs.firebase.storage)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -87,6 +86,15 @@ dependencies {
     implementation (libs.billing)
     implementation ("org.ocpsoft.prettytime:prettytime:5.0.3.Final")
     implementation(libs.firebase.messaging)
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
+
+    implementation ("androidx.room:room-runtime:2.7.1")
+    implementation ("androidx.room:room-ktx:2.7.1")
+    kapt ("androidx.room:room-compiler:2.7.1")
+
+    implementation("io.socket:socket.io-client:2.1.0")
+
 
 
 
