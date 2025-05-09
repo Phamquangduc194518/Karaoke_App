@@ -3,6 +3,7 @@ Các tính năng :
 - Đăng bài hát và tương tác: Người dùng có thể đăng bài cover, thả tim, bình luận, và chia sẻ bài hát. 
 - Quản lý bài cover.
 - Tham gia Khóa học hát.
+- Nhắn tin bằng socket.io
 - Người dùng được chia theo rank để được đăng bài và vip để hát được những bài hát mất phí.
 - Ứng dụng có hiệu ứng annotation cho tính năng vip, tạo giao diện đẹp mắt, dễ sử dụng.
 - Livestream ca hát: Phát trực tiếp giọng hát qua Wowza Streaming Cloud, hỗ trợ bình luận và tương tác trong thời gian thực. 
