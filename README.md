@@ -14,3 +14,25 @@ Các tính năng :
 - Tìm kiếm nhanh với Elasticsearch: Hệ thống hỗ trợ tìm kiếm bài hát và người dùng siêu tốc độ, chính xác. 
 - Trang quản trị riêng cho Admin: Quản lý bài hát, người dùng, duyệt nội dung… qua giao diện web hiện đại.
 -  deploy trang Web và ứng dụng đã chạy nội bộ trên google play console.
+
+Một số màn hình của app:
+![Splash screen](./assets/splash_screen.jpg)
+![Đăng ký](./assets/dang_ky.jpg)
+![Đăng nhập](./assets/dang_nhap.jpg)
+![Đặt lại mật khẩu](./assets/reset_pass.jpg)
+![Trang chủ 1](./assets/home.jpg)
+![Trang chủ khi kéo xuống](./assets/home2.jpg)
+![Trang chủ khi kéo xuống](./assets/home3.jpg)
+![Hát bài hát](./assets/hat_bai_hat.jpg)
+![Song ca](./assets/song_ca.jpg)
+![Bảng tin](./assets/Bang_tin.jpg)
+![Khóa học](./assets/khoa_hoc.jpg)
+![Hồ sơ](./assets/profile.jpg)
+![Hồ sơ khi kéo xuống](./assets/profile2.jpg)
+![Phòng chat](./assets/room.jpg)
+![Chat](./assets/chat.jpg)
+![Thông báo](./assets/notification.jpg)
+![Tìm kiếm](./assets/search.jpg)
+![Trang người dùng](./assets/user_profile.jpg)
+![Cài đặt](./assets/setting.jpg)
+![Nâng cấp VIP](./assets/nang_cap_vip.jpg)
