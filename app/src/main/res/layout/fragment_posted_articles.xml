@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.fragment.PostedArticlesFragment">
+    tools:context=".feature_home.presentation.ui.fragment.PostedArticlesFragment">
 
     <data>
         <variable
             name="ViewModelPostedArticles"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <androidx.recyclerview.widget.RecyclerView

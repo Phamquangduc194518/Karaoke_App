@@ -1,3 +1,11 @@
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+val baseUrlLogin: String = localProperties.getProperty("base_url_login") ?: "https://default.api/"
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -23,12 +31,17 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("debug") {
+            buildConfigField("String", "BASE_URL_LOGIN", "\"$baseUrlLogin\"")
+        }
+
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL_LOGIN", "\"$baseUrlLogin\"")
         }
     }
     compileOptions {
@@ -39,6 +52,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         dataBinding = true
     }
@@ -94,6 +108,11 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.7.1")
 
     implementation("io.socket:socket.io-client:2.1.0")
+    implementation (libs.shimmer)
+    implementation (libs.okhttp)
+
+    implementation (libs.cloudinary.android)
+
 
 
 

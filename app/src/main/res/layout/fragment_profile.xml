@@ -9,13 +9,13 @@
 
         <variable
             name="ViewModelProfile"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background">
+        android:background="@drawable/background2">
 
         <LinearLayout
             android:id="@+id/header"

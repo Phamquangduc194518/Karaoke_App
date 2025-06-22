@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="ViewModelUserProfile"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <RelativeLayout

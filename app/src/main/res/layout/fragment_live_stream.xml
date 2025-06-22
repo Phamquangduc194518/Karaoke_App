@@ -3,11 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="ViewModelLiveStream"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,62 +27,75 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="20dp"
             android:background="@drawable/button_follow"
-            android:paddingStart="10dp"
-            android:layout_marginTop="50dp"
             android:hint="Thêm tiêu đề"
+            android:paddingStart="10dp"
             android:text="@={ViewModelLiveStream.titleOfLiveStream}"
             android:textColor="#FFFFFF"
             android:textColorHint="#FFFFFF"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="@{ViewModelLiveStream.isClickButtonLive()? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="@{ViewModelLiveStream.isClickButtonLive()? View.GONE : View.VISIBLE}" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_read_comment"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            app:layout_constraintBottom_toTopOf="@id/btnStop"
-            app:layout_constraintTop_toBottomOf="@id/edt_title_liveStream"/>
+            android:layout_height="500dp"
+            android:adapter="@{ViewModelLiveStream.watchLiveAdapter}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edt_title_liveStream" />
+
         <Button
             android:id="@+id/btnStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="80dp"
             android:background="@drawable/button_post"
             android:backgroundTint="#FF4081"
             android:onClick="@{()->ViewModelLiveStream.onButtonLive()}"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:text="Start Live"
-            app:layout_constraintBottom_toTopOf="@id/btnStop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:textColor="#FFFFFF"
-            android:visibility="@{ViewModelLiveStream.isClickButtonLive()? View.GONE : View.VISIBLE}" />
-
-        <Button
-            android:id="@+id/btnStop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="60dp"
-            android:background="@drawable/button_post"
-            android:backgroundTint="#FF4081"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
+            android:visibility="@{ViewModelLiveStream.isClickButtonLive()? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Stop Live"
-            android:onClick="@{()->ViewModelLiveStream.resetButtonLive()}"
-            android:textColor="#FFFFFF"
-            android:visibility="visible" />
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="end"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/btnStop"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="Stop Live"
+                android:onClick="@{()->ViewModelLiveStream.resetButtonLive()}"
+                android:padding="10dp"
+                android:src="@drawable/btn_shut_down"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/btnSwitchCamera"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_switch_camera"
+                android:contentDescription="Switch Camera"  />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 

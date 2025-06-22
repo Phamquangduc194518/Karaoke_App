@@ -6,13 +6,13 @@
         <import type="android.view.View"/>
         <variable
             name="ViewModelRegister"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelLogin" />
+            type="com.duc.karaoke_app.feature_auth.presentation.viewmodel.ViewModelLogin" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background">
+        android:background="@drawable/background2">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Create Account"
+                android:text="Trang Tạo Tài Khoản"
                 android:textColor="#163d68"
                 android:textSize="30dp"
                 android:textStyle="bold" />
@@ -39,7 +39,7 @@
                 android:layout_marginBottom="50dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
-                android:text="Create an account so you can explore all the existing experience"
+                android:text="Đăng kí tài khoản để sử dụng ứng dụng"
                 android:textColor="#001F54"
                 android:textSize="20sp" />
 
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="username"
+                    android:hint="Tên đăng nhập"
                     android:inputType="textEmailAddress"
                     android:padding="8dp"
                     android:textColor="#000000"
@@ -146,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="Enter your password"
+                    android:hint="Nhập mật khẩu"
                     android:inputType="textPassword"
                     android:padding="8dp"
                     android:text="@={ViewModelRegister.password}"
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="Confirm Password"
+                    android:hint="Xác nhận mật khẩu"
                     android:inputType="textPassword"
                     android:padding="8dp"
                     android:text="@={ViewModelRegister.comFirmPass}"
@@ -196,10 +196,10 @@
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:padding="12dp"
-                android:text="Sign up"
+                android:text="Đăng Kí"
+                android:textSize="20dp"
                 android:onClick="@{()->ViewModelRegister.onRegisterClick()}"
-                android:textColor="#FFFFFF"
-                android:textSize="20dp" />
+                android:textColor="#FFFFFF" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -207,7 +207,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="sans-serif"
-                android:text="Already have an account"
+                android:text="Bạn đã có tài khoản"
                 android:textColor="#001F54"
                 android:textSize="14sp" />
 

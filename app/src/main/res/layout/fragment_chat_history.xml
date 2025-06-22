@@ -6,7 +6,7 @@
 
         <variable
             name="ViewModelChatHistory"
-            type="com.duc.karaoke_app.data.viewmodel.messenger.ViewModelChat" />
+            type="com.duc.karaoke_app.feature_chat.presentation.viewmodel.ViewModelChat" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

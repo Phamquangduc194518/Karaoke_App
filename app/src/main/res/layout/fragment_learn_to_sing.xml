@@ -7,7 +7,7 @@
 
         <variable
             name="TopicViewModel"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -15,107 +15,105 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <!-- App Bar Layout -->
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:elevation="0dp">
+<!--        <com.google.android.material.appbar.AppBarLayout-->
+<!--            android:id="@+id/appBarLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            app:elevation="0dp">-->
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/search_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="12dp"
-                android:layout_marginTop="12dp"
-                android:iconifiedByDefault="false"
-                android:inputType="text"
-                android:background="@drawable/bg_searchview_learn_fragment"
-                app:queryHint="Tìm kiếm khóa học" />
+<!--            <androidx.appcompat.widget.SearchView-->
+<!--                android:id="@+id/search_view"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="20dp"-->
+<!--                android:layout_marginBottom="12dp"-->
+<!--                android:layout_marginTop="12dp"-->
+<!--                android:iconifiedByDefault="false"-->
+<!--                android:inputType="text"-->
+<!--                android:background="@drawable/bg_searchview_learn_fragment"-->
+<!--                app:queryHint="Tìm kiếm khóa học" />-->
+<!--            -->
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="20dp"-->
+<!--                android:layout_marginBottom="12dp"-->
+<!--                app:cardCornerRadius="12dp"-->
+<!--                app:cardElevation="2dp"-->
+<!--                app:strokeWidth="0dp">-->
 
-            <!-- Category Filters -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:strokeWidth="0dp">
+<!--                <HorizontalScrollView-->
+<!--                    android:id="@+id/filter_scroll"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:clipToPadding="false"-->
+<!--                    android:paddingHorizontal="12dp"-->
+<!--                    android:paddingVertical="8dp"-->
+<!--                    android:scrollbars="none">-->
 
-                <HorizontalScrollView
-                    android:id="@+id/filter_scroll"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="8dp"
-                    android:scrollbars="none">
+<!--                    <com.google.android.material.chip.ChipGroup-->
+<!--                        android:id="@+id/chipGroup"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        app:chipSpacingHorizontal="8dp"-->
+<!--                        app:selectionRequired="true"-->
+<!--                        app:singleSelection="true">-->
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chipGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:chipSpacingHorizontal="8dp"
-                        app:selectionRequired="true"
-                        app:singleSelection="true">
+<!--                        <com.google.android.material.chip.Chip-->
+<!--                            android:id="@+id/btn_all"-->
+<!--                            style="@style/Widget.MaterialComponents.Chip.Choice"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:checked="true"-->
+<!--                            android:text="Tất cả"-->
+<!--                            android:textColor="#1A1A1A"-->
+<!--                            app:chipBackgroundColor="@color/chip_background_color"-->
+<!--                            app:chipStrokeWidth="0dp" />-->
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/btn_all"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:text="Tất cả"
-                            android:textColor="#1A1A1A"
-                            app:chipBackgroundColor="@color/chip_background_color"
-                            app:chipStrokeWidth="0dp" />
+<!--                        <com.google.android.material.chip.Chip-->
+<!--                            android:id="@+id/btn_basics"-->
+<!--                            style="@style/Widget.MaterialComponents.Chip.Choice"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="Cơ bản"-->
+<!--                            android:textColor="#1A1A1A"-->
+<!--                            app:chipBackgroundColor="@color/chip_background_color"-->
+<!--                            app:chipStrokeWidth="0dp" />-->
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/btn_basics"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cơ bản"
-                            android:textColor="#1A1A1A"
-                            app:chipBackgroundColor="@color/chip_background_color"
-                            app:chipStrokeWidth="0dp" />
+<!--                        <com.google.android.material.chip.Chip-->
+<!--                            android:id="@+id/btn_advanced"-->
+<!--                            style="@style/Widget.MaterialComponents.Chip.Choice"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="Nâng cao"-->
+<!--                            android:textColor="#1A1A1A"-->
+<!--                            app:chipBackgroundColor="@color/chip_background_color"-->
+<!--                            app:chipStrokeWidth="0dp" />-->
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/btn_advanced"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Nâng cao"
-                            android:textColor="#1A1A1A"
-                            app:chipBackgroundColor="@color/chip_background_color"
-                            app:chipStrokeWidth="0dp" />
+<!--                        <com.google.android.material.chip.Chip-->
+<!--                            android:id="@+id/btn_vocal"-->
+<!--                            style="@style/Widget.MaterialComponents.Chip.Choice"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="Luyện giọng"-->
+<!--                            android:textColor="#1A1A1A"-->
+<!--                            app:chipBackgroundColor="@color/chip_background_color"-->
+<!--                            app:chipStrokeWidth="0dp" />-->
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/btn_vocal"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Luyện giọng"
-                            android:textColor="#1A1A1A"
-                            app:chipBackgroundColor="@color/chip_background_color"
-                            app:chipStrokeWidth="0dp" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/btn_lyrics"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Phát âm"
-                            android:textColor="#1A1A1A"
-                            app:chipBackgroundColor="@color/chip_background_color"
-                            app:chipStrokeWidth="0dp" />
-                    </com.google.android.material.chip.ChipGroup>
-                </HorizontalScrollView>
-            </com.google.android.material.card.MaterialCardView>
-        </com.google.android.material.appbar.AppBarLayout>
+<!--                        <com.google.android.material.chip.Chip-->
+<!--                            android:id="@+id/btn_lyrics"-->
+<!--                            style="@style/Widget.MaterialComponents.Chip.Choice"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="Phát âm"-->
+<!--                            android:textColor="#1A1A1A"-->
+<!--                            app:chipBackgroundColor="@color/chip_background_color"-->
+<!--                            app:chipStrokeWidth="0dp" />-->
+<!--                    </com.google.android.material.chip.ChipGroup>-->
+<!--                </HorizontalScrollView>-->
+<!--            </com.google.android.material.card.MaterialCardView>-->
+<!--        </com.google.android.material.appbar.AppBarLayout>-->
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -285,18 +283,6 @@
                     tools:listitem="@layout/item_topic" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-
-        <!-- Floating Action Button -->
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fabStartLesson"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_marginBottom="24dp"
-            android:text="Bắt đầu học ngay"
-            android:textColor="#FFFFFF"
-            app:backgroundTint="@color/purple_500"
-            app:iconTint="#FFFFFF" />
 
         <!-- Loading Overlay -->
         <FrameLayout

@@ -1,0 +1,51 @@
+package com.duc.karaoke_app.feature_home.presentation.ui.fragment
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import com.duc.karaoke_app.feature_home.data.Repository
+import com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelFactory
+import com.duc.karaoke_app.databinding.FragmentStickerChooserBinding
+import com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
+class StickerChooserFragment : BottomSheetDialogFragment() {
+    private lateinit var binding: FragmentStickerChooserBinding
+    private val viewModel: ViewModelHome by activityViewModels {
+        ViewModelFactory(Repository(), requireActivity().application)
+    }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentStickerChooserBinding.inflate(layoutInflater)
+        binding.viewModelSticker = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.rcvSticker.layoutManager= GridLayoutManager(requireContext(), 4)
+
+        binding.ivClose.setOnClickListener{
+            fragmentManager?.beginTransaction()?.remove(this)?.commitAllowingStateLoss()
+        }
+         viewModel.isSelectSticker.observe(viewLifecycleOwner){isSelectSticker->
+             if(isSelectSticker){
+                 viewModel.resetIsSelectSticker()
+                 dismiss()
+             }
+         }
+
+    }
+
+    companion object {
+        fun newInstance(): StickerChooserFragment {
+            return StickerChooserFragment()
+        }
+    }
+}

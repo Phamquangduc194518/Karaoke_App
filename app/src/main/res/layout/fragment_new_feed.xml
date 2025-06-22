@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.fragment.NewsFeed">
+    tools:context=".feature_home.presentation.ui.fragment.NewsFeed">
 
     <data>
         <variable
             name="NewsFeedViewModel"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

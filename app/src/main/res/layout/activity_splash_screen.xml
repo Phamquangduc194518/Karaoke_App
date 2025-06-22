@@ -1,86 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-
-        <variable
-            name="viewModelSplashScreen"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelSplashScreen" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/fragment_container_splash_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background">
+        android:visibility="visible"/>
+    <RelativeLayout
+        android:id="@+id/rlt_intro_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:visibility="gone"
+        android:fitsSystemWindows="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/text_skip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:text="Skip"
+            android:textSize="18sp"
+            app:textAllCaps="true" />
 
-            <!-- Hình ảnh -->
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:contentDescription="Illustration of a person with a laptop"
-                android:src="@drawable/splashscreen_logo" />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottom_navigation"
+            android:layout_below="@id/text_skip"
+            android:clipToPadding="false"
+            android:overScrollMode="never" />
 
-            <!-- Tiêu đề chính -->
-            <TextView
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="86dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:background="#ffffff"
+            android:orientation="horizontal">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/pageIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:lineSpacingExtra="4dp"
-                android:text="Discover Your\nDream music here"
-                android:textColor="#004AAD"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:layout_marginStart="30dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabBackground="@drawable/onboarding_viewpager_selector_blue"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp" />
 
-            <!-- Phụ đề -->
-            <TextView
+            <Button
+                android:id="@+id/btn_next_step"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:text="Explore all the existing music genres and opportunities based on your\passion and favorite instruments"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:layout_height="50dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:drawableTint="#212121"
+                android:text="@string/next"
+                android:textColor="#6FB6F4"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <!-- Login Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_login_splashScreen"
-                    android:layout_width="0dp"
-                    android:layout_height="58dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="Start"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif"
-                    android:onClick="@{()->viewModelSplashScreen.onSplashScreenClick()}"
-                    app:cornerRadius="8dp"
-                    app:backgroundTint="#004AAD"
-                    app:rippleColor="@android:color/transparent"/>
-
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</FrameLayout>

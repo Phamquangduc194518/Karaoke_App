@@ -6,7 +6,7 @@
 
         <variable
             name="ViewModelSongRequest"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -41,7 +41,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/background"
+            android:background="@drawable/background2"
             android:padding="16dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 

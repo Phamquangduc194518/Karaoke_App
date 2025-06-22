@@ -3,7 +3,7 @@
 <data>
     <variable
         name="ViewModelLoginSettingAndPrivacy"
-        type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+        type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
 </data>
 
     <ScrollView
@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/background"
+            android:background="@drawable/background2"
             android:orientation="vertical"
             android:padding="16dp">
 

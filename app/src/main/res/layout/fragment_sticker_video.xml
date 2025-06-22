@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fragment.StickerChooserFragment">
+    tools:context=".feature_home.presentation.ui.fragment.StickerChooserFragment">
 
     <data>
         <variable
             name="ViewModelStickerVideo"
-            type="com.duc.karaoke_app.data.viewmodel.musicPlayer.MusicPlayerViewModel" />
+            type="com.duc.karaoke_app.feature_player.presentation.viewmodel.MusicPlayerViewModel" />
     </data>
 
     <LinearLayout

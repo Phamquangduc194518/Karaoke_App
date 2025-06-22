@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/login_Fragment"
-        android:name="com.duc.karaoke_app.ui.login.LoginFragment"
+        android:name="com.duc.karaoke_app.feature_auth.presentation.ui.fragment.LoginFragment"
         android:label="Login_Fragment"
         tools:layout="@layout/fragment_login_">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.duc.karaoke_app.ui.login.RegisterFragment"
+        android:name="com.duc.karaoke_app.feature_auth.presentation.ui.fragment.RegisterFragment"
         android:label="Register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/resetPasswordInfo"
-        android:name="com.duc.karaoke_app.ui.login.ResetPasswordFragment"
+        android:name="com.duc.karaoke_app.feature_auth.presentation.ui.fragment.ResetPasswordFragment"
         android:label="Reset_Password"
         tools:layout="@layout/fragment_reset_password">
         <action android:id="@id/action_login_Fragment_to_registerFragment" />

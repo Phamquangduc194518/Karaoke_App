@@ -6,12 +6,12 @@
         <import type="android.view.View" />
         <variable
             name="ViewModelLogin"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelLogin" />
+            type="com.duc.karaoke_app.feature_auth.presentation.viewmodel.ViewModelLogin" />
     </data>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:background="@drawable/background2">
 
     <LinearLayout
         android:layout_width="match_parent"

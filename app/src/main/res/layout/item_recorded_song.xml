@@ -6,7 +6,7 @@
 
         <variable
             name="ViewModelRecordedSong"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <androidx.cardview.widget.CardView

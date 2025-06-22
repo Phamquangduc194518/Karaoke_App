@@ -6,7 +6,7 @@
     <data>
         <variable
             name="ViewModelVideoOfTopic"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".MainActivity">
+        tools:context=".core.ui.MainActivity">
 
         <!-- AppBarLayout chứa Toolbar -->
         <com.google.android.material.appbar.AppBarLayout

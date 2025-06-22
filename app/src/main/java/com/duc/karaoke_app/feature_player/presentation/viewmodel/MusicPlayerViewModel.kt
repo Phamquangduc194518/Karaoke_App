@@ -1,0 +1,586 @@
+package com.duc.karaoke_app.feature_player.presentation.viewmodel
+
+import android.app.Application
+import android.content.Context
+import android.net.Uri
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.cloudinary.android.MediaManager
+import com.duc.karaoke_app.core.utils.CloudinaryManager
+import com.duc.karaoke_app.feature_favorite.data.FavoriteSongsRepository
+import com.duc.karaoke_app.feature_home.data.Repository
+import com.duc.karaoke_app.feature_home.data.CommentLiveStreamRequest
+import com.duc.karaoke_app.feature_home.data.CommentVideo
+import com.duc.karaoke_app.feature_home.data.CommentVideoDone
+import com.duc.karaoke_app.feature_home.data.Lyric
+import com.duc.karaoke_app.feature_home.data.RecordedSongs
+import com.duc.karaoke_app.feature_home.data.Songs
+import com.duc.karaoke_app.feature_home.data.Sticker
+import com.duc.karaoke_app.feature_home.data.Video
+import com.duc.karaoke_app.feature_home.presentation.ui.adapter.CommentVideoAdapter
+import com.duc.karaoke_app.feature_home.presentation.ui.adapter.StickerAdapter
+import com.duc.karaoke_app.feature_home.presentation.ui.adapter.ViewDuetSongAdapter
+import com.duc.karaoke_app.feature_home.presentation.ui.adapter.WatchLiveAdapter
+import com.duc.karaoke_app.core.utils.SingleLiveEvent
+import com.duc.karaoke_app.feature_chat.data.remote.LiveStreamSocketManager
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackException
+import com.google.android.exoplayer2.Player
+import com.google.api.client.http.FileContent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.File
+
+class MusicPlayerViewModel(
+    private val repository: Repository,
+    private val favoriteRepo: FavoriteSongsRepository,
+    application: Application
+) :
+    AndroidViewModel(application) {
+
+    private val _song = MutableLiveData<Songs>()
+    val song: LiveData<Songs> get() = _song
+
+    private val _video = MutableLiveData<Video>()
+    val video: LiveData<Video> get() = _video
+
+    private val _lyricSong = MutableLiveData<List<Lyric>>()
+    val lyricSong: LiveData<List<Lyric>> get() = _lyricSong
+
+    private lateinit var exoPlayer: ExoPlayer
+
+    private val _isPlaying = MutableLiveData<Boolean>(false)
+    val isPlaying: LiveData<Boolean> get() = _isPlaying
+
+
+    private val _navigateBack = MutableLiveData<Boolean>(false)
+    val navigateBack: LiveData<Boolean> get() = _navigateBack
+
+    private val _isNavigate = MutableLiveData<Boolean>(false)
+    val isNavigate: LiveData<Boolean> get() = _isNavigate
+
+    var _toKenToMusicPlayer = ""
+
+    // kiểm tra xem có đang up bài hát lên bảng tin ko?
+    private val _isUploading = MutableLiveData<Boolean>()
+    val isUploading: LiveData<Boolean> get() = _isUploading
+
+    //lưu ảnh đã chọn
+    private val _selectedImageUri = MutableLiveData<Uri?>()
+    val selectedImageUri: LiveData<Uri?> get() = _selectedImageUri
+
+    //lưu kết quả ảnh load lên
+    private val _uploadResult = MutableLiveData<String>()
+    val uploadResult: LiveData<String> get() = _uploadResult
+
+    private val _isStickerVideo = SingleLiveEvent<Boolean>()
+    val isStickerVideo: LiveData<Boolean> get() = _isStickerVideo
+
+    // lưu sticker đã chọn
+    private val _selectSticker = MutableLiveData<Sticker>()
+    val selectSticker: LiveData<Sticker> get() = _selectSticker
+
+    // kiểm tra xem đã chọn chưa
+    private val _isSelectSticker = MutableLiveData<Boolean>()
+    val isSelectSticker: LiveData<Boolean> get() = _isSelectSticker
+
+    private val _checkPostingCondition = MutableLiveData<Boolean>()
+    val checkPostingCondition: LiveData<Boolean> get() = _checkPostingCondition
+
+
+    var titlePost = MutableLiveData("")
+    var recordingPath = MutableLiveData("")
+
+    var comment = MutableLiveData("")
+    var videoId = MutableLiveData<Int>()
+    var stickerUrl = MutableLiveData<String?>()
+    var imageUrl = MutableLiveData<String?>()
+
+    private val _commentList = MutableLiveData<List<CommentVideoDone>>()
+    val commentList: LiveData<List<CommentVideoDone>> get() = _commentList
+
+    private val _isLiveId = MutableLiveData<Int>()
+    val isLiveId: LiveData<Int> get() = _isLiveId
+
+
+    // LayoutManager cho RecyclerView
+    val viewDuetSongManager = LinearLayoutManager(application)
+
+    // Adapter cho RecyclerView
+    val viewDuetSongAdapter = ViewDuetSongAdapter()
+    val commentAdapter = CommentVideoAdapter()
+    val stickerAdapter = StickerAdapter()
+    val watchLiveAdapter = WatchLiveAdapter()
+
+    init {
+        saveTokenToMusicPlayerActivity()
+        getLiveStreamList()
+        CheckPostingCondition()
+        stickerAdapter.onClickSticker { sticker ->
+            _selectSticker.value = sticker
+            if (_selectSticker.value != null) {
+                _isSelectSticker.value = true
+            }
+            Log.e("Sticker đã chọn", _selectSticker.value?.title ?: "")
+            stickerUrl.value = _selectSticker.value?.stickerUrl ?: ""
+
+        }
+        LiveStreamSocketManager.init(
+            streamId = _isLiveId.value ?: 0,
+            authToken = _toKenToMusicPlayer
+        )
+    }
+
+    fun initNewExoPlayer() {
+        if (::exoPlayer.isInitialized) {
+            try {
+                exoPlayer.release()
+            } catch (_: Exception) {}
+        }
+
+        exoPlayer = ExoPlayer.Builder(getApplication()).build()
+        exoPlayer.addListener(object : Player.Listener {
+            override fun onPlayerError(error: PlaybackException) {
+                Log.e("ExoPlayer", "Playback error: ${error.message}")
+            }
+
+            override fun onPlaybackStateChanged(state: Int) {
+                Log.d("ExoPlayer", "Playback state: $state")
+            }
+        })
+    }
+
+    fun resetIsSelectSticker() {
+        _isSelectSticker.value = false
+    }
+
+    fun onBackPressed() {
+        _navigateBack.value = true
+        releaseExoPlayer()
+    }
+
+    fun setSong(song: Songs) {
+        _song.value = song
+        Log.d("MusicPlayerViewModel", "Song set: ${song.title}")
+    }
+
+    fun setVideo(video: Video) {
+        _video.value = video
+        Log.d("MusicPlayerViewModel", "Video set: ${video.title}")
+    }
+
+
+    fun playSong(url: String) {
+        viewModelScope.launch {
+            val favEntity = withContext(Dispatchers.IO) {
+                favoriteRepo.getFavoriteById(_song.value?.id ?: return@withContext null)
+            }
+            val sourceUri: Uri = if (favEntity?.localAudioPath != null) {
+                Uri.fromFile(File(favEntity.localAudioPath))
+            } else {
+                Uri.parse(url)
+            }
+            if (sourceUri.toString().isEmpty()) {
+                Log.e("ExoPlayer", "Lỗi: Đường dẫn nhạc rỗng!")
+                return@launch
+            }
+            val mediaItem = MediaItem.fromUri(sourceUri)
+            Log.d("MusicPlayerVM", "==> Playing from path: ${sourceUri}")
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.prepare()
+            exoPlayer.play()
+            _isPlaying.value = true
+        }
+    }
+
+    fun pauseSong() {
+        exoPlayer.pause()
+        _isPlaying.value = false
+    }
+
+    fun togglePlayPause(url: String) {
+        Log.d("DEBUG", "Đã gọi togglePlayPause với url: $url")
+        if (!::exoPlayer.isInitialized || exoPlayer.playbackState == Player.STATE_IDLE) { // Kiểm tra nếu exoPlayer đã được khởi tạo
+            Log.e("ExoPlayer", "Lỗi: ExoPlayer chưa được khởi tạo! Khởi tạo lại...")
+            initNewExoPlayer() // ✅ Tạo mới ExoPlayer nếu nó bị null
+        }
+        if (_isPlaying.value == true) {
+            pauseSong()
+        } else {
+            if (exoPlayer.currentMediaItem == null || exoPlayer.mediaItemCount == 0) {
+                // Nếu chưa có MediaItem, thêm và phát nhạc
+                playSong(url)
+            } else {
+                // Nếu đã có MediaItem, tiếp tục phát
+                exoPlayer.play()
+                _isPlaying.value = true
+            }
+        }
+    }
+
+
+    fun releaseExoPlayer() {
+        if (::exoPlayer.isInitialized) {
+            exoPlayer.stop()
+            exoPlayer.clearMediaItems()
+            exoPlayer.release()
+            _isPlaying.value = false
+            Log.d("ExoPlayer", "ExoPlayer đã được giải phóng hoàn toàn!")
+        }
+    }
+
+    private fun saveTokenToMusicPlayerActivity(): String? {
+        val sharedPreferences =
+            getApplication<Application>().getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("auth_token", null)
+        if (token != null) {
+            Log.e("Token To MusicPlayer", "$token")
+            _toKenToMusicPlayer = token.trim()
+        } else {
+            Log.e("Token To MusicPlayer", "Token không tồn tại")
+        }
+        return _toKenToMusicPlayer
+    }
+
+//    private suspend fun uploadFileToDrive(): String? {
+//        val account = GoogleSignInHelper.getSignedInAccount()
+//        if (account == null) {
+//            return null
+//            Log.e("Upload", "Lỗi: Chưa đăng nhập Google")
+//        } else {
+//            Log.e("Upload", "Tài khoản Google: ${account.email}")
+//        }
+//        val driveService = GoogleSignInHelper.getGoogleDriveService(account)
+//
+//        if (driveService == null) {
+//            Log.e("Upload", "Lỗi: Không thể kết nối với Google Drive")
+//            return null
+//        }
+//        val folderId = "1sek-KlPDD0HXqqsTy6phX3yunky_N6pl" // ID folder trên Google Drive
+//        val filePath = "/storage/emulated/0/Android/data/com.duc.karaoke_app/cache/recording.mp4"
+//        val file = java.io.File(filePath)
+//        if (!file.exists()) {
+//            Log.e("Upload", "Lỗi: File không tồn tại")
+//        }
+//
+//        val formattedFileName = "${1}_${_song.value?.title}.mp4"
+//
+//        val fileMetadata = com.google.api.services.drive.model.File().apply {
+//            name = formattedFileName
+//            parents = listOf(folderId)
+//        }
+//        val mediaContent = FileContent("video/mp4", file)
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val uploadedFile = driveService.files()?.create(fileMetadata, mediaContent)
+//                    ?.setFields("id, name, webViewLink, webContentLink")
+//                    ?.execute()
+//                val fileId = uploadedFile?.id
+//                val fileLink = "https://drive.google.com/uc?export=download&id=$fileId"
+//                withContext(Dispatchers.Main) {
+//                    recordingPath.value = fileLink
+//                    Log.d("Upload", "File public link: $fileLink")
+//                }
+//                fileLink
+//            } catch (e: Exception) {
+//                Log.e("UploadError", "Lỗi khi tải file lên", e)
+//                null
+//            }
+//        }
+//    }
+
+    fun uploadMp4ToCloudinary(context: Context) {
+        _isUploading.postValue(true)
+        val filePath = "/storage/emulated/0/Android/data/com.duc.karaoke_app/cache/recording.mp4"
+        CloudinaryManager.init(context)
+
+        MediaManager.get().upload(filePath)
+            .option("resource_type", "video")
+            .callback(object : com.cloudinary.android.callback.UploadCallback {
+                override fun onStart(requestId: String?) {
+                    Log.d("Cloudinary", "Start uploading...")
+                }
+
+                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                    val progress = (bytes * 100 / totalBytes).toInt()
+                    Log.d("Cloudinary", "Upload progress: $progress%")
+                }
+
+                override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                    val uploadedUrl = resultData?.get("secure_url") as? String
+                    Log.d("Cloudinary", "Upload success! URL: $uploadedUrl")
+
+                    recordingPath.value = uploadedUrl
+                    createRecordedSongs()
+                    _isUploading.postValue(false)
+                    _isNavigate.postValue(true)
+                }
+
+                override fun onError(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                    Log.e("Cloudinary", "Upload error: ${error?.description}")
+                    _isUploading.postValue(false)
+                }
+
+                override fun onReschedule(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                    Log.w("Cloudinary", "Upload rescheduled: ${error?.description}")
+                    _isUploading.postValue(false)
+                }
+            })
+            .dispatch()
+    }
+
+
+    private fun createRecordedSongs() {
+        viewModelScope.launch {
+            val request = RecordedSongs(
+                songName = song.value?.title ?: "",
+                recordingPath = recordingPath.value ?: "",
+                coverImageUrl = _uploadResult.value ?: "",
+                title = titlePost.value ?: ""
+            )
+            Log.e("createRecordedSongs", "$request")
+            try {
+                val response = repository.createRecordedSong("Bearer $_toKenToMusicPlayer", request)
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    Log.e("createRecordedSongs", "$apiResponse")
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("Bản ghi", "Lỗi: ${response.code()} - $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("bản ghi", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun postCoverToServer(context: Context) {
+        uploadMp4ToCloudinary(context)
+    }
+
+    fun getDuetLyric() {
+        viewModelScope.launch {
+            try {
+                if (_song.value == null) {
+                    Log.e("Lyric_Duet", "Lỗi: _song.value bị NULL trước khi gọi API")
+                    return@launch
+                }
+                val response = repository.getDuetLyric(_song.value!!.title)
+                Log.e("Lyric_Duet_Title", response.isSuccessful.toString())
+                if (response.isSuccessful) {
+                    Log.e("Lyric_Duet_Respone", response.body().toString())
+                    _lyricSong.value = response.body()
+                    viewDuetSongAdapter.updateLyricDuetSong(_lyricSong.value ?: listOf())
+                    Log.e("Lyric_Duet_Respone", _lyricSong.value.toString())
+                } else {
+                    Log.e("Lyric_Duet", "Lỗi: ${response.code()} - ${response.message()}")
+                }
+            } catch (e: Exception) {
+                Log.e("Lyric_Duet", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun createCommentVideo() {
+        viewModelScope.launch {
+            try {
+                val request = CommentVideo(
+                    videoId = _video.value?.videoId ?: 0,
+                    commentText = comment.value ?: "",
+                    urlSticker = if (stickerUrl.value.isNullOrBlank()) null else stickerUrl.value,
+                    urlImage = if (imageUrl.value.isNullOrBlank()) null else imageUrl.value
+                )
+                Log.e("comment", "$request")
+                val response = repository.createCommentVideo("Bearer $_toKenToMusicPlayer", request)
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    Log.e("Tạo comment thành công", "$apiResponse")
+                    getCommentVideo()
+                    comment.value = ""
+                    stickerUrl.value = ""
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("Comment", "Lỗi: ${response.code()} - $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("Comment", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getCommentVideo() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getCommentVideo(_video.value?.videoId ?: 0)
+                if (response.isSuccessful) {
+                    _commentList.value = response.body()
+                    commentAdapter.updateCommentLists(response.body() ?: listOf())
+                    Log.e("commentDone", "${_commentList.value}")
+                } else {
+                    Log.e("Comment", "Lỗi kết nối")
+                }
+            } catch (e: Exception) {
+                Log.e("Comment", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun uriToFile(context: Context, uri: Uri): File? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+            val tempFile = File.createTempFile("avatar", ".jpg", context.cacheDir)
+            tempFile.outputStream().use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+            tempFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun setSelectedImageUri(uri: Uri) {
+        _selectedImageUri.value = uri
+    }
+
+    fun uploadImagePost(context: Context, file: File) {
+        _isUploading.value = true
+
+        MediaManager.get().upload(file.path)
+            .option("resource_type", "image")
+            .callback(object : com.cloudinary.android.callback.UploadCallback {
+                override fun onStart(requestId: String?) {
+                    Log.d("Cloudinary", "Bắt đầu upload ảnh...")
+                }
+
+                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                    val progress = (bytes * 100 / totalBytes).toInt()
+                    Log.d("Cloudinary", "Tiến độ upload: $progress%")
+                }
+
+                override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                    val uploadedUrl = resultData?.get("secure_url") as? String
+                    Log.d("Cloudinary", "Upload ảnh thành công! URL: $uploadedUrl")
+
+                    _uploadResult.value = uploadedUrl.toString()
+                    _isUploading.value = false
+                }
+
+                override fun onError(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                    Log.e("Cloudinary", "Lỗi upload ảnh: ${error?.description}")
+                    _isUploading.value = false
+                }
+
+                override fun onReschedule(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                    Log.w("Cloudinary", "Upload bị hoãn lại: ${error?.description}")
+                    _isUploading.value = false
+                }
+            })
+            .dispatch()
+    }
+
+
+    fun getStickers() {
+        viewModelScope.launch {
+            try {
+                val sticker = repository.getStickers()
+                if (sticker.isSuccessful) {
+                    stickerAdapter.upDateSticker(sticker.body() ?: listOf())
+                    _isStickerVideo.value = true
+                }
+            } catch (e: Exception) {
+                Log.e("Sticker", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getLiveStreamList() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getLiveStreamList()
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    _isLiveId.value = apiResponse?.streamId ?: 0
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("getLiveStreamList", "Lỗi: ${response.code()} - $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("getLiveStreamList", "Lỗi kết nối: ${e.message}")
+            }
+
+        }
+    }
+
+    fun createCommentLiveStream() {
+        viewModelScope.launch {
+            if (_isLiveId.value == 0) {
+                kotlinx.coroutines.delay(500)
+            }
+            try {
+                val request = CommentLiveStreamRequest(
+                    streamId = _isLiveId.value.toString(),
+                    commentText = comment.value ?: "",
+                    urlSticker = if (stickerUrl.value.isNullOrBlank()) null else stickerUrl.value,
+                    urlImage = if (imageUrl.value.isNullOrBlank()) null else imageUrl.value
+                )
+                val response =
+                    repository.createCommentLiveStream("Bearer $_toKenToMusicPlayer", request)
+                if (response.isSuccessful) {
+                    Log.e("createCommentLiveStream", response.body()?.message ?: "")
+                    getCommentsByStream()
+                    val json = JSONObject().apply {
+                        put("comment_text", comment.value ?: "")
+                        if (!stickerUrl.value.isNullOrBlank()) put("url_sticker", stickerUrl.value)
+                        if (!imageUrl.value.isNullOrBlank()) put("url_image", imageUrl.value)
+                    }
+                    LiveStreamSocketManager.sendComment(json)
+                    comment.value = ""
+                    stickerUrl.value = ""
+                    comment.value = ""
+                    stickerUrl.value = ""
+                }
+            } catch (e: Exception) {
+                Log.e("createCommentLiveStream", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun getCommentsByStream() {
+        viewModelScope.launch {
+            if (_isLiveId.value == 0) {
+                kotlinx.coroutines.delay(1000)
+            }
+            try {
+                Log.e("getCommentsByStream", _isLiveId.value.toString())
+                val response = repository.getCommentsByStream(_isLiveId.value ?: 0)
+                if (response.isSuccessful) {
+                    watchLiveAdapter.updateCommentLists(response.body() ?: listOf())
+                }
+            } catch (e: Exception) {
+                Log.e("getCommentsByStream", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun CheckPostingCondition() {
+        viewModelScope.launch {
+            try {
+                val response = repository.CheckPostingCondition("Bearer $_toKenToMusicPlayer")
+                if (response.isSuccessful) {
+                    _checkPostingCondition.value = response.body()?.canPost
+                }
+            } catch (e: Exception) {
+                Log.e("CheckPostingCondition", "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+}
+

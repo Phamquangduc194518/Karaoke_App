@@ -23,5 +23,12 @@
     <string name="start_live">Phát LIVE</string>
     <string name="start_record_video">Ghi Hình</string>
     <string name="switch_camera">Tắt Camera</string>
+    <string name="title_onboarding_1">Cho phép Micro</string>
+    <string name="description_onboarding_1">Chúng tôi cần quyền micro để bạn hát karaoke</string>
+    <string name="title_onboarding_2">Cho phép Máy ảnh</string>
+    <string name="description_onboarding_2">Dùng để quay video và livestream</string>
+    <string name="title_onboarding_3">Cho phép Thông báo</string>
+    <string name="description_onboarding_3">Gửi thông báo các sự kiện quan trọng</string>
+
 
 </resources>

@@ -4,17 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/background2"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".core.ui.MainActivity">
 
-    <!-- ProgressBar -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="visible"/>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/rocketAnimation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:lottie_rawRes="@raw/splash_screen_loading"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false" />
 
     <!-- Nội dung chính của App -->
     <FrameLayout

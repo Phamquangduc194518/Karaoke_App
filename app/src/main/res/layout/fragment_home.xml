@@ -7,7 +7,7 @@
 
         <variable
             name="ViewModelHome"
-            type="com.duc.karaoke_app.data.viewmodel.loginAndHome.ViewModelHome" />
+            type="com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -20,7 +20,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/background2">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -101,7 +102,7 @@
                     android:background="@drawable/custom_badge"
                     android:gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:text="@{ViewModelHome.notificationsCount.toString()}"
+                    android:text="@{ViewModelHome.messNotificationsCount.toString()}"
                     android:textColor="@android:color/white"
                     android:textSize="10sp"
                     android:visibility="gone" />
