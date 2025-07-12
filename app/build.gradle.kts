@@ -22,7 +22,7 @@ android {
     }
     defaultConfig {
         applicationId = "com.duc.karaoke_app"
-        minSdk = 31
+        minSdk = 27
         targetSdk = 35
         versionCode = 2
         versionName = "1.0"

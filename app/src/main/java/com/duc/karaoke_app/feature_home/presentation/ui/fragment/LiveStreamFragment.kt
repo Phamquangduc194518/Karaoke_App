@@ -65,8 +65,9 @@ class LiveStreamFragment : Fragment(), ConnectCheckerRtmp {
             rtmpCamera1.switchCamera()
     }
         LiveStreamSocketManager.connect()
-        viewModel.startListenSocket()
+//        viewModel.startListenSocket()
         viewModel.streamId.observe(viewLifecycleOwner) { streamId ->
+            LiveStreamSocketManager.disconnect()
             val token = viewModel.getTokenToPreferences() ?: return@observe
 
             Log.d("LiveStreamFragment", "🧩 Nhận được streamId=$streamId từ ViewModel")
@@ -99,6 +100,7 @@ class LiveStreamFragment : Fragment(), ConnectCheckerRtmp {
                 }
             }else{
                 viewModel.updateLiveStream()
+                LiveStreamSocketManager.disconnect()
                 if (rtmpCamera1.isStreaming) {
                     rtmpCamera1.stopStream()
                     Log.e("LiveStream", "Livestream stopped")
@@ -113,6 +115,12 @@ class LiveStreamFragment : Fragment(), ConnectCheckerRtmp {
             rtmpCamera1.stopStream()
         }
         rtmpCamera1.stopPreview()
+        viewModel.resetButtonLive()
+        viewModel.updateLiveStream()
+        LiveStreamSocketManager.disconnect()
+        viewModel.titleOfLiveStream.value = ""
+        Log.d("LiveStreamFragment", "🚪 Socket đã ngắt kết nối khi rời fragment")
+
     }
 
     override fun onAuthErrorRtmp() {

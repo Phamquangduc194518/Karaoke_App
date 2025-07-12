@@ -2,92 +2,135 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="ViewModelViewDuetSong"
             type="com.duc.karaoke_app.feature_player.presentation.viewmodel.MusicPlayerViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/gradient_music_background">
+        android:background="@drawable/gradient_music_background"
+        android:fitsSystemWindows="true">
 
-        <!-- Back button -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.02" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.92" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.06" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.94" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_rcv_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.12" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_rcv_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.7" />
+
+
         <ImageButton
             android:id="@+id/back_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="36dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Back"
             android:onClick="@{()->ViewModelViewDuetSong.onBackPressed()}"
             android:scaleType="centerCrop"
             android:src="@drawable/previous"
-            app:tint="@color/white" />
+            app:tint="@color/white"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toTopOf="@id/guideline_top"/>
 
-        <!-- Now Playing title -->
         <TextView
             android:id="@+id/now_playing_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="36dp"
             android:text="Now Playing"
             android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="@id/guideline_top"
+            app:layout_constraintStart_toEndOf="@id/back_button"
+            app:layout_constraintEnd_toStartOf="@id/options_button"
+            />
 
-        <!-- Options button -->
         <ImageButton
             android:id="@+id/options_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Options"
             android:scaleType="centerCrop"
             android:src="@drawable/options"
-            app:tint="@color/white" />
+            app:tint="@color/white"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintTop_toTopOf="@id/guideline_top"/>
 
-        <!-- Subtitle (e.g., Remix-Cover) -->
         <TextView
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/now_playing_title"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
             android:text="@{ViewModelViewDuetSong.song.subTitle}"
             android:textColor="#CCCCCC"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@+id/now_playing_title"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_end"
+          />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcv_view_duet_song"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_below="@+id/subtitle"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="20dp"
-            android:scrollbars="none"
-            app:layoutManager="@{ViewModelViewDuetSong.viewDuetSongManager}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/guideline_rcv_top"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_rcv_bottom"
             android:adapter="@{ViewModelViewDuetSong.viewDuetSongAdapter}"
-            android:layout_marginEnd="16dp"/>
+            android:scrollbars="none"
+            app:layoutManager="@{ViewModelViewDuetSong.viewDuetSongManager}" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_navigation"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rcv_view_duet_song"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="26dp"
-            android:layout_marginEnd="16dp"
             android:gravity="center"
-            android:weightSum="5"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/guideline_rcv_bottom"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintBottom_toTopOf="@+id/control_buttons"
+            android:weightSum="5">
 
             <ImageButton
                 android:id="@+id/share_button"
@@ -106,20 +149,19 @@
                 android:layout_marginEnd="16dp"
                 android:layout_weight="4"
                 android:orientation="vertical">
-                <!-- Song title -->
+
                 <TextView
                     android:id="@+id/song_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/album_cover"
                     android:layout_centerHorizontal="true"
+                    android:gravity="center"
                     android:text="@{ViewModelViewDuetSong.song.title}"
                     android:textColor="#87CEEB"
-                    android:gravity="center"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <!-- Artist name -->
                 <TextView
                     android:id="@+id/artist_name"
                     android:layout_width="match_parent"
@@ -151,13 +193,15 @@
         <!-- Control buttons -->
         <LinearLayout
             android:id="@+id/control_buttons"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ll_navigation"
             android:layout_marginTop="36dp"
-            android:layout_marginBottom="32dp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/ll_navigation"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end">
 
             <TextView
                 android:layout_width="35dp"
@@ -170,13 +214,12 @@
                 android:id="@+id/play_pause_button"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:scaleType="centerCrop"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@{ViewModelViewDuetSong.isPlaying() ? @drawable/play_action : @drawable/play}"
                 android:layout_marginEnd="20dp"
-                android:onClick="@{()->ViewModelViewDuetSong.togglePlayPause(`https://drive.google.com/uc?export=download&amp;id=1OsvmfPCh10cSMHYWpMmoqUlYs4bdlFCk`)}"
-                app:tintColor="@{ViewModelViewDuetSong.isPlaying}"
-                />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="@{()->ViewModelViewDuetSong.togglePlayPause(ViewModelViewDuetSong.song.audioUrl)}"
+                android:scaleType="centerCrop"
+                android:src="@{ViewModelViewDuetSong.isPlaying() ? @drawable/play_action : @drawable/play}"
+                app:tintColor="@{ViewModelViewDuetSong.isPlaying}" />
 
             <TextView
                 android:id="@+id/tv_recording"
@@ -195,5 +238,5 @@
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.feature_home.data.Songs
 
@@ -39,6 +41,7 @@ class AlbumTrackListAdapter :
         holder.playlistSubtitle.text = song.subTitle
         Glide.with(holder.itemView.context)
             .load(song.coverImageUrl)
+            .transform(CenterCrop(), RoundedCorners(30))
             .placeholder(R.drawable.placeholder_image)
             .error(R.drawable.placeholder_image)
             .into(holder.coverImage)

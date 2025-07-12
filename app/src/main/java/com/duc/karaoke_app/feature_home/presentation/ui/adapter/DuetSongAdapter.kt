@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.duc.karaoke_app.R
@@ -42,7 +43,7 @@ class DuetSongAdapter : RecyclerView.Adapter<DuetSongAdapter.DuetSongViewHolder>
         holder.duetSongSubtitle.text = duetSong.subTitle
         Glide.with(holder.itemView.context)
             .load(duetSong.coverImageUrl)
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))// bo góc ảnh
+            .transform(CenterCrop(), RoundedCorners(26))
             .placeholder(R.drawable.placeholder_image)
             .error(R.drawable.placeholder_image)
             .into(holder.coverImage)

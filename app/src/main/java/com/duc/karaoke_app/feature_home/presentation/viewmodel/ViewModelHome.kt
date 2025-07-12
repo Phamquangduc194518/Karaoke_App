@@ -180,7 +180,7 @@ class ViewModelHome(private val repository: Repository, application: Application
     val isClickVipUpgrade: LiveData<Boolean> get() = _isClickVipUpgrade
 
     // Expose trạng thái đang tải từ BillingManager
-    private val _billingLoading = MutableLiveData<Boolean>()
+    private val _billingLoading = SingleLiveEvent<Boolean>()
     val billingLoading: LiveData<Boolean> get() = _billingLoading
 
     private var exoPlayer: ExoPlayer? = null
@@ -517,7 +517,8 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val getFollowNotification = async { getFollowNotification() }
                 val recommendedSongsDeferred = async { recommendSongs() }
                 val activityStatistics = async { activityStatistics() }
-                val unreadMessage = async {unreadMessage()}
+                val unreadMessage = async { unreadMessage() }
+                val getRecordedSong = async {getRecordedSongList()}
 
                 songListDeferred.await()
                 topSongListDeferred.await()
@@ -533,6 +534,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                 recommendedSongsDeferred.await()
                 activityStatistics.await()
                 unreadMessage.await()
+                getRecordedSong.await()
 
                 _isDataLoaded.value = true
             } catch (e: Exception) {
@@ -662,7 +664,7 @@ class ViewModelHome(private val repository: Repository, application: Application
 
         // Quan sát trạng thái đang tải từ BillingManager
         billingManager.isLoading.observeForever { isLoading ->
-            _billingLoading.postValue(isLoading)
+            _billingLoading.value =isLoading
         }
 
         notificationAdapter.setOnItemClick { notificationId ->
@@ -715,9 +717,9 @@ class ViewModelHome(private val repository: Repository, application: Application
 
     fun onClickUpdateProfile() {
         viewModelScope.launch {
-            _isLoadingUpdateProfile. value =true
+            _isLoadingUpdateProfile.value = true
             _updateProfileSuccess.value = false
-                try {
+            try {
                 val token = getTokenToPreferences().toString().trim()
                 val request = UserProfile(
                     username = username.value ?: "",
@@ -730,18 +732,18 @@ class ViewModelHome(private val repository: Repository, application: Application
                 )
                 val response = repository.updateUser("Bearer $token", request)
                 Log.e("Token hiện tại", token)
-                    Log.e("onClickUpdateProfile", "$request")
+                Log.e("onClickUpdateProfile", "$request")
                 if (response.isSuccessful) {
                     _toastMessage.value = "Cập nhật thành công"
                     _updateProfileSuccess.value = true
-                    _isLoadingUpdateProfile. value =false
+                    _isLoadingUpdateProfile.value = false
                 } else {
                     _toastMessage.value = "Cập nhật thất bại: ${response.errorBody()?.string()}"
                 }
             } catch (e: Exception) {
                 _toastMessage.value = "Lỗi kết nối: ${e.message}"
-            }finally {
-                    _isLoadingUpdateProfile. value =false
+            } finally {
+                _isLoadingUpdateProfile.value = false
             }
         }
     }
@@ -847,7 +849,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val response = repository.getRecordedSongList("Bearer $token")
                 if (response.isSuccessful) {
                     _post.value = response.body()
-                    delay(2000)
+                    delay(1000)
                     newsFeedAdapter.updateLoadingState(false)
                     newsFeedAdapter.updateRecordedSonglists(post.value ?: listOf())
                 }
@@ -918,7 +920,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                     _streamId.value = response.body()?.streamId
                     Log.e("createLiveStream", _streamId.value.toString())
                     getProfileStar()
-                    if ( _streamId.value != null) {
+                    if (_streamId.value != null) {
                         getCommentsByStream(_streamId.value ?: 0)
                     } else {
                         Log.e("createLiveStream", "streamId null, không thể lấy comment")
@@ -1316,11 +1318,17 @@ class ViewModelHome(private val repository: Repository, application: Application
                     Log.e("onClickUpdateProfile", "${_uploadResult.value}")
                 }
 
-                override fun onError(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                override fun onError(
+                    requestId: String?,
+                    error: com.cloudinary.android.callback.ErrorInfo?
+                ) {
                     Log.e("Cloudinary", "Upload avatar lỗi: ${error?.description}")
                 }
 
-                override fun onReschedule(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                override fun onReschedule(
+                    requestId: String?,
+                    error: com.cloudinary.android.callback.ErrorInfo?
+                ) {
                     Log.w("Cloudinary", "Upload avatar bị hoãn lại: ${error?.description}")
                 }
             })
@@ -1541,6 +1549,7 @@ class ViewModelHome(private val repository: Repository, application: Application
     fun updateVipCheck() {
         viewModelScope.launch {
             try {
+                Log.e("billingManager","giá trị purchaseTokenCache: ${billingManager.purchaseTokenCache}")
                 val request = VerifyPurchaseRequest(
                     user_id = _userProfile.value?.user_id.toString().trim() ?: "",
                     packageName = "com.duc.karaoke_app",
@@ -1550,7 +1559,8 @@ class ViewModelHome(private val repository: Repository, application: Application
                 val response = repository.verifyPurchase(request)
                 if (response.isSuccessful) {
                     _isVipResponse.value = response.body()?.success
-                    Log.e("kết quả tra vip", _isVipResponse.value.toString())
+                    Log.e("billingManager", _isVipResponse.value.toString())
+                    billingManager.purchaseTokenCache = null
                 }
             } catch (e: Exception) {
                 Log.e("verifyPurchase", "Lỗi kết nối: ${e.message}")
@@ -1595,11 +1605,11 @@ class ViewModelHome(private val repository: Repository, application: Application
                 if (response.isSuccessful) {
                     val comments = response.body() ?: listOf()
                     Log.e("getCommentsByStream", "Có ${comments.size} comment")
-                    watchLiveAdapter.updateCommentLists(comments)
-                }else if(response.code() == 404){
+//                    watchLiveAdapter.updateCommentLists(comments)
+                } else if (response.code() == 404) {
                     Log.w("getCommentsByStream", "📭 Không có comment nào. Hiển thị trống.")
-                    watchLiveAdapter.updateCommentLists(listOf())
-                }else{
+//                    watchLiveAdapter.updateCommentLists(listOf())
+                } else {
                     val errorText = response.errorBody()?.string()
                     Log.e("getCommentsByStream", "❌ Lỗi khác: ${response.code()} - $errorText")
                 }
@@ -1716,7 +1726,7 @@ class ViewModelHome(private val repository: Repository, application: Application
         }
     }
 
-    fun unreadMessage(){
+    fun unreadMessage() {
         viewModelScope.launch {
             try {
                 val token = getTokenToPreferences().toString().trim()
@@ -1726,7 +1736,7 @@ class ViewModelHome(private val repository: Repository, application: Application
                 }
                 val response = repository.unreadMessage("Bearer $token")
                 if (response.isSuccessful) {
-                    _messNotificationsCount.value= response.body()?.unreadRoomCount ?: 0
+                    _messNotificationsCount.value = response.body()?.unreadRoomCount ?: 0
                 }
             } catch (e: Exception) {
                 Log.e("activityStatistics", "Lỗi kết nối: ${e.message}")

@@ -142,7 +142,8 @@ class MusicPlayerViewModel(
         if (::exoPlayer.isInitialized) {
             try {
                 exoPlayer.release()
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
 
         exoPlayer = ExoPlayer.Builder(getApplication()).build()
@@ -179,8 +180,13 @@ class MusicPlayerViewModel(
 
     fun playSong(url: String) {
         viewModelScope.launch {
+            Log.d("ExoPlayer", "==> Playing from path: ${url}")
             val favEntity = withContext(Dispatchers.IO) {
                 favoriteRepo.getFavoriteById(_song.value?.id ?: return@withContext null)
+            }
+            val allFavs = favoriteRepo.getAllFavorites()
+            allFavs.forEach {
+                Log.d("ExoPlayer", "ID_song_local: ${it.songId}, Path: ${it.localAudioPath}")
             }
             val sourceUri: Uri = if (favEntity?.localAudioPath != null) {
                 Uri.fromFile(File(favEntity.localAudioPath))
@@ -323,12 +329,18 @@ class MusicPlayerViewModel(
                     _isNavigate.postValue(true)
                 }
 
-                override fun onError(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                override fun onError(
+                    requestId: String?,
+                    error: com.cloudinary.android.callback.ErrorInfo?
+                ) {
                     Log.e("Cloudinary", "Upload error: ${error?.description}")
                     _isUploading.postValue(false)
                 }
 
-                override fun onReschedule(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                override fun onReschedule(
+                    requestId: String?,
+                    error: com.cloudinary.android.callback.ErrorInfo?
+                ) {
                     Log.w("Cloudinary", "Upload rescheduled: ${error?.description}")
                     _isUploading.postValue(false)
                 }
@@ -473,12 +485,18 @@ class MusicPlayerViewModel(
                     _isUploading.value = false
                 }
 
-                override fun onError(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                override fun onError(
+                    requestId: String?,
+                    error: com.cloudinary.android.callback.ErrorInfo?
+                ) {
                     Log.e("Cloudinary", "Lỗi upload ảnh: ${error?.description}")
                     _isUploading.value = false
                 }
 
-                override fun onReschedule(requestId: String?, error: com.cloudinary.android.callback.ErrorInfo?) {
+                override fun onReschedule(
+                    requestId: String?,
+                    error: com.cloudinary.android.callback.ErrorInfo?
+                ) {
                     Log.w("Cloudinary", "Upload bị hoãn lại: ${error?.description}")
                     _isUploading.value = false
                 }
@@ -531,44 +549,38 @@ class MusicPlayerViewModel(
                     urlSticker = if (stickerUrl.value.isNullOrBlank()) null else stickerUrl.value,
                     urlImage = if (imageUrl.value.isNullOrBlank()) null else imageUrl.value
                 )
-                val response =
-                    repository.createCommentLiveStream("Bearer $_toKenToMusicPlayer", request)
-                if (response.isSuccessful) {
-                    Log.e("createCommentLiveStream", response.body()?.message ?: "")
-                    getCommentsByStream()
-                    val json = JSONObject().apply {
-                        put("comment_text", comment.value ?: "")
-                        if (!stickerUrl.value.isNullOrBlank()) put("url_sticker", stickerUrl.value)
-                        if (!imageUrl.value.isNullOrBlank()) put("url_image", imageUrl.value)
-                    }
-                    LiveStreamSocketManager.sendComment(json)
-                    comment.value = ""
-                    stickerUrl.value = ""
-                    comment.value = ""
-                    stickerUrl.value = ""
+                val json = JSONObject().apply {
+                    put("comment_text", comment.value ?: "")
+                    if (!stickerUrl.value.isNullOrBlank()) put("url_sticker", stickerUrl.value)
+                    if (!imageUrl.value.isNullOrBlank()) put("url_image", imageUrl.value)
                 }
+//                getCommentsByStream()
+                LiveStreamSocketManager.sendComment(json)
+                comment.value = ""
+                stickerUrl.value = ""
+
             } catch (e: Exception) {
                 Log.e("createCommentLiveStream", "Lỗi kết nối: ${e.message}")
             }
         }
     }
 
-    fun getCommentsByStream() {
-        viewModelScope.launch {
-            if (_isLiveId.value == 0) {
-                kotlinx.coroutines.delay(1000)
-            }
-            try {
-                Log.e("getCommentsByStream", _isLiveId.value.toString())
-                val response = repository.getCommentsByStream(_isLiveId.value ?: 0)
-                if (response.isSuccessful) {
-                    watchLiveAdapter.updateCommentLists(response.body() ?: listOf())
-                }
-            } catch (e: Exception) {
-                Log.e("getCommentsByStream", "Lỗi kết nối: ${e.message}")
-            }
-        }
-    }
+//    fun getCommentsByStream() {
+//        viewModelScope.launch {
+//            if (_isLiveId.value == 0) {
+//                kotlinx.coroutines.delay(1000)
+//            }
+//            try {
+//                Log.e("getCommentsByStream", _isLiveId.value.toString())
+//                val response = repository.getCommentsByStream(_isLiveId.value ?: 0)
+//                if (response.isSuccessful) {
+//                    watchLiveAdapter.updateCommentLists(response.body() ?: listOf())
+//                }
+//            } catch (e: Exception) {
+//                Log.e("getCommentsByStream", "Lỗi kết nối: ${e.message}")
+//            }
+//        }
+//    }
 
     fun CheckPostingCondition() {
         viewModelScope.launch {

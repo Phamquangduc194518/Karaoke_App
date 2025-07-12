@@ -37,7 +37,7 @@ class NewsFeed : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        viewModel.getRecordedSongList()
         setupRecyclerView()
         setupObservers()
     }
@@ -52,7 +52,6 @@ class NewsFeed : Fragment() {
             })
             scheduleLayoutAnimation()
         }
-        viewModel.getRecordedSongList()
     }
 
     private fun setupObservers() {

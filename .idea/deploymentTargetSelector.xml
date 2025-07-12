@@ -15,7 +15,7 @@
       </SelectionState>
       <SelectionState runConfigName="Karaoke_App">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-06-22T07:47:15.407518900Z">
+        <DropdownSelection timestamp="2025-06-29T15:10:10.339390Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=c67a55ce5a4a" />

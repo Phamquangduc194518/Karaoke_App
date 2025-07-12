@@ -6,12 +6,10 @@
     android:gravity="center_horizontal"
     android:layout_margin="8dp">
 
-    <!-- Vòng tròn ảnh với viền -->
     <FrameLayout
         android:layout_width="100dp"
         android:layout_height="100dp">
 
-        <!-- Ảnh nền -->
         <ImageView
             android:id="@+id/ivCoverPerson"
             android:layout_width="match_parent"
@@ -20,7 +18,6 @@
             android:background="@drawable/circle_background"
             android:clipToOutline="true" />
 
-        <!-- Viền đỏ (layer ngoài) -->
         <View
             android:id="@+id/v_LiveBadge"
             android:layout_width="match_parent"
@@ -29,7 +26,6 @@
             android:visibility="gone"
             android:background="@drawable/circle_border_red" />
 
-        <!-- Badge "LIVE" -->
         <TextView
             android:id="@+id/tv_LiveBadge"
             android:layout_width="wrap_content"
@@ -45,7 +41,6 @@
             android:textStyle="bold" />
     </FrameLayout>
 
-    <!-- Tiêu đề -->
     <TextView
         android:id="@+id/tvPersonTitle"
         android:layout_width="100dp"
@@ -59,7 +54,6 @@
         android:textSize="14sp"
         android:textStyle="bold" />
 
-    <!-- Thông tin người nghe -->
     <TextView
         android:id="@+id/tvListeners"
         android:layout_width="wrap_content"

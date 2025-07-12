@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.feature_chat.data.ChatRepository
 import com.duc.karaoke_app.feature_chat.data.UserInfo
+import com.duc.karaoke_app.feature_chat.data.remote.SocketManager
 import com.duc.karaoke_app.feature_chat.presentation.viewmodel.ViewModelChat
 import com.duc.karaoke_app.feature_chat.presentation.viewmodel.ViewModelChatFactory
 
@@ -41,6 +42,11 @@ class MessengerActivity : AppCompatActivity() {
             }
             "MESSAGE_ROOM" -> loadFragment(MessengerFragment())
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SocketManager.disconnect()
     }
 
     private fun loadFragment(fragment: Fragment) {

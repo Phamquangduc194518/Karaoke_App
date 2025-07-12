@@ -58,6 +58,7 @@ class HomeFragment : Fragment() {
         viewModel.getIsFavoriteToSongID()
         viewModel.getFollowNotification()
         viewModel.unreadMessage()
+        viewModel.userProfile()
         homeBinding.recyclerViewTopSong.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         homeBinding.recyclerViewPlayList.layoutManager = LinearLayoutManager(requireContext())

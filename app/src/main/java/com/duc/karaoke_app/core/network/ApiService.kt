@@ -292,8 +292,8 @@ interface ApiService {
                 .create(ApiService::class.java)
         }
 
-//        private const val BASE_URL_LOGIN= BuildConfig.BASE_URL_LOGIN
-        private const val BASE_URL_LOGIN="http://192.168.1.5:8080/"
+        private const val BASE_URL_LOGIN= BuildConfig.BASE_URL_LOGIN
+//        private const val BASE_URL_LOGIN="http://192.168.1.7:8080/"
         val loginApi: ApiService by lazy{
             Retrofit.Builder()
                 .baseUrl(BASE_URL_LOGIN)

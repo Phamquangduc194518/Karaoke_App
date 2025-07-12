@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.duc.karaoke_app.R
 import com.duc.karaoke_app.feature_home.data.AccountWithFollowers
 import com.duc.karaoke_app.feature_home.data.FollowingStar
@@ -37,6 +38,7 @@ class FamousPersonAdapter() : RecyclerView.Adapter<FamousPersonAdapter.FamousPer
         val famousPerson = famousPersonList[position]
         Glide.with(holder.itemView.context)
             .load(famousPerson.following.avatarUrl)
+            .transform(CircleCrop())
             .placeholder(R.drawable.placeholder_image)
             .error(R.drawable.placeholder_image)
             .into(holder.coverPerson)

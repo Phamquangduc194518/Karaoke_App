@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.duc.karaoke_app.R
@@ -36,7 +37,7 @@ class RecommendedSongAdapter : RecyclerView.Adapter<RecommendedSongAdapter.Recom
         val song = recommendedSongList[position]
         Glide.with(holder.itemView.context)
             .load(song.coverImageUrl)
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(16)))
+            .transform(CenterCrop(), RoundedCorners(36))
             .placeholder(R.drawable.placeholder_image)
             .error(R.drawable.placeholder_image)
             .into(holder.songImage)

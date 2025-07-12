@@ -1,15 +1,18 @@
 package com.duc.karaoke_app.feature_chat.data.remote
 
 import android.util.Log
+import com.duc.karaoke_app.BuildConfig
 import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
 
 object LiveStreamSocketManager {
-    private const val BASE_URL = "http://192.168.1.5:8080"
+    private const val BASE_URL = BuildConfig.BASE_URL_LOGIN
+//    private const val BASE_URL = "http://192.168.1.5:8080"
     private var socket: Socket? = null
     private var streamId: Int = -1
     private var token: String = ""
+    private var isListening = false
 
     private var commentListener: ((JSONObject) -> Unit)? = null
 
@@ -32,7 +35,7 @@ object LiveStreamSocketManager {
             reconnection = true
         }
 
-        socket = IO.socket(BASE_URL, opts).apply {
+        socket = IO.socket("${BASE_URL}livestream", opts).apply {
             on(Socket.EVENT_CONNECT) {
                 Log.d("LiveSocket", "Kết nối thành công với livestream $streamId")
             }
@@ -58,12 +61,16 @@ object LiveStreamSocketManager {
     }
 
     fun listenNewComment(callback: (JSONObject) -> Unit) {
-        commentListener = callback
+        if (!isListening) {
+            commentListener = callback
+            isListening = true
+        }
     }
 
     fun disconnect() {
         socket?.off("new_comment")
         socket?.disconnect()
         socket = null
+        isListening = false
     }
 }

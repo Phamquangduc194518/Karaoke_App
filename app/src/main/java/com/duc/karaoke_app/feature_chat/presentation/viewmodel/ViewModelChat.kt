@@ -57,8 +57,8 @@ class ViewModelChat(val repository: ChatRepository, application: Application) :
 
     init {
         saveTokenToMusicPlayerActivity()
-//        SocketManager.init(_toKenToMessenger, BuildConfig.BASE_URL_LOGIN)
-        SocketManager.init(_toKenToMessenger, "http://192.168.1.5:8080")
+        SocketManager.init(_toKenToMessenger, BuildConfig.BASE_URL_LOGIN)
+//        SocketManager.init(_toKenToMessenger, "http://192.168.1.5:8080")
         SocketManager.connect()
         userProfile()
         getOnlineFollowingUsers()

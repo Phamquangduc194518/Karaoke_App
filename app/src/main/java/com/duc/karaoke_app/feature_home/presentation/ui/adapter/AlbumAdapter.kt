@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.duc.karaoke_app.feature_home.data.Albums
 import com.duc.karaoke_app.R
 
@@ -35,6 +37,7 @@ class AlbumAdapter() : RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder>() {
         // Load ảnh album từ URL hoặc drawable
         Glide.with(holder.itemView.context)
             .load(album.coverUrl)
+            .transform(CenterCrop(),RoundedCorners(26))
             .placeholder(R.drawable.rounded_background)
             .into(holder.ivAlbumCover)
 

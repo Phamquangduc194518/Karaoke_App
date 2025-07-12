@@ -1,5 +1,6 @@
 package com.duc.karaoke_app.feature_home.presentation.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import com.duc.karaoke_app.R
 import com.duc.karaoke_app.feature_home.data.Repository
 import com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.databinding.FragmentVipUpgradeBinding
+import com.duc.karaoke_app.feature_auth.presentation.ui.LoginActivity
 import com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelHome
 
 class VipUpgradeFragment : Fragment() {
@@ -36,6 +38,7 @@ class VipUpgradeFragment : Fragment() {
         }
 
         viewModel.purchaseSuccess.observe(viewLifecycleOwner) { success ->
+            viewModel.userProfile()
             if (success == true) {
                 viewModel.updateVipCheck()
             }

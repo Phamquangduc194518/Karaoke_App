@@ -10,7 +10,7 @@ import com.android.billingclient.api.*
 class BillingManager(private val context: Context) {
 
     // LiveData để thông báo khi giao dịch mua VIP thành công
-    private val _purchaseSuccess = MutableLiveData<Boolean>()
+    private val _purchaseSuccess = SingleLiveEvent<Boolean>()
     val purchaseSuccess: LiveData<Boolean> get() = _purchaseSuccess
     private lateinit var billingClient: BillingClient
     private var skuDetails: SkuDetails? = null
@@ -81,7 +81,7 @@ class BillingManager(private val context: Context) {
         }
     }
 
-    // Khởi chạy giao dịch mua (sẽ được gọi từ ViewModel/Fragment)
+    // Khởi chạy giao dịch mua
     fun launchPurchaseFlow(activity: Activity) {
         if (!::billingClient.isInitialized || !billingClient.isReady) {
             _errorMessage.postValue("Google Play Billing chưa sẵn sàng. Vui lòng thử lại sau.")
@@ -109,7 +109,7 @@ class BillingManager(private val context: Context) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             Log.d("BillingManager", "Purchase token: ${purchase.purchaseToken}")
             purchaseTokenCache = purchase.purchaseToken
-            Log.d("BillingManager", "Purchase token: ${purchaseTokenCache}")
+            Log.d("BillingManager", "Purchase token cache: ${purchaseTokenCache}")
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                     .setPurchaseToken(purchase.purchaseToken)
@@ -139,12 +139,15 @@ class BillingManager(private val context: Context) {
 
     // Kiểm tra trạng thái VIP hiện tại (nếu người dùng đã mua trước đó)
     fun checkVipStatus() {
+        Log.d("BillingManager", "📦Đã vào checkvip")
         if (!::billingClient.isInitialized || !billingClient.isReady) {
+            Log.w("BillingManager", "BillingClient chưa sẵn sàng")
             setupBillingClient()
             return
         }
         _isLoading.postValue(true)
         billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS) { billingResult, purchases ->
+            Log.d("BillingManager", "📦 Số lượng gói mua: ${purchases?.size ?: 0}")
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 purchases?.let {
                     for (purchase in it) {

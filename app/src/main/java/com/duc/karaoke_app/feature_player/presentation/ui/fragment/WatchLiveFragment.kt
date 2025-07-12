@@ -14,7 +14,6 @@ import com.duc.karaoke_app.feature_home.data.Repository
 import com.duc.karaoke_app.feature_home.presentation.viewmodel.ViewModelFactory
 import com.duc.karaoke_app.databinding.FragmentWatchLiveBinding
 import com.duc.karaoke_app.feature_chat.data.remote.LiveStreamSocketManager
-import com.duc.karaoke_app.feature_home.presentation.ui.adapter.WatchLiveAdapter
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 
@@ -27,7 +26,6 @@ class WatchLiveFragment : Fragment() {
     }
     private var exoPlayer: ExoPlayer? = null
     private val liveStreamUrl = "https://7e2750f951fd.entrypoint.cloud.wowza.com/app-6tfRw2M4/ngrp:acac9c4e_all/playlist.m3u8"
-    private lateinit var watchLiveAdapter: WatchLiveAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +48,7 @@ class WatchLiveFragment : Fragment() {
             player.prepare()
             player.playWhenReady = true
         }
-        watchLiveAdapter = WatchLiveAdapter()
+
         viewModel.isLiveId.observe(viewLifecycleOwner) { streamId ->
             if (streamId != null && streamId != 0) {
                 LiveStreamSocketManager.init(
@@ -59,13 +57,12 @@ class WatchLiveFragment : Fragment() {
                 )
                 LiveStreamSocketManager.connect()
                 LiveStreamSocketManager.listenNewComment { json ->
-                    watchLiveAdapter.addNewComment(json)
+                    viewModel.watchLiveAdapter.addNewComment(json)
                 }
             } else {
                 Log.e("LiveSocket", "Chưa có streamId hợp lệ!")
             }
         }
-        viewModel.getCommentsByStream()
         viewModel.isStickerVideo.observe(viewLifecycleOwner){ isSticker->
             if(isSticker){
                 val commentVideoFragment = StickerVideoFragment.newInstance()
@@ -73,8 +70,6 @@ class WatchLiveFragment : Fragment() {
             }
         }
     }
-
-
     override fun onDestroyView() {
         super.onDestroyView()
         releasePlayer()

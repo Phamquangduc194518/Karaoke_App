@@ -1,13 +1,15 @@
 package com.duc.karaoke_app.feature_chat.data.remote
 
 import android.util.Log
+import com.duc.karaoke_app.BuildConfig
 import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
 
 
 object SocketManager {
-    private const val DEFAULT_URL = "http://192.168.1.5:8080"
+    private const val DEFAULT_URL = BuildConfig.BASE_URL_LOGIN
+//    private const val DEFAULT_URL = "http://192.168.1.7:8080"
     private var socketUrl: String = DEFAULT_URL
     private var token: String = ""
     private var socket: Socket? = null
@@ -20,14 +22,15 @@ object SocketManager {
     }
 
     fun connect() {
+        Log.d("SocketManager", "🔥 connect() được gọi")
         if (socket?.connected() == true) return
         val opts = IO.Options().apply {
             query = "token=$token"
             reconnection = true
         }
-        socket = IO.socket(socketUrl, opts).apply {
+        socket = IO.socket("${socketUrl}chat", opts).apply {
             on(Socket.EVENT_CONNECT) {
-                Log.d("SocketManager", "Socket connected!")
+                Log.d("SocketManager", "Connecting to: ${socketUrl}chat?token=$token")
                 onConnectCallback?.invoke()
             }
             on(Socket.EVENT_CONNECT_ERROR) { args ->

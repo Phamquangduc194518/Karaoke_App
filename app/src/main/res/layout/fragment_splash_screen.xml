@@ -14,74 +14,83 @@
         android:layout_height="match_parent"
         android:background="@drawable/background2">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineTop"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.85" />
+
+
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/splashscreen_logo"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="@id/guidelineTop"
+            app:layout_constraintBottom_toTopOf="@+id/titleText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="1.5:1" />
 
-            <!-- Hình ảnh -->
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:contentDescription="Illustration of a person with a laptop"
-                android:src="@drawable/splashscreen_logo" />
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Khám phá mọi thể loại âm nhạc\nDựa trên đam mê của bạn"
+            android:textColor="#004AAD"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintTop_toBottomOf="@+id/logoImage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/descText"
+            android:paddingTop="12dp" />
 
-            <!-- Tiêu đề chính -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:lineSpacingExtra="4dp"
-                android:text="Khám phá mọi thể loại âm nhạc\n Dựa trên đam mê của bạn"
-                android:textColor="#004AAD"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/descText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Hãy mở cánh cửa bước vào thế giới âm nhạc của riêng bạn\nNơi đam mê, cảm xúc và giai điệu hội tụ thành hành trình tuyệt vời nhất."
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:fontFamily="sans-serif"
+            app:layout_constraintTop_toBottomOf="@id/titleText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_login_splashScreen"
+            android:padding="12dp" />
 
-            <!-- Phụ đề -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="50dp"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:text="Hãy mở cánh cửa bước vào thế giới âm nhạc của riêng bạn\n Nơi đam mê, cảm xúc và giai điệu hội tụ thành hành trình tuyệt vời nhất."
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_login_splashScreen"
+            android:layout_width="200dp"
+            android:layout_height="58dp"
+            android:text="Bắt Đầu"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif"
+            android:onClick="@{()->viewModelSplashScreen.onSplashScreenClick()}"
+            app:cornerRadius="8dp"
+            app:backgroundTint="#004AAD"
+            app:rippleColor="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp" />
 
-            <!-- Buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="2">
 
-                <!-- Login Button -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_login_splashScreen"
-                    android:layout_width="0dp"
-                    android:layout_height="58dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="Bắt Đầu"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif"
-                    android:onClick="@{()->viewModelSplashScreen.onSplashScreenClick()}"
-                    app:cornerRadius="8dp"
-                    app:backgroundTint="#004AAD"
-                    app:rippleColor="@android:color/transparent"/>
-
-            </LinearLayout>
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 
